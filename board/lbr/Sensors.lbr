@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -142,27 +142,18 @@ Source: http://www.zetex.com/3.0/pdf/ZXSC300.pdf</description>
 <symbols>
 <symbol name="LIS3DSHTR">
 <description>MEMS digital output motion sensor ultra low-power high performance three-axis “nano” accelerometer</description>
-<wire x1="0" y1="5.08" x2="0" y2="20.32" width="0.254" layer="94"/>
-<wire x1="0" y1="20.32" x2="0" y2="22.86" width="0.254" layer="94"/>
-<wire x1="0" y1="22.86" x2="0" y2="27.94" width="0.254" layer="94"/>
+<wire x1="0" y1="5.08" x2="0" y2="27.94" width="0.254" layer="94"/>
 <wire x1="33.02" y1="27.94" x2="33.02" y2="5.08" width="0.254" layer="94"/>
 <wire x1="33.02" y1="5.08" x2="0" y2="5.08" width="0.254" layer="94"/>
-<pin name="VDD_IO" x="-5.08" y="25.4" length="middle"/>
+<pin name="VDD_IO" x="38.1" y="22.86" length="middle" rot="R180"/>
 <pin name="SCL/SPC" x="-5.08" y="17.78" length="middle"/>
-<pin name="GND@1" x="-5.08" y="15.24" length="middle"/>
+<pin name="GND" x="38.1" y="15.24" length="middle" rot="R180"/>
 <pin name="SDA/SDI/SDO" x="-5.08" y="12.7" length="middle"/>
 <pin name="SEL/SDO" x="-5.08" y="10.16" length="middle"/>
 <pin name="CS" x="-5.08" y="7.62" length="middle"/>
-<pin name="INT2" x="38.1" y="7.62" length="middle" rot="R180"/>
-<pin name="GND@2" x="38.1" y="10.16" length="middle" rot="R180"/>
-<pin name="INT1/DRDY" x="38.1" y="12.7" length="middle" rot="R180"/>
-<pin name="GND@3" x="38.1" y="15.24" length="middle" rot="R180"/>
-<pin name="VDD@1" x="38.1" y="20.32" length="middle" rot="R180"/>
-<pin name="GND@4" x="38.1" y="17.78" length="middle" rot="R180"/>
-<pin name="VDD@2" x="38.1" y="22.86" length="middle" rot="R180"/>
-<pin name="GND@5" x="38.1" y="25.4" length="middle" rot="R180"/>
-<wire x1="0" y1="22.86" x2="-5.08" y2="22.86" width="0.254" layer="94"/>
-<wire x1="0" y1="20.32" x2="-5.08" y2="20.32" width="0.254" layer="94"/>
+<pin name="INT2" x="-5.08" y="25.4" length="middle"/>
+<pin name="INT1/DRDY" x="-5.08" y="22.86" length="middle"/>
+<pin name="VDD" x="38.1" y="25.4" length="middle" rot="R180"/>
 <text x="0" y="2.54" size="1.778" layer="97">LIS3DSH</text>
 <text x="0" y="30.48" size="1.778" layer="95">&gt;NAME</text>
 <wire x1="0" y1="27.94" x2="33.02" y2="27.94" width="0.254" layer="94"/>
@@ -173,52 +164,38 @@ Source: http://www.zetex.com/3.0/pdf/ZXSC300.pdf</description>
 <wire x1="0" y1="22.86" x2="27.94" y2="22.86" width="0.254" layer="94"/>
 <wire x1="27.94" y1="22.86" x2="27.94" y2="0" width="0.254" layer="94"/>
 <wire x1="27.94" y1="0" x2="0" y2="0" width="0.254" layer="94"/>
-<pin name="VDD_IO" x="-5.08" y="20.32" length="middle"/>
+<pin name="VDD_IO" x="33.02" y="20.32" length="middle" rot="R180"/>
 <pin name="SCL/SPC" x="-5.08" y="17.78" length="middle"/>
 <pin name="SDA/SDI" x="-5.08" y="15.24" length="middle"/>
 <pin name="SDO/SA0" x="-5.08" y="12.7" length="middle"/>
 <pin name="CS" x="-5.08" y="10.16" length="middle"/>
 <pin name="DRDY/INT2" x="-5.08" y="7.62" length="middle"/>
 <pin name="INT1" x="-5.08" y="5.08" length="middle"/>
-<pin name="GND@1" x="-5.08" y="2.54" length="middle"/>
-<pin name="GND@2" x="33.02" y="2.54" length="middle" rot="R180"/>
-<pin name="GND@3" x="33.02" y="5.08" length="middle" rot="R180"/>
-<pin name="GND@4" x="33.02" y="7.62" length="middle" rot="R180"/>
-<pin name="GND@5" x="33.02" y="10.16" length="middle" rot="R180"/>
-<pin name="GND@6" x="33.02" y="12.7" length="middle" rot="R180"/>
-<pin name="PLLFILT" x="33.02" y="15.24" length="middle" rot="R180"/>
-<pin name="VDD@1" x="33.02" y="17.78" length="middle" rot="R180"/>
-<pin name="VDD@2" x="33.02" y="20.32" length="middle" rot="R180"/>
+<pin name="GND" x="33.02" y="10.16" length="middle" rot="R180"/>
+<pin name="PLLFILT" x="-5.08" y="20.32" length="middle"/>
+<pin name="VDD" x="33.02" y="17.78" length="middle" rot="R180"/>
 <text x="0" y="23.622" size="1.27" layer="95">&gt;NAME</text>
 <text x="0" y="-2.54" size="1.27" layer="95">L3G4200D</text>
 </symbol>
 <symbol name="LPS331AP">
 <description>MEMS pressure sensor: 260-1260 mbar absolute digital output
 barometer</description>
-<wire x1="0" y1="0" x2="0" y2="15.24" width="0.254" layer="94"/>
-<wire x1="0" y1="15.24" x2="0" y2="17.78" width="0.254" layer="94"/>
-<wire x1="0" y1="17.78" x2="0" y2="22.86" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="0" y2="22.86" width="0.254" layer="94"/>
 <wire x1="0" y1="22.86" x2="30.48" y2="22.86" width="0.254" layer="94"/>
 <wire x1="30.48" y1="22.86" x2="30.48" y2="0" width="0.254" layer="94"/>
 <wire x1="30.48" y1="0" x2="0" y2="0" width="0.254" layer="94"/>
-<pin name="VDD_IO" x="-5.08" y="20.32" length="middle"/>
+<pin name="VDD_IO" x="35.56" y="12.7" length="middle" rot="R180"/>
 <pin name="SCL/SPC" x="-5.08" y="12.7" length="middle"/>
-<pin name="GND@1" x="-5.08" y="10.16" length="middle"/>
+<pin name="GND" x="35.56" y="7.62" length="middle" rot="R180"/>
 <pin name="SDA/SDI/SDO" x="-5.08" y="7.62" length="middle"/>
 <pin name="SDO/SA0" x="-5.08" y="5.08" length="middle"/>
 <pin name="CS" x="-5.08" y="2.54" length="middle"/>
-<pin name="INT2" x="35.56" y="2.54" length="middle" rot="R180"/>
-<pin name="GND@2" x="35.56" y="5.08" length="middle" rot="R180"/>
-<pin name="INT1" x="35.56" y="7.62" length="middle" rot="R180"/>
-<pin name="GND@3" x="35.56" y="10.16" length="middle" rot="R180"/>
-<pin name="GND@4" x="35.56" y="12.7" length="middle" rot="R180"/>
-<pin name="VDD@1" x="35.56" y="15.24" length="middle" rot="R180"/>
+<pin name="INT2" x="-5.08" y="15.24" length="middle"/>
+<pin name="INT1" x="-5.08" y="17.78" length="middle"/>
+<pin name="VDD" x="35.56" y="15.24" length="middle" rot="R180"/>
 <pin name="VCCA" x="35.56" y="17.78" length="middle" rot="R180"/>
-<pin name="GND@5" x="35.56" y="20.32" length="middle" rot="R180"/>
 <text x="0" y="23.368" size="1.27" layer="95">&gt;NAME</text>
 <text x="0" y="-2.54" size="1.27" layer="95">LPS331AP</text>
-<wire x1="0" y1="17.78" x2="-5.08" y2="17.78" width="0.254" layer="94"/>
-<wire x1="0" y1="15.24" x2="-5.08" y2="15.24" width="0.254" layer="94"/>
 </symbol>
 <symbol name="LDK220">
 <description>200 mA low quiescent current and low noise LDO</description>
@@ -243,18 +220,13 @@ barometer</description>
 <device name="" package="LGA-16-3X3X1">
 <connects>
 <connect gate="G$1" pin="CS" pad="8"/>
-<connect gate="G$1" pin="GND@1" pad="5"/>
-<connect gate="G$1" pin="GND@2" pad="10"/>
-<connect gate="G$1" pin="GND@3" pad="12"/>
-<connect gate="G$1" pin="GND@4" pad="13"/>
-<connect gate="G$1" pin="GND@5" pad="16"/>
+<connect gate="G$1" pin="GND" pad="2 3 5 10 12 13 16"/>
 <connect gate="G$1" pin="INT1/DRDY" pad="11"/>
 <connect gate="G$1" pin="INT2" pad="9"/>
 <connect gate="G$1" pin="SCL/SPC" pad="4"/>
 <connect gate="G$1" pin="SDA/SDI/SDO" pad="6"/>
 <connect gate="G$1" pin="SEL/SDO" pad="7"/>
-<connect gate="G$1" pin="VDD@1" pad="14"/>
-<connect gate="G$1" pin="VDD@2" pad="15"/>
+<connect gate="G$1" pin="VDD" pad="14 15"/>
 <connect gate="G$1" pin="VDD_IO" pad="1"/>
 </connects>
 <technologies>
@@ -272,19 +244,13 @@ barometer</description>
 <connects>
 <connect gate="G$1" pin="CS" pad="5"/>
 <connect gate="G$1" pin="DRDY/INT2" pad="6"/>
-<connect gate="G$1" pin="GND@1" pad="8"/>
-<connect gate="G$1" pin="GND@2" pad="9"/>
-<connect gate="G$1" pin="GND@3" pad="10"/>
-<connect gate="G$1" pin="GND@4" pad="11"/>
-<connect gate="G$1" pin="GND@5" pad="12"/>
-<connect gate="G$1" pin="GND@6" pad="13"/>
+<connect gate="G$1" pin="GND" pad="8 9 10 11 12 13"/>
 <connect gate="G$1" pin="INT1" pad="7"/>
 <connect gate="G$1" pin="PLLFILT" pad="14"/>
 <connect gate="G$1" pin="SCL/SPC" pad="2"/>
 <connect gate="G$1" pin="SDA/SDI" pad="3"/>
 <connect gate="G$1" pin="SDO/SA0" pad="4"/>
-<connect gate="G$1" pin="VDD@1" pad="15"/>
-<connect gate="G$1" pin="VDD@2" pad="16"/>
+<connect gate="G$1" pin="VDD" pad="15 16"/>
 <connect gate="G$1" pin="VDD_IO" pad="1"/>
 </connects>
 <technologies>
@@ -301,18 +267,14 @@ barometer</description>
 <device name="" package="LGA-16-3X3X1">
 <connects>
 <connect gate="G$1" pin="CS" pad="8"/>
-<connect gate="G$1" pin="GND@1" pad="5"/>
-<connect gate="G$1" pin="GND@2" pad="10"/>
-<connect gate="G$1" pin="GND@3" pad="12"/>
-<connect gate="G$1" pin="GND@4" pad="13"/>
-<connect gate="G$1" pin="GND@5" pad="16"/>
+<connect gate="G$1" pin="GND" pad="5 10 12 13 16"/>
 <connect gate="G$1" pin="INT1" pad="11"/>
 <connect gate="G$1" pin="INT2" pad="9"/>
 <connect gate="G$1" pin="SCL/SPC" pad="4"/>
 <connect gate="G$1" pin="SDA/SDI/SDO" pad="6"/>
 <connect gate="G$1" pin="SDO/SA0" pad="7"/>
 <connect gate="G$1" pin="VCCA" pad="15"/>
-<connect gate="G$1" pin="VDD@1" pad="14"/>
+<connect gate="G$1" pin="VDD" pad="14"/>
 <connect gate="G$1" pin="VDD_IO" pad="1"/>
 </connects>
 <technologies>
