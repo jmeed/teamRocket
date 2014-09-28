@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.5.0">
+<eagle version="6.6.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -899,6 +899,20 @@ This is the "EZ" version, which has limited top masking for improved ease of ass
 <wire x1="0" y1="0" x2="0" y2="1.016" width="0.254" layer="1"/>
 <wire x1="0" y1="0" x2="0" y2="-1.016" width="0.254" layer="1"/>
 </package>
+<package name="CRYSTAL-SMD-4X2">
+<wire x1="0" y1="0" x2="3.6" y2="0" width="0.127" layer="21"/>
+<wire x1="3.6" y1="0" x2="3.6" y2="2.9" width="0.127" layer="21"/>
+<wire x1="3.6" y1="2.9" x2="0" y2="2.9" width="0.127" layer="21"/>
+<wire x1="0" y1="2.9" x2="0" y2="0" width="0.127" layer="21"/>
+<smd name="P$2" x="0.6" y="0.5" dx="1.25" dy="1" layer="1"/>
+<circle x="-0.4" y="0.4" radius="0.1" width="0.127" layer="21"/>
+<circle x="-0.4" y="0.4" radius="0.2" width="0.127" layer="21"/>
+<smd name="P$1" x="0.6" y="2.4" dx="1.25" dy="1" layer="1"/>
+<smd name="P$3" x="3" y="2.4" dx="1.25" dy="1" layer="1"/>
+<smd name="P$4" x="3" y="0.5" dx="1.25" dy="1" layer="1"/>
+<text x="0" y="3.1" size="0.4064" layer="21">&gt;NAME</text>
+<text x="0" y="-0.6" size="0.4064" layer="21">&gt;VALUE</text>
+</package>
 </packages>
 <symbols>
 <symbol name="Q">
@@ -1447,11 +1461,21 @@ Used, eg, on the Arduino Pro/ Pro Mini boards.&lt;br&gt;
 <gate name="G$1" symbol="CRYSTAL-GND" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="CRYSTAL-SMD-5X3">
+<device name="''5X3" package="CRYSTAL-SMD-5X3">
 <connects>
 <connect gate="G$1" pin="1" pad="3"/>
 <connect gate="G$1" pin="2" pad="1"/>
 <connect gate="G$1" pin="3" pad="2 4"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="''4X2" package="CRYSTAL-SMD-4X2">
+<connects>
+<connect gate="G$1" pin="1" pad="P$2"/>
+<connect gate="G$1" pin="2" pad="P$3"/>
+<connect gate="G$1" pin="3" pad="P$1 P$4"/>
 </connects>
 <technologies>
 <technology name=""/>
