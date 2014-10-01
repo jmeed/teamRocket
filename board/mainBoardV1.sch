@@ -2163,6 +2163,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <text x="-2.54" y="1.905" size="0.4064" layer="25">&gt;NAME</text>
 <text x="-2.54" y="-2.54" size="0.4064" layer="27">&gt;VALUE</text>
 </package>
+<package name="CRYSTAL-SMD-2.5X2">
+<smd name="P2" x="0.6" y="0.5" dx="1.2" dy="0.9" layer="1"/>
+<smd name="GND2" x="2.3" y="0.5" dx="1.2" dy="0.9" layer="1"/>
+<smd name="GND1" x="0.6" y="1.8" dx="1.2" dy="0.9" layer="1"/>
+<smd name="P1" x="2.3" y="1.8" dx="1.2" dy="0.9" layer="1"/>
+<wire x1="-1" y1="0.5" x2="-0.5" y2="0.5" width="0.25" layer="21" curve="-180"/>
+<wire x1="-0.5" y1="0.5" x2="-1" y2="0.5" width="0.25" layer="21" curve="-180"/>
+</package>
 </packages>
 <symbols>
 <symbol name="CRYSTAL-GND">
@@ -2205,6 +2213,16 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <connect gate="G$1" pin="1" pad="P$2"/>
 <connect gate="G$1" pin="2" pad="P$3"/>
 <connect gate="G$1" pin="3" pad="P$1 P$4"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="2.5X2" package="CRYSTAL-SMD-2.5X2">
+<connects>
+<connect gate="G$1" pin="1" pad="P1"/>
+<connect gate="G$1" pin="2" pad="P2"/>
+<connect gate="G$1" pin="3" pad="GND1 GND2"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -5354,7 +5372,7 @@ Source: http://www.osram.convergy.de/</description>
 <part name="SUPPLY3" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND2" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="GND5" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="U$5" library="SparkFun-FreqCtrl" deviceset="CRYSTAL-GROUNDED" device="''4X2"/>
+<part name="U$5" library="SparkFun-FreqCtrl" deviceset="CRYSTAL-GROUNDED" device="2.5X2" value="CRYSTAL-GROUNDED2.5X2"/>
 <part name="C1" library="ELL-i-Passives" deviceset="C" device="0402" value="16pF"/>
 <part name="C3" library="ELL-i-Passives" deviceset="C" device="0402" value="16pF"/>
 <part name="GND6" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
@@ -5429,7 +5447,7 @@ Source: http://www.osram.convergy.de/</description>
 <part name="SUPPLY18" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="S1" library="SparkFun-Electromechanical" deviceset="SWITCH-MOMENTARY-2" device="-SMD-1101NE"/>
 <part name="S3" library="SparkFun-Electromechanical" deviceset="SWITCH-MOMENTARY-2" device="-SMD-1101NE"/>
-<part name="SUPPLY19" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
+<part name="GND16" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -5462,7 +5480,7 @@ Source: http://www.osram.convergy.de/</description>
 <instance part="SUPPLY16" gate="G$1" x="116.84" y="175.26"/>
 <instance part="S1" gate="G$1" x="142.24" y="152.4" rot="R90"/>
 <instance part="S3" gate="G$1" x="147.32" y="149.86" rot="R90"/>
-<instance part="SUPPLY19" gate="G$1" x="142.24" y="167.64"/>
+<instance part="GND16" gate="1" x="154.94" y="165.1"/>
 </instances>
 <busses>
 </busses>
@@ -5538,18 +5556,28 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="-58.42" y1="157.48" x2="-58.42" y2="160.02" width="0.1524" layer="91"/>
 <junction x="-58.42" y="160.02"/>
 </segment>
+<segment>
+<pinref part="S1" gate="G$1" pin="2"/>
+<wire x1="142.24" y1="157.48" x2="142.24" y2="167.64" width="0.1524" layer="91"/>
+<pinref part="S3" gate="G$1" pin="2"/>
+<wire x1="147.32" y1="167.64" x2="147.32" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="167.64" x2="147.32" y2="167.64" width="0.1524" layer="91"/>
+<pinref part="GND16" gate="1" pin="GND"/>
+<wire x1="147.32" y1="167.64" x2="154.94" y2="167.64" width="0.1524" layer="91"/>
+<junction x="147.32" y="167.64"/>
+</segment>
 </net>
 <net name="N$2" class="0">
 <segment>
-<pinref part="U$5" gate="G$1" pin="1"/>
-<pinref part="C3" gate="G$1" pin="1"/>
-<wire x1="157.48" y1="73.66" x2="165.1" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="157.48" y1="73.66" x2="157.48" y2="76.2" width="0.1524" layer="91"/>
-<junction x="157.48" y="73.66"/>
-<wire x1="152.4" y1="76.2" x2="157.48" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="PIO2_1/XTALOUT"/>
 <wire x1="106.68" y1="78.74" x2="152.4" y2="78.74" width="0.1524" layer="91"/>
-<wire x1="152.4" y1="78.74" x2="152.4" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="152.4" y1="78.74" x2="152.4" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="C3" gate="G$1" pin="1"/>
+<wire x1="152.4" y1="73.66" x2="157.48" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="U$5" gate="G$1" pin="1"/>
+<wire x1="157.48" y1="73.66" x2="165.1" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="157.48" y1="76.2" x2="157.48" y2="73.66" width="0.1524" layer="91"/>
+<junction x="157.48" y="73.66"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -5716,15 +5744,6 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="106.68" y1="160.02" x2="116.84" y2="160.02" width="0.1524" layer="91"/>
 <wire x1="116.84" y1="160.02" x2="116.84" y2="167.64" width="0.1524" layer="91"/>
 <junction x="116.84" y="167.64"/>
-</segment>
-<segment>
-<pinref part="S1" gate="G$1" pin="2"/>
-<wire x1="142.24" y1="157.48" x2="142.24" y2="167.64" width="0.1524" layer="91"/>
-<pinref part="S3" gate="G$1" pin="2"/>
-<wire x1="142.24" y1="167.64" x2="147.32" y2="167.64" width="0.1524" layer="91"/>
-<wire x1="147.32" y1="167.64" x2="147.32" y2="154.94" width="0.1524" layer="91"/>
-<pinref part="SUPPLY19" gate="G$1" pin="3.3V"/>
-<junction x="142.24" y="167.64"/>
 </segment>
 </net>
 <net name="INT1_A/G" class="0">
@@ -6259,9 +6278,13 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="76.2" y1="88.9" x2="76.2" y2="99.06" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="VDD"/>
 <wire x1="68.58" y1="73.66" x2="76.2" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="76.2" y1="73.66" x2="76.2" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="73.66" x2="76.2" y2="76.2" width="0.1524" layer="91"/>
 <junction x="76.2" y="88.9"/>
 <pinref part="SUPPLY8" gate="G$1" pin="3.3V"/>
+<pinref part="U$1" gate="G$1" pin="RES_INV"/>
+<wire x1="76.2" y1="76.2" x2="76.2" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="68.58" y1="76.2" x2="76.2" y2="76.2" width="0.1524" layer="91"/>
+<junction x="76.2" y="76.2"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="VBAT"/>
@@ -6420,13 +6443,6 @@ Source: http://www.osram.convergy.de/</description>
 <pinref part="U$1" gate="G$1" pin="VBREF"/>
 <pinref part="C6" gate="G$1" pin="2"/>
 <wire x1="30.48" y1="76.2" x2="25.4" y2="76.2" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="OLED_RST" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="RES_INV"/>
-<wire x1="68.58" y1="76.2" x2="91.44" y2="76.2" width="0.1524" layer="91"/>
-<label x="83.82" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="USB_VBUS" class="0">
