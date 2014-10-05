@@ -1376,139 +1376,6 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <text x="0.616" y="0.75" size="1.27" layer="51">+</text>
 <text x="-1.384" y="0.75" size="1.27" layer="51">-</text>
 </package>
-<package name="MICRO-B-RA-SMT">
-<description>Package for an SMT Micro-B connector.  Digikey part #H11613-ND
-*** Unproven***</description>
-<wire x1="-3.4" y1="-3" x2="3.4" y2="-3" width="0.127" layer="51"/>
-<wire x1="-3.4" y1="-3" x2="-3.4" y2="3" width="0.127" layer="51"/>
-<wire x1="3.4" y1="3" x2="-3.4" y2="3" width="0.127" layer="51"/>
-<wire x1="3.4" y1="3" x2="3.4" y2="-3" width="0.127" layer="51"/>
-<smd name="5" x="-1.3" y="-1.95" dx="1.1" dy="0.35" layer="1" rot="R90"/>
-<smd name="1" x="1.3" y="-1.95" dx="1.1" dy="0.35" layer="1" rot="R90"/>
-<smd name="4" x="-0.65" y="-1.75" dx="1.5" dy="0.35" layer="1" rot="R90"/>
-<smd name="3" x="0" y="-1.75" dx="1.5" dy="0.35" layer="1" rot="R90"/>
-<smd name="2" x="0.65" y="-1.75" dx="1.5" dy="0.35" layer="1" rot="R90"/>
-<text x="-3.6" y="-1.8" size="0.762" layer="25" rot="R90">&gt;NAME</text>
-<text x="4.3" y="-1.8" size="0.762" layer="27" rot="R90">&gt;VALUE</text>
-</package>
-<package name="MICRO-B-RA-TH">
-<description>&lt;h3&gt;Micro B Right Angle through-hole PCB plug connector&lt;/h3&gt;
-&lt;b&gt;**Unproven**&lt;/b&gt;&lt;br&gt;
-See digikey part #H11673TR-ND</description>
-<wire x1="-1.525" y1="0" x2="-1.525" y2="1.55" width="0.127" layer="51"/>
-<wire x1="1.525" y1="0" x2="1.525" y2="1.55" width="0.127" layer="51"/>
-<wire x1="-1.525" y1="1.55" x2="1.525" y2="1.55" width="0.127" layer="51"/>
-<wire x1="-1.525" y1="0" x2="-3.65" y2="0" width="0.127" layer="51"/>
-<wire x1="1.525" y1="0" x2="3.65" y2="0" width="0.127" layer="51"/>
-<wire x1="-3.65" y1="0" x2="-3.65" y2="-0.95" width="0.127" layer="51"/>
-<wire x1="3.65" y1="0" x2="3.65" y2="-0.95" width="0.127" layer="51"/>
-<wire x1="-2.5" y1="-3.35" x2="2.5" y2="-3.35" width="0.127" layer="51"/>
-<wire x1="-3.65" y1="-0.95" x2="-2.5" y2="-3.35" width="0.127" layer="51"/>
-<wire x1="3.65" y1="-0.95" x2="2.5" y2="-3.35" width="0.127" layer="51"/>
-<pad name="3" x="0" y="-1.25" drill="0.508" diameter="0.9"/>
-<pad name="4" x="0.65" y="0.6" drill="0.508" diameter="0.9"/>
-<pad name="2" x="-0.65" y="0.6" drill="0.508" diameter="0.9"/>
-<pad name="5" x="1.3" y="-0.95" drill="0.508" diameter="0.9"/>
-<pad name="1" x="-1.3" y="-0.95" drill="0.508" diameter="0.9"/>
-<text x="-1.651" y="0.635" size="0.381" layer="25" rot="R180">&gt;Name</text>
-<text x="1.651" y="0.254" size="0.381" layer="27">&gt;Value</text>
-</package>
-<package name="MICRO-B-TH">
-<description>&lt;h3&gt;Micro B USB Plug Assembly - Straight Through-hole&lt;/h3&gt;
-&lt;b&gt;**UNPROVEN**&lt;/b&gt;&lt;Br&gt;
-See Digikey part #H11497-ND</description>
-<wire x1="-5.125" y1="-2.1" x2="5.125" y2="-2.1" width="0.127" layer="51"/>
-<wire x1="-5.125" y1="2.1" x2="5.125" y2="2.1" width="0.127" layer="51"/>
-<wire x1="-5.125" y1="-2.1" x2="-5.125" y2="2.1" width="0.127" layer="51"/>
-<wire x1="5.125" y1="-2.1" x2="5.125" y2="2.1" width="0.127" layer="51"/>
-<pad name="1" x="-1.3" y="-0.775" drill="0.6" diameter="1"/>
-<pad name="3" x="0" y="-0.775" drill="0.6" diameter="1"/>
-<pad name="5" x="1.3" y="-0.775" drill="0.6" diameter="1"/>
-<pad name="4" x="0.65" y="0.775" drill="0.6" diameter="1"/>
-<pad name="2" x="-0.65" y="0.775" drill="0.6" diameter="1"/>
-<pad name="P$1" x="-4.1" y="0" drill="1.2" rot="R90"/>
-<pad name="P$2" x="4.1" y="0" drill="1.2" rot="R90"/>
-<text x="-5.08" y="2.286" size="0.381" layer="25">&gt;Name</text>
-<text x="-5.08" y="-2.667" size="0.381" layer="27">&gt;Value</text>
-</package>
-<package name="MICRO-B-SMT">
-<description>&lt;h3&gt;USB Micro-B Plug Connector&lt;/h3&gt;
-Manufacturer part #: ZX80-B-5SA&lt;br&gt;
-Manufacturer: Hirose&lt;br&gt;&lt;br&gt;
-&lt;b&gt;***Unproven***&lt;/b&gt; (Passed 1:1 printout test though!)</description>
-<wire x1="-9.7" y1="3.77" x2="-8.275" y2="3.77" width="0.127" layer="51"/>
-<wire x1="-9.7" y1="0.57" x2="-8.275" y2="0.57" width="0.127" layer="51"/>
-<wire x1="-9.7" y1="3.77" x2="-10.275" y2="4.3" width="0.127" layer="51"/>
-<wire x1="-10.275" y1="4.3" x2="-10.275" y2="5.38" width="0.127" layer="51"/>
-<wire x1="-9.7" y1="0.57" x2="-10.275" y2="0" width="0.127" layer="51"/>
-<wire x1="-10.275" y1="0" x2="-10.275" y2="-0.9" width="0.127" layer="51"/>
-<wire x1="-8.275" y1="3.77" x2="-8.275" y2="0.57" width="0.127" layer="51" curve="-180"/>
-<wire x1="9.7" y1="0.57" x2="8.275" y2="0.57" width="0.127" layer="51"/>
-<wire x1="8.275" y1="0.57" x2="8.275" y2="3.77" width="0.127" layer="51" curve="-180"/>
-<wire x1="9.7" y1="3.77" x2="8.275" y2="3.77" width="0.127" layer="51"/>
-<wire x1="9.7" y1="0.57" x2="10.275" y2="0" width="0.127" layer="51"/>
-<wire x1="10.275" y1="0" x2="10.275" y2="-0.9" width="0.127" layer="51"/>
-<wire x1="9.7" y1="3.77" x2="10.275" y2="4.4" width="0.127" layer="51"/>
-<wire x1="10.275" y1="4.4" x2="10.275" y2="5.38" width="0.127" layer="51"/>
-<wire x1="-10.275" y1="5.38" x2="-4.275" y2="5.38" width="0.127" layer="51"/>
-<wire x1="10.275" y1="5.38" x2="4.275" y2="5.38" width="0.127" layer="51"/>
-<wire x1="-10.275" y1="-0.9" x2="-4.275" y2="-0.9" width="0.127" layer="51"/>
-<wire x1="10.275" y1="-0.9" x2="4.275" y2="-0.9" width="0.127" layer="51"/>
-<wire x1="-4.275" y1="-0.9" x2="-4.275" y2="0" width="0.127" layer="51"/>
-<wire x1="4.275" y1="-0.9" x2="4.275" y2="0" width="0.127" layer="51"/>
-<wire x1="-4.275" y1="0" x2="4.275" y2="0" width="0.127" layer="51"/>
-<wire x1="-4.275" y1="5.38" x2="-4.275" y2="4.48" width="0.127" layer="51"/>
-<wire x1="4.275" y1="5.38" x2="4.275" y2="4.48" width="0.127" layer="51"/>
-<wire x1="-4.275" y1="4.48" x2="4.275" y2="4.48" width="0.127" layer="51"/>
-<pad name="P$6" x="-3.325" y="3.15" drill="1.3" diameter="2.2" rot="R90"/>
-<pad name="P$7" x="-3.325" y="0" drill="1.3" diameter="2.2" rot="R90"/>
-<pad name="P$8" x="3.325" y="3.15" drill="1.3" diameter="2.2" rot="R90"/>
-<pad name="P$9" x="3.325" y="0" drill="1.3" diameter="2.2" rot="R90"/>
-<smd name="3" x="0" y="0" dx="2.2" dy="0.4" layer="1" rot="R90"/>
-<smd name="2" x="-0.65" y="0" dx="2.2" dy="0.4" layer="1" rot="R90"/>
-<smd name="1" x="-1.3" y="0" dx="2.2" dy="0.4" layer="1" rot="R90"/>
-<smd name="5" x="1.3" y="0" dx="2.2" dy="0.4" layer="1" rot="R90"/>
-<smd name="4" x="0.65" y="0" dx="2.2" dy="0.4" layer="1" rot="R90"/>
-<text x="-10.29" y="5.58" size="0.4064" layer="25">&gt;Name</text>
-<text x="10.39" y="5.988" size="0.4064" layer="27" rot="R180">&gt;Value</text>
-<hole x="-8.275" y="2.17" drill="3.3"/>
-<hole x="8.275" y="2.17" drill="3.3"/>
-</package>
-<package name="USB-B-MICRO-SMD_V03">
-<text x="-4.66" y="5.96" size="0.3048" layer="51">PCB Front</text>
-<wire x1="-3" y1="5.6" x2="-2.3" y2="5.3" width="0.08" layer="51"/>
-<wire x1="-2.3" y1="5.3" x2="-2.4" y2="5.5" width="0.08" layer="51"/>
-<wire x1="-2.3" y1="5.3" x2="-2.5" y2="5.2" width="0.08" layer="51"/>
-<text x="-1.27" y="5.969" size="0.4064" layer="25">&gt;NAME</text>
-<text x="-1.27" y="5.461" size="0.4064" layer="27">&gt;VALUE</text>
-<smd name="D+1" x="2.7" y="0" dx="0.4" dy="1.4" layer="1" rot="R90"/>
-<smd name="D-1" x="2.7" y="0.65" dx="0.4" dy="1.4" layer="1" rot="R90"/>
-<smd name="VBUS1" x="2.7" y="1.3" dx="0.4" dy="1.4" layer="1" rot="R90"/>
-<smd name="ID1" x="2.7" y="-0.65" dx="0.4" dy="1.4" layer="1" rot="R90"/>
-<smd name="GND1" x="2.7" y="-1.3" dx="0.4" dy="1.4" layer="1" rot="R90"/>
-<hole x="2.2" y="1.9" drill="0.85"/>
-<hole x="2.2" y="-1.9" drill="0.85"/>
-<rectangle x1="-0.75" y1="2.784" x2="0.75" y2="4.584" layer="31"/>
-<rectangle x1="-0.35" y1="-0.75" x2="0.35" y2="0.75" layer="31"/>
-<rectangle x1="-0.75" y1="-4.584" x2="0.75" y2="-2.784" layer="31"/>
-<wire x1="-2.15" y1="3.9" x2="-2.15" y2="-3.9" width="0.127" layer="49"/>
-<wire x1="2.85" y1="3.9" x2="2.85" y2="-3.9" width="0.127" layer="49"/>
-<wire x1="2.85" y1="3.9" x2="-2.15" y2="3.9" width="0.127" layer="49"/>
-<wire x1="2.85" y1="-3.9" x2="-2.15" y2="-3.9" width="0.127" layer="49"/>
-<wire x1="2.981959375" y1="3.99288125" x2="2" y2="3.99288125" width="0.3048" layer="21"/>
-<wire x1="2" y1="3.99288125" x2="2" y2="4" width="0.3048" layer="21"/>
-<wire x1="3" y1="4" x2="3" y2="3" width="0.3048" layer="21"/>
-<wire x1="2" y1="-4" x2="3" y2="-4" width="0.3048" layer="21"/>
-<wire x1="3" y1="-4" x2="3" y2="-3" width="0.3048" layer="21"/>
-<wire x1="-1" y1="4" x2="-2" y2="4" width="0.3048" layer="21"/>
-<wire x1="-1" y1="-4" x2="-2" y2="-4" width="0.3048" layer="21"/>
-<rectangle x1="-0.85" y1="2.684" x2="0.85" y2="4.684" layer="29"/>
-<rectangle x1="-0.85" y1="-4.684" x2="0.85" y2="-2.684" layer="29"/>
-<rectangle x1="-0.85" y1="-1.35" x2="0.85" y2="1.35" layer="29"/>
-<smd name="SHIELD1" x="0" y="3.7" dx="1.8" dy="1.5" layer="1" rot="R90" stop="no" cream="no"/>
-<smd name="SHIELD3" x="0" y="0" dx="2.5" dy="1.5" layer="1" rot="R90" stop="no" cream="no"/>
-<smd name="SHIELD2" x="0" y="-3.7" dx="1.8" dy="1.5" layer="1" rot="R90" stop="no" cream="no"/>
-</package>
 </packages>
 <symbols>
 <symbol name="M04">
@@ -1538,21 +1405,6 @@ Manufacturer: Hirose&lt;br&gt;&lt;br&gt;
 <text x="-2.54" y="5.842" size="1.778" layer="95">&gt;NAME</text>
 <pin name="1" x="7.62" y="0" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="2" x="7.62" y="2.54" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
-</symbol>
-<symbol name="MICROB-PLUG">
-<wire x1="-5.08" y1="7.62" x2="-5.08" y2="-7.62" width="0.508" layer="94"/>
-<wire x1="-5.08" y1="-7.62" x2="5.08" y2="-7.62" width="0.508" layer="94"/>
-<wire x1="5.08" y1="-7.62" x2="5.08" y2="7.62" width="0.508" layer="94"/>
-<wire x1="5.08" y1="7.62" x2="-5.08" y2="7.62" width="0.508" layer="94"/>
-<text x="-4.826" y="8.128" size="1.778" layer="95">&gt;NAME</text>
-<text x="-5.08" y="-9.906" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="VCC" x="-7.62" y="5.08" length="short"/>
-<pin name="D-" x="-7.62" y="2.54" length="short"/>
-<pin name="D+" x="-7.62" y="0" length="short"/>
-<pin name="ID" x="-7.62" y="-2.54" length="short"/>
-<pin name="GND" x="-7.62" y="-5.08" length="short"/>
-<pin name="SHIELD" x="7.62" y="0" visible="off" length="short" rot="R180"/>
-<text x="4.064" y="0" size="0.8128" layer="95" rot="R90" align="bottom-center">SHIELD</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -1998,78 +1850,6 @@ Standard 4-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 </connects>
 <technologies>
 <technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="USB_MICROB_PLUG" prefix="JP">
-<description>USB Micro-B connectors&lt;br&gt;
-Some male, some female. Watch your step!</description>
-<gates>
-<gate name="G$1" symbol="MICROB-PLUG" x="0" y="0"/>
-</gates>
-<devices>
-<device name="&quot;" package="MICRO-B-RA-SMT">
-<connects>
-<connect gate="G$1" pin="D+" pad="3"/>
-<connect gate="G$1" pin="D-" pad="2"/>
-<connect gate="G$1" pin="GND" pad="5"/>
-<connect gate="G$1" pin="ID" pad="4"/>
-<connect gate="G$1" pin="VCC" pad="1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="-PTH" package="MICRO-B-RA-TH">
-<connects>
-<connect gate="G$1" pin="D+" pad="3"/>
-<connect gate="G$1" pin="D-" pad="2"/>
-<connect gate="G$1" pin="GND" pad="5"/>
-<connect gate="G$1" pin="ID" pad="4"/>
-<connect gate="G$1" pin="VCC" pad="1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="-PTH2" package="MICRO-B-TH">
-<connects>
-<connect gate="G$1" pin="D+" pad="3"/>
-<connect gate="G$1" pin="D-" pad="2"/>
-<connect gate="G$1" pin="GND" pad="5"/>
-<connect gate="G$1" pin="ID" pad="4"/>
-<connect gate="G$1" pin="VCC" pad="1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="-SMT" package="MICRO-B-SMT">
-<connects>
-<connect gate="G$1" pin="D+" pad="3"/>
-<connect gate="G$1" pin="D-" pad="2"/>
-<connect gate="G$1" pin="GND" pad="5"/>
-<connect gate="G$1" pin="ID" pad="4"/>
-<connect gate="G$1" pin="VCC" pad="1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="CONN-11752" package="USB-B-MICRO-SMD_V03">
-<connects>
-<connect gate="G$1" pin="D+" pad="D+1"/>
-<connect gate="G$1" pin="D-" pad="D-1"/>
-<connect gate="G$1" pin="GND" pad="GND1"/>
-<connect gate="G$1" pin="ID" pad="ID1"/>
-<connect gate="G$1" pin="SHIELD" pad="SHIELD1 SHIELD2 SHIELD3"/>
-<connect gate="G$1" pin="VCC" pad="VBUS1"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="PROD_ID" value="CONN-11752" constant="no"/>
-</technology>
 </technologies>
 </device>
 </devices>
@@ -2667,358 +2447,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <rectangle x1="-3.2004" y1="-1.5494" x2="-2.3505" y2="1.5507" layer="51"/>
 <rectangle x1="2.3622" y1="-1.5494" x2="3.2121" y2="1.5507" layer="51"/>
 </package>
-<package name="CT3216">
-<description>&lt;h3&gt;Tantalum capacitor in an EIA3216 package (CASE A)&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.0 Share Alike license.&lt;/p&gt;
-
-&lt;p&gt;Also Vishay Tantalum Capacitor case &lt;b&gt;A&lt;/b&gt;.&lt;/p&gt;</description>
-<wire x1="-1" y1="-1.2" x2="-2.5" y2="-1.2" width="0.2032" layer="21"/>
-<wire x1="-2.5" y1="-1.2" x2="-2.5" y2="1.2" width="0.2032" layer="21"/>
-<wire x1="-2.5" y1="1.2" x2="-1" y2="1.2" width="0.2032" layer="21"/>
-<wire x1="1" y1="-1.2" x2="2.1" y2="-1.2" width="0.2032" layer="21"/>
-<wire x1="2.1" y1="-1.2" x2="2.5" y2="-0.8" width="0.2032" layer="21"/>
-<wire x1="2.5" y1="-0.8" x2="2.5" y2="0.8" width="0.2032" layer="21"/>
-<wire x1="2.5" y1="0.8" x2="2.1" y2="1.2" width="0.2032" layer="21"/>
-<wire x1="2.1" y1="1.2" x2="1" y2="1.2" width="0.2032" layer="21"/>
-<wire x1="0.381" y1="1.016" x2="0.381" y2="-1.016" width="0.127" layer="21"/>
-<smd name="C" x="-1.4" y="0" dx="1.6" dy="1.4" layer="1" rot="R90"/>
-<smd name="A" x="1.4" y="0" dx="1.6" dy="1.4" layer="1" rot="R90"/>
-<text x="-2.54" y="1.381" size="0.4064" layer="25">&gt;NAME</text>
-<text x="0.408" y="1.332" size="0.4064" layer="27">&gt;VALUE</text>
-</package>
-<package name="CT3528">
-<description>&lt;h3&gt;Tantalum capacitor in an EIA3528 package (CASE B)&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.0 Share Alike license.&lt;/p&gt;
-
-&lt;p&gt;Also Vishay Tantalum Capacitor case &lt;b&gt;B&lt;/b&gt;.&lt;/p&gt;</description>
-<wire x1="-0.9" y1="-1.6" x2="-2.6" y2="-1.6" width="0.2032" layer="21"/>
-<wire x1="-2.6" y1="-1.6" x2="-2.6" y2="1.55" width="0.2032" layer="21"/>
-<wire x1="-2.6" y1="1.55" x2="-0.9" y2="1.55" width="0.2032" layer="21"/>
-<wire x1="1" y1="-1.55" x2="2.2" y2="-1.55" width="0.2032" layer="21"/>
-<wire x1="2.2" y1="-1.55" x2="2.6" y2="-1.2" width="0.2032" layer="21"/>
-<wire x1="2.6" y1="-1.2" x2="2.6" y2="1.25" width="0.2032" layer="21"/>
-<wire x1="2.6" y1="1.25" x2="2.2" y2="1.55" width="0.2032" layer="21"/>
-<wire x1="2.2" y1="1.55" x2="1" y2="1.55" width="0.2032" layer="21"/>
-<wire x1="2.2" y1="1.55" x2="1" y2="1.55" width="0.2032" layer="21"/>
-<wire x1="0.609" y1="1.311" x2="0.609" y2="-1.286" width="0.2032" layer="21" style="longdash"/>
-<smd name="C" x="-1.65" y="0" dx="2.5" dy="1.2" layer="1" rot="R90"/>
-<smd name="A" x="1.65" y="0" dx="2.5" dy="1.2" layer="1" rot="R90"/>
-<text x="-2.27" y="-1.27" size="1.27" layer="25" rot="R90">&gt;NAME</text>
-<text x="3.24" y="-1.37" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
-</package>
-<package name="CPOL-RADIAL-100UF-25V">
-<description>&lt;h3&gt;Round (electrolytic) capacitor with 0.1" (2.54 mm) lead spacing&lt;/h3&gt;
-
-&lt;p&gt;Copied from SparkFun-Passives.lbr under SparkFun Creative Commons license.  Note that the lead spacing in this footprint is 2.54 mm while most capacitors of this size have lead spacing of 2.00 mm.  If you are hand-soldering, this is not a problem, but you should not use this pattern for machine pick-and-place.&lt;/p&gt;
-
-&lt;p&gt;Appriximately 7 mm diameter&lt;/p&gt; 
-
-&lt;p&gt;&lt;b&gt;NOTE!&lt;/b&gt; At the moment there is no 3D model available for this package.&lt;/p&gt;</description>
-<wire x1="-0.635" y1="1.27" x2="-1.905" y2="1.27" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="3.25" width="0.2032" layer="21"/>
-<pad name="2" x="-1.27" y="0" drill="0.7" diameter="1.651"/>
-<pad name="1" x="1.27" y="0" drill="0.7" diameter="1.651" shape="square"/>
-<text x="-1.905" y="-4.318" size="0.8128" layer="27">&gt;Value</text>
-<text x="-0.762" y="1.651" size="0.4064" layer="25">&gt;Name</text>
-</package>
-<package name="CPOL-RADIAL-10UF-25V">
-<description>&lt;h3&gt;Round (electrolytic) capacitor with 0.1" (2.54 mm) lead spacing&lt;/h3&gt;
-
-&lt;p&gt;Copied from SparkFun-Passives.lbr under SparkFun Creative Commons license.  Note that the lead spacing in this footprint is 2.54 mm while most capacitors of this size have lead spacing of 2.50 mm.  This small difference works just fine. &lt;a href="https://www.sparkfun.com/products/96"&gt;SparkFun Product COM-00096&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Diameter 6.30 mm, height 11.20 mm.&lt;/p&gt; 
-
-&lt;p&gt;&lt;b&gt;NOTE!&lt;/b&gt; At the moment there is no 3D model available for this package.&lt;/p&gt;</description>
-<wire x1="-0.762" y1="1.397" x2="-1.778" y2="1.397" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="2.5" width="0.2032" layer="21"/>
-<pad name="1" x="1.27" y="0" drill="0.7" diameter="1.651" shape="square"/>
-<pad name="2" x="-1.27" y="0" drill="0.7" diameter="1.651"/>
-<text x="-0.889" y="1.524" size="0.4064" layer="25">&gt;Name</text>
-<text x="-1.905" y="-3.683" size="0.8128" layer="27">&gt;Value</text>
-</package>
-<package name="CT7343">
-<description>&lt;h3&gt;Tantalum capacitor in an EIA7343 package&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.0 Share Alike license.&lt;/p&gt;
-
-&lt;p&gt;Also Vishay Tantalum Capacitor case &lt;b&gt;E&lt;/b&gt; or &lt;b&gt;V&lt;/b&gt;.  Vishay E is 4.00±0.30 mm high, V 2.0 mm high.&lt;/p&gt;</description>
-<wire x1="-5" y1="2.5" x2="-2" y2="2.5" width="0.2032" layer="21"/>
-<wire x1="-5" y1="2.5" x2="-5" y2="-2.5" width="0.2032" layer="21"/>
-<wire x1="-5" y1="-2.5" x2="-2" y2="-2.5" width="0.2032" layer="21"/>
-<wire x1="2" y1="2.5" x2="4" y2="2.5" width="0.2032" layer="21"/>
-<wire x1="4" y1="2.5" x2="5" y2="1.5" width="0.2032" layer="21"/>
-<wire x1="5" y1="1.5" x2="5" y2="-1.5" width="0.2032" layer="21"/>
-<wire x1="5" y1="-1.5" x2="4" y2="-2.5" width="0.2032" layer="21"/>
-<wire x1="4" y1="-2.5" x2="2" y2="-2.5" width="0.2032" layer="21"/>
-<smd name="C" x="-3.17" y="0" dx="2.55" dy="2.7" layer="1" rot="R180"/>
-<smd name="A" x="3.17" y="0" dx="2.55" dy="2.7" layer="1" rot="R180"/>
-<text x="-1.27" y="1.27" size="0.4064" layer="25">&gt;Name</text>
-<text x="-1.27" y="-1.27" size="0.4064" layer="27">&gt;Value</text>
-</package>
-<package name="CPOL_PANASONIC_G">
-<description>&lt;H3&gt;Panasonic Aluminium Electrolytic Capacitor Series: S Type: V Package: G&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.3 Share-Alike License.&lt;/p&gt;
-&lt;p&gt;EagleUp model copyright (c) ELL-i co-operative.&lt;/p&gt; 
-&lt;p&gt;Diameter 10.0 mm.  Height 10.2±0.3 mm.  
-&lt;a href="http://industrial.panasonic.com/www-data/pdf/ABA0000/ABA0000CE115.pdf"&gt;Datasheet&lt;/a&gt;.
-&lt;/p&gt;</description>
-<wire x1="-5.1" y1="5.1" x2="2.8" y2="5.1" width="0.1016" layer="51"/>
-<wire x1="2.8" y1="5.1" x2="5.1" y2="2.8" width="0.1016" layer="51"/>
-<wire x1="5.1" y1="2.8" x2="5.1" y2="-2.8" width="0.1016" layer="51"/>
-<wire x1="5.1" y1="-2.8" x2="2.8" y2="-5.1" width="0.1016" layer="51"/>
-<wire x1="2.8" y1="-5.1" x2="-5.1" y2="-5.1" width="0.1016" layer="51"/>
-<wire x1="-5.1" y1="-5.1" x2="-5.1" y2="5.1" width="0.1016" layer="51"/>
-<wire x1="-5.1" y1="1" x2="-5.1" y2="5.1" width="0.2032" layer="21"/>
-<wire x1="-5.1" y1="5.1" x2="2.8" y2="5.1" width="0.2032" layer="21"/>
-<wire x1="2.8" y1="5.1" x2="5.1" y2="2.8" width="0.2032" layer="21"/>
-<wire x1="5.1" y1="2.8" x2="5.1" y2="1" width="0.2032" layer="21"/>
-<wire x1="5.1" y1="-1" x2="5.1" y2="-2.8" width="0.2032" layer="21"/>
-<wire x1="5.1" y1="-2.8" x2="2.8" y2="-5.1" width="0.2032" layer="21"/>
-<wire x1="2.8" y1="-5.1" x2="-5.1" y2="-5.1" width="0.2032" layer="21"/>
-<wire x1="-5.1" y1="-5.1" x2="-5.1" y2="-1" width="0.2032" layer="21"/>
-<wire x1="-4.85" y1="-1" x2="4.85" y2="-1" width="0.2032" layer="21" curve="156.699401" cap="flat"/>
-<wire x1="-4.85" y1="1" x2="4.85" y2="1" width="0.2032" layer="21" curve="-156.699401" cap="flat"/>
-<wire x1="-3.25" y1="3.7" x2="-3.25" y2="-3.65" width="0.1016" layer="51"/>
-<circle x="0" y="0" radius="4.95" width="0.1016" layer="51"/>
-<smd name="-" x="-4.25" y="0" dx="3.9" dy="1.6" layer="1"/>
-<smd name="+" x="4.25" y="0" dx="3.9" dy="1.6" layer="1"/>
-<text x="-1.27" y="1.27" size="0.4064" layer="25">&gt;NAME</text>
-<text x="-1.27" y="-2.54" size="0.4064" layer="27">&gt;VALUE</text>
-<rectangle x1="-5.85" y1="-0.45" x2="-4.9" y2="0.45" layer="51"/>
-<rectangle x1="4.9" y1="-0.45" x2="5.85" y2="0.45" layer="51"/>
-<polygon width="0.1016" layer="51">
-<vertex x="-3.3" y="3.6"/>
-<vertex x="-4.05" y="2.75"/>
-<vertex x="-4.65" y="1.55"/>
-<vertex x="-4.85" y="0.45"/>
-<vertex x="-4.85" y="-0.45"/>
-<vertex x="-4.65" y="-1.55"/>
-<vertex x="-4.05" y="-2.75"/>
-<vertex x="-3.3" y="-3.6"/>
-<vertex x="-3.3" y="3.55"/>
-</polygon>
-</package>
-<package name="CPOL_PANASONIC_E">
-<description>&lt;H3&gt;Panasonic Aluminium Electrolytic Capacitor Series: S Type: V Package: E&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.3 Share-Alike License.&lt;/p&gt;
-&lt;p&gt;EagleUp model copyright (c) ELL-i co-operative.&lt;/p&gt; 
-&lt;p&gt;Diameter 8.0 mm.  Height 6.2±0.3 mm.  
-&lt;a href="http://industrial.panasonic.com/www-data/pdf/ABA0000/ABA0000CE115.pdf"&gt;Datasheet&lt;/a&gt;.
-&lt;/p&gt;</description>
-<wire x1="-4.1" y1="4.1" x2="1.8" y2="4.1" width="0.1016" layer="51"/>
-<wire x1="1.8" y1="4.1" x2="4.1" y2="1.8" width="0.1016" layer="51"/>
-<wire x1="4.1" y1="1.8" x2="4.1" y2="-1.8" width="0.1016" layer="51"/>
-<wire x1="4.1" y1="-1.8" x2="1.8" y2="-4.1" width="0.1016" layer="51"/>
-<wire x1="1.8" y1="-4.1" x2="-4.1" y2="-4.1" width="0.1016" layer="51"/>
-<wire x1="-4.1" y1="-4.1" x2="-4.1" y2="4.1" width="0.1016" layer="51"/>
-<wire x1="-4.1" y1="0.9" x2="-4.1" y2="4.1" width="0.2032" layer="21"/>
-<wire x1="-4.1" y1="4.1" x2="1.8" y2="4.1" width="0.2032" layer="21"/>
-<wire x1="1.8" y1="4.1" x2="4.1" y2="1.8" width="0.2032" layer="21"/>
-<wire x1="4.1" y1="1.8" x2="4.1" y2="0.9" width="0.2032" layer="21"/>
-<wire x1="4.1" y1="-0.9" x2="4.1" y2="-1.8" width="0.2032" layer="21"/>
-<wire x1="4.1" y1="-1.8" x2="1.8" y2="-4.1" width="0.2032" layer="21"/>
-<wire x1="1.8" y1="-4.1" x2="-4.1" y2="-4.1" width="0.2032" layer="21"/>
-<wire x1="-4.1" y1="-4.1" x2="-4.1" y2="-0.9" width="0.2032" layer="21"/>
-<wire x1="-2.2" y1="3.25" x2="-2.2" y2="-3.25" width="0.1016" layer="51"/>
-<wire x1="-3.85" y1="0.9" x2="3.85" y2="0.9" width="0.2032" layer="21" curve="-153.684915" cap="flat"/>
-<wire x1="-3.85" y1="-0.9" x2="3.85" y2="-0.9" width="0.2032" layer="21" curve="153.684915" cap="flat"/>
-<circle x="0" y="0" radius="3.95" width="0.1016" layer="51"/>
-<smd name="-" x="-3" y="0" dx="3.8" dy="1.4" layer="1"/>
-<smd name="+" x="3" y="0" dx="3.8" dy="1.4" layer="1"/>
-<text x="-1.27" y="1.27" size="0.4064" layer="25">&gt;NAME</text>
-<text x="-1.27" y="-2.54" size="0.4064" layer="27">&gt;VALUE</text>
-<rectangle x1="-4.5" y1="-0.35" x2="-3.8" y2="0.35" layer="51"/>
-<rectangle x1="3.8" y1="-0.35" x2="4.5" y2="0.35" layer="51"/>
-<polygon width="0.1016" layer="51">
-<vertex x="-2.25" y="3.2"/>
-<vertex x="-3" y="2.5"/>
-<vertex x="-3.6" y="1.5"/>
-<vertex x="-3.85" y="0.65"/>
-<vertex x="-3.85" y="-0.65"/>
-<vertex x="-3.55" y="-1.6"/>
-<vertex x="-2.95" y="-2.55"/>
-<vertex x="-2.25" y="-3.2"/>
-<vertex x="-2.25" y="3.15"/>
-</polygon>
-</package>
-<package name="CPOL_PANASONIC_C">
-<description>&lt;H3&gt;Panasonic Aluminium Electrolytic Capacitor Series: S Type: V Package: C&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.3 Share-Alike License.&lt;/p&gt;
-&lt;p&gt;EagleUp model copyright (c) ELL-i co-operative.&lt;/p&gt; 
-&lt;p&gt;Diameter 5.0 mm.  Height 5.4 mm.  
-&lt;a href="http://industrial.panasonic.com/www-data/pdf/ABA0000/ABA0000CE115.pdf"&gt;Datasheet&lt;/a&gt;.
-&lt;/p&gt;</description>
-<wire x1="-2.6" y1="2.45" x2="1.6" y2="2.45" width="0.2032" layer="21"/>
-<wire x1="1.6" y1="2.45" x2="2.7" y2="1.35" width="0.2032" layer="21"/>
-<wire x1="2.7" y1="-1.75" x2="1.6" y2="-2.85" width="0.2032" layer="21"/>
-<wire x1="1.6" y1="-2.85" x2="-2.6" y2="-2.85" width="0.2032" layer="21"/>
-<wire x1="-2.6" y1="2.45" x2="1.6" y2="2.45" width="0.1016" layer="51"/>
-<wire x1="1.6" y1="2.45" x2="2.7" y2="1.35" width="0.1016" layer="51"/>
-<wire x1="2.7" y1="-1.75" x2="1.6" y2="-2.85" width="0.1016" layer="51"/>
-<wire x1="1.6" y1="-2.85" x2="-2.6" y2="-2.85" width="0.1016" layer="51"/>
-<wire x1="-2.6" y1="2.45" x2="-2.6" y2="0.35" width="0.2032" layer="21"/>
-<wire x1="-2.6" y1="-2.85" x2="-2.6" y2="-0.75" width="0.2032" layer="21"/>
-<wire x1="2.7" y1="1.35" x2="2.7" y2="0.35" width="0.2032" layer="21"/>
-<wire x1="2.7" y1="-1.75" x2="2.7" y2="-0.7" width="0.2032" layer="21"/>
-<wire x1="-2.6" y1="2.45" x2="-2.6" y2="-2.85" width="0.1016" layer="51"/>
-<wire x1="2.7" y1="1.35" x2="2.7" y2="-1.75" width="0.1016" layer="51"/>
-<wire x1="-2.4" y1="0.35" x2="2.45" y2="0.3" width="0.2032" layer="21" curve="-156.699401"/>
-<wire x1="2.5" y1="-0.7" x2="-2.4" y2="-0.75" width="0.2032" layer="21" curve="-154.694887"/>
-<circle x="0.05" y="-0.2" radius="2.5004" width="0.1016" layer="51"/>
-<smd name="-" x="-1.8" y="-0.2" dx="2.2" dy="0.65" layer="1"/>
-<smd name="+" x="1.9" y="-0.2" dx="2.2" dy="0.65" layer="1"/>
-<text x="-2.6" y="2.7" size="0.4064" layer="25">&gt;NAME</text>
-<text x="-2.6" y="-3.45" size="0.4064" layer="27">&gt;VALUE</text>
-</package>
-<package name="CPOL_NIPPON_F80">
-<description>&lt;h3&gt;SMD Aluminium Electrolytic Capacitor in a F80 package&lt;/h3&gt;
-
-&lt;p&gt;Nippon Chemi-con, Cal-chip electronics, and Lelon Electronics corporation (at least) use capacitor case sizes with packages names like B55, F60, G10, etc.  Case size tables are available in 
-&lt;a href="http://www.chemi-con.co.jp/e/catalog/pdf/al-e/al-sepa-e/001-guide/al-pns_all-e-130701.pdf"&gt;Nippon Chemi-con part numbering system&lt;/a&gt; and
-&lt;a href="http://www.calchipelectronics.com/pdf/electrolytics/part_numbering_lytics.pdf"&gt;Cal-Chip Part Numbering System for the SMD Type&lt;/a&gt;.&lt;/p&gt;</description>
-<wire x1="-3.3" y1="3.3" x2="1.7" y2="3.3" width="0.2032" layer="21"/>
-<wire x1="1.7" y1="3.3" x2="3.3" y2="2" width="0.2032" layer="21"/>
-<wire x1="3.3" y1="-2" x2="1.7" y2="-3.3" width="0.2032" layer="21"/>
-<wire x1="1.7" y1="-3.3" x2="-3.3" y2="-3.3" width="0.2032" layer="21"/>
-<wire x1="-3.3" y1="3.3" x2="1.7" y2="3.3" width="0.1016" layer="51"/>
-<wire x1="1.7" y1="3.3" x2="3.3" y2="2" width="0.1016" layer="51"/>
-<wire x1="3.3" y1="-2" x2="1.7" y2="-3.3" width="0.1016" layer="51"/>
-<wire x1="1.7" y1="-3.3" x2="-3.3" y2="-3.3" width="0.1016" layer="51"/>
-<wire x1="-3.3" y1="3.3" x2="-3.3" y2="0.685" width="0.2032" layer="21"/>
-<wire x1="-3.3" y1="-3.3" x2="-3.3" y2="-0.685" width="0.2032" layer="21"/>
-<wire x1="3.3" y1="2" x2="3.3" y2="0.685" width="0.2032" layer="21"/>
-<wire x1="3.3" y1="-2" x2="3.3" y2="-0.685" width="0.2032" layer="21"/>
-<wire x1="-3.3" y1="3.3" x2="-3.3" y2="-3.3" width="0.1016" layer="51"/>
-<wire x1="3.3" y1="2" x2="3.3" y2="-2" width="0.1016" layer="51"/>
-<wire x1="-3.1" y1="0.685" x2="3.1" y2="0.685" width="0.2032" layer="21" curve="-156.500033"/>
-<wire x1="3.1" y1="-0.685" x2="-3.1" y2="-0.685" width="0.2032" layer="21" curve="-154.748326"/>
-<circle x="0" y="0" radius="3.15" width="0.1016" layer="51"/>
-<smd name="-" x="-2.4" y="0" dx="2.95" dy="1" layer="1"/>
-<smd name="+" x="2.4" y="0" dx="2.95" dy="1" layer="1"/>
-<text x="-3.2" y="3.5" size="0.4064" layer="25">&gt;NAME</text>
-<text x="-3.2" y="-3.85" size="0.4064" layer="27">&gt;VALUE</text>
-</package>
-<package name="CPOL_PANASONIC_D">
-<description>&lt;H3&gt;Panasonic Aluminium Electrolytic Capacitor Series: S Type: V Package: D&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.3 Share-Alike License.&lt;/p&gt;
-&lt;p&gt;EagleUp model copyright (c) ELL-i co-operative.&lt;/p&gt; 
-&lt;p&gt;Diameter 6.3 mm.  Height 5.4 mm.  
-&lt;a href="http://industrial.panasonic.com/www-data/pdf/ABA0000/ABA0000CE115.pdf"&gt;Datasheet&lt;/a&gt;.
-&lt;/p&gt;</description>
-<wire x1="-3.25" y1="3.25" x2="1.55" y2="3.25" width="0.1016" layer="51"/>
-<wire x1="1.55" y1="3.25" x2="3.25" y2="1.55" width="0.1016" layer="51"/>
-<wire x1="3.25" y1="1.55" x2="3.25" y2="-1.55" width="0.1016" layer="51"/>
-<wire x1="3.25" y1="-1.55" x2="1.55" y2="-3.25" width="0.1016" layer="51"/>
-<wire x1="1.55" y1="-3.25" x2="-3.25" y2="-3.25" width="0.1016" layer="51"/>
-<wire x1="-3.25" y1="-3.25" x2="-3.25" y2="3.25" width="0.1016" layer="51"/>
-<wire x1="-3.25" y1="0.95" x2="-3.25" y2="3.25" width="0.1016" layer="21"/>
-<wire x1="-3.25" y1="3.25" x2="1.55" y2="3.25" width="0.1016" layer="21"/>
-<wire x1="1.55" y1="3.25" x2="3.25" y2="1.55" width="0.1016" layer="21"/>
-<wire x1="3.25" y1="1.55" x2="3.25" y2="0.95" width="0.1016" layer="21"/>
-<wire x1="3.25" y1="-0.95" x2="3.25" y2="-1.55" width="0.1016" layer="21"/>
-<wire x1="3.25" y1="-1.55" x2="1.55" y2="-3.25" width="0.1016" layer="21"/>
-<wire x1="1.55" y1="-3.25" x2="-3.25" y2="-3.25" width="0.1016" layer="21"/>
-<wire x1="-3.25" y1="-3.25" x2="-3.25" y2="-0.95" width="0.1016" layer="21"/>
-<wire x1="2.95" y1="0.95" x2="-2.95" y2="0.95" width="0.1016" layer="21" curve="144.299363"/>
-<wire x1="-2.95" y1="-0.95" x2="2.95" y2="-0.95" width="0.1016" layer="21" curve="144.299363"/>
-<wire x1="-2.1" y1="2.25" x2="-2.1" y2="-2.2" width="0.1016" layer="51"/>
-<circle x="0" y="0" radius="3.1" width="0.1016" layer="51"/>
-<smd name="+" x="2.4" y="0" dx="3" dy="1.4" layer="1"/>
-<smd name="-" x="-2.4" y="0" dx="3" dy="1.4" layer="1"/>
-<text x="-1.75" y="1" size="1.016" layer="25">&gt;NAME</text>
-<text x="-1.75" y="-1.975" size="1.016" layer="27">&gt;VALUE</text>
-<rectangle x1="-3.65" y1="-0.35" x2="-3.05" y2="0.35" layer="51"/>
-<rectangle x1="3.05" y1="-0.35" x2="3.65" y2="0.35" layer="51"/>
-<polygon width="0.1016" layer="51">
-<vertex x="-2.15" y="2.15"/>
-<vertex x="-2.6" y="1.6"/>
-<vertex x="-2.9" y="0.9"/>
-<vertex x="-3.05" y="0"/>
-<vertex x="-2.9" y="-0.95"/>
-<vertex x="-2.55" y="-1.65"/>
-<vertex x="-2.15" y="-2.15"/>
-<vertex x="-2.15" y="2.1"/>
-</polygon>
-</package>
-<package name="CPOL-RADIAL-1000UF-25V">
-<description>&lt;h3&gt;Round (electrolytic) capacitor with 0.2" (5.08 mm) lead spacing&lt;/h3&gt;
-
-&lt;p&gt;Copied from SparkFun-Passives.lbr under SparkFun Creative Commons license.  Note that the lead spacing in this footprint is 5.08 mm while most capacitors of this size have lead spacing of 5.00 mm.  This small difference works just fine.  &lt;a href="https://www.sparkfun.com/products/8982"&gt;SparkFun Product COM-08982&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Diameter 10.00 mm, height 22.00 mm&lt;/p&gt; 
-
-&lt;p&gt;&lt;b&gt;NOTE!&lt;/b&gt; At the moment there is no 3D model available for this package.&lt;/p&gt;</description>
-<wire x1="-1.905" y1="1.27" x2="-3.175" y2="1.27" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="5.461" width="0.2032" layer="21"/>
-<pad name="2" x="-2.54" y="0" drill="0.7" diameter="1.651"/>
-<pad name="1" x="2.54" y="0" drill="0.7" diameter="1.651" shape="square"/>
-<text x="-1.905" y="-4.318" size="0.8128" layer="27">&gt;Value</text>
-<text x="-0.762" y="2.921" size="0.4064" layer="25">&gt;Name</text>
-</package>
-<package name="CPOL_PANASONIC_H13">
-<description>&lt;H3&gt;Panasonic Aluminium Electrolytic Capacitor Series: S Type: V Package: H13&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.3 Share-Alike License.&lt;/p&gt;
-&lt;p&gt;EagleUp model copyright (c) ELL-i co-operative.&lt;/p&gt; 
-&lt;p&gt;Diameter 13.0 mm.  Height 12.7±0.3 mm.  
-&lt;a href="http://industrial.panasonic.com/www-data/pdf/ABA0000/ABA0000CE115.pdf"&gt;Datasheet&lt;/a&gt;.
-&lt;/p&gt;</description>
-<wire x1="-6.75" y1="6.75" x2="4" y2="6.75" width="0.1016" layer="51"/>
-<wire x1="4" y1="6.75" x2="6.75" y2="4" width="0.1016" layer="51"/>
-<wire x1="6.75" y1="4" x2="6.75" y2="-4" width="0.1016" layer="51"/>
-<wire x1="6.75" y1="-4" x2="4" y2="-6.75" width="0.1016" layer="51"/>
-<wire x1="4" y1="-6.75" x2="-6.75" y2="-6.75" width="0.1016" layer="51"/>
-<wire x1="-6.75" y1="-6.75" x2="-6.75" y2="6.75" width="0.1016" layer="51"/>
-<wire x1="-6.75" y1="1" x2="-6.75" y2="6.75" width="0.2032" layer="21"/>
-<wire x1="-6.75" y1="6.75" x2="4" y2="6.75" width="0.2032" layer="21"/>
-<wire x1="4" y1="6.75" x2="6.75" y2="4" width="0.2032" layer="21"/>
-<wire x1="6.75" y1="4" x2="6.75" y2="1" width="0.2032" layer="21"/>
-<wire x1="6.75" y1="-1" x2="6.75" y2="-4" width="0.2032" layer="21"/>
-<wire x1="6.75" y1="-4" x2="4" y2="-6.75" width="0.2032" layer="21"/>
-<wire x1="4" y1="-6.75" x2="-6.75" y2="-6.75" width="0.2032" layer="21"/>
-<wire x1="-6.75" y1="-6.75" x2="-6.75" y2="-1" width="0.2032" layer="21"/>
-<wire x1="-6.55" y1="-1.2" x2="6.45" y2="-1.2" width="0.2032" layer="21" curve="156.692742" cap="flat"/>
-<wire x1="-6.55" y1="1.2" x2="6.55" y2="1.2" width="0.2032" layer="21" curve="-156.697982" cap="flat"/>
-<wire x1="-5" y1="4.25" x2="-4.95" y2="-4.35" width="0.1016" layer="51"/>
-<circle x="0" y="0" radius="6.6" width="0.1016" layer="51"/>
-<smd name="-" x="-4.7" y="0" dx="5" dy="1.6" layer="1"/>
-<smd name="+" x="4.7" y="0" dx="5" dy="1.6" layer="1"/>
-<text x="-1.27" y="1.27" size="0.4064" layer="25">&gt;NAME</text>
-<text x="-1.27" y="-2.54" size="0.4064" layer="27">&gt;VALUE</text>
-<rectangle x1="-7.55" y1="-0.45" x2="-6.6" y2="0.45" layer="51"/>
-<rectangle x1="6.6" y1="-0.45" x2="7.55" y2="0.45" layer="51"/>
-<polygon width="0.1016" layer="51">
-<vertex x="-5" y="4.2"/>
-<vertex x="-5.75" y="3.15"/>
-<vertex x="-6.25" y="2.05"/>
-<vertex x="-6.55" y="0.45"/>
-<vertex x="-6.55" y="-0.45"/>
-<vertex x="-6.35" y="-1.65"/>
-<vertex x="-5.75" y="-3.25"/>
-<vertex x="-5" y="-4.2"/>
-</polygon>
-</package>
-<package name="CT6032">
-<description>&lt;h3&gt;Tantalum capacitor in an EIA6032 package (CASE C)&lt;/h3&gt;
-
-&lt;p&gt;Eagle package Copyright (c) SparkFun under Creative Commons v3.0 Share Alike license.&lt;/p&gt;
-
-&lt;p&gt;Also Vishay Tantalum Capacitor case &lt;b&gt;C&lt;/b&gt;.&lt;/p&gt;</description>
-<wire x1="3.2" y1="-1.6" x2="3.2" y2="1.6" width="0.127" layer="21"/>
-<wire x1="-2.8" y1="-1.6" x2="3.2" y2="-1.6" width="0.127" layer="21"/>
-<wire x1="3.2" y1="1.6" x2="-2.8" y2="1.6" width="0.127" layer="21"/>
-<wire x1="-2.8" y1="1.6" x2="-3.4" y2="1" width="0.127" layer="21"/>
-<wire x1="-3.4" y1="1" x2="-3.4" y2="-1" width="0.127" layer="21"/>
-<wire x1="-2.8" y1="-1.6" x2="-3.4" y2="-1" width="0.127" layer="21"/>
-<smd name="P$1" x="-2.3" y="0" dx="1.5" dy="2.4" layer="1"/>
-<smd name="P$2" x="2.3" y="0" dx="1.5" dy="2.4" layer="1"/>
-</package>
 </packages>
 <symbols>
 <symbol name="C_EU">
@@ -3040,18 +2468,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <text x="-3.81" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
-</symbol>
-<symbol name="CAP_POL">
-<wire x1="-2.54" y1="0" x2="2.54" y2="0" width="0.254" layer="94"/>
-<wire x1="0" y1="-1.016" x2="0" y2="-2.54" width="0.1524" layer="94"/>
-<wire x1="0" y1="-1" x2="2.4892" y2="-1.8542" width="0.254" layer="94" curve="-37.878202" cap="flat"/>
-<wire x1="-2.4669" y1="-1.8504" x2="0" y2="-1.0161" width="0.254" layer="94" curve="-37.376341" cap="flat"/>
-<text x="1.016" y="0.635" size="1.778" layer="95">&gt;NAME</text>
-<text x="1.016" y="-4.191" size="1.778" layer="96">&gt;VALUE</text>
-<rectangle x1="-2.253" y1="0.668" x2="-1.364" y2="0.795" layer="94"/>
-<rectangle x1="-1.872" y1="0.287" x2="-1.745" y2="1.176" layer="94"/>
-<pin name="+" x="0" y="2.54" visible="off" length="short" direction="pas" swaplevel="1" rot="R270"/>
-<pin name="-" x="0" y="-5.08" visible="off" length="short" direction="pas" swaplevel="1" rot="R90"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -3160,141 +2576,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="CPOL" prefix="C" uservalue="yes">
-<description>&lt;h3&gt;Polarized Capacitor — common SMD and some through-hole ones&lt;/h3&gt;
-
-&lt;p&gt;A capacitor used to store energy electrostatically in an electric field.  If you need a high-value capacitor, consider using a polarised capacitor to save space.&lt;/p&gt;
-
-&lt;ul&gt;
-   &lt;li&gt;&lt;a href="https://en.wikipedia.org/wiki/Capacitor"&gt;Wikipedia article on capacitors&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;These are standard surface mount (SMD) and through-hole (PTH) capacitors. Normally 10uF, 47uF, and 100uF in electrolytic and tantalum varieties. Always verify the external diameter of the through hole cap, it varies with capacity, voltage, and manufacturer. The EIA tantalum devices should have standard packages.&lt;/p&gt;
-
-&lt;p&gt;Copied from SparkFun-Passives.lbr under SparkFun Creative Commons license.  Adopted to EagleUp usage through renaming the packages appropriately.&lt;/p&gt;</description>
-<gates>
-<gate name="G$1" symbol="CAP_POL" x="0" y="0"/>
-</gates>
-<devices>
-<device name="1206" package="CT3216">
-<connects>
-<connect gate="G$1" pin="+" pad="A"/>
-<connect gate="G$1" pin="-" pad="C"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="3528" package="CT3528">
-<connects>
-<connect gate="G$1" pin="+" pad="A"/>
-<connect gate="G$1" pin="-" pad="C"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="PTH1" package="CPOL-RADIAL-100UF-25V">
-<connects>
-<connect gate="G$1" pin="+" pad="1"/>
-<connect gate="G$1" pin="-" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="PTH2" package="CPOL-RADIAL-10UF-25V">
-<connects>
-<connect gate="G$1" pin="+" pad="1"/>
-<connect gate="G$1" pin="-" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="7343" package="CT7343">
-<connects>
-<connect gate="G$1" pin="+" pad="A"/>
-<connect gate="G$1" pin="-" pad="C"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="G" package="CPOL_PANASONIC_G">
-<connects>
-<connect gate="G$1" pin="+" pad="+"/>
-<connect gate="G$1" pin="-" pad="-"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="E" package="CPOL_PANASONIC_E">
-<connects>
-<connect gate="G$1" pin="+" pad="+"/>
-<connect gate="G$1" pin="-" pad="-"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="C" package="CPOL_PANASONIC_C">
-<connects>
-<connect gate="G$1" pin="+" pad="+"/>
-<connect gate="G$1" pin="-" pad="-"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="F80" package="CPOL_NIPPON_F80">
-<connects>
-<connect gate="G$1" pin="+" pad="+"/>
-<connect gate="G$1" pin="-" pad="-"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="D" package="CPOL_PANASONIC_D">
-<connects>
-<connect gate="G$1" pin="+" pad="+"/>
-<connect gate="G$1" pin="-" pad="-"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="PTH4" package="CPOL-RADIAL-1000UF-25V">
-<connects>
-<connect gate="G$1" pin="+" pad="1"/>
-<connect gate="G$1" pin="-" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="H13" package="CPOL_PANASONIC_H13">
-<connects>
-<connect gate="G$1" pin="+" pad="+"/>
-<connect gate="G$1" pin="-" pad="-"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="6032" package="CT6032">
-<connects>
-<connect gate="G$1" pin="+" pad="P$1"/>
-<connect gate="G$1" pin="-" pad="P$2"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -5357,6 +4638,95 @@ Source: http://www.osram.convergy.de/</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="ELL-i-Connectors">
+<description>&lt;h3&gt;Connectors -- ELL-i open source co-op Eagle libraries&lt;/h3&gt;
+
+&lt;p&gt;In this library you'll find connectors that are used in the ELL-i boards.&lt;/p&gt;
+
+&lt;p&gt;Whenever possible, we prefer to use the components from the &lt;a href="https://github.com/Ell-i/SparkFun-Eagle-Libraries"&gt;SparkFun Public Eagle PCB Footprints&lt;/a&gt;, as they are available from &lt;a href="https://github.com/"&gt;GitHub&lt;/a&gt;. Whenever possible, we also prefer to push our components to the SparkFun libraries.  However, this is not always possible, and therefore we have our own libraries that for the most part contain components that cannot be found in the SparkFun libraries.&lt;/p&gt;</description>
+<packages>
+<package name="MICRO_USB">
+<description>Molex Micro-USB</description>
+<wire x1="-1.45" y1="3.24" x2="2.59" y2="3.24" width="0.127" layer="51"/>
+<wire x1="2.59" y1="3.24" x2="2.62" y2="-3.25" width="0.127" layer="51"/>
+<wire x1="2.62" y1="-3.25" x2="-1.45" y2="-3.25" width="0.127" layer="51"/>
+<wire x1="-1.45" y1="-3.25" x2="-1.45" y2="3.24" width="0.127" layer="51"/>
+<wire x1="-1.45" y1="3.24" x2="-2.15" y2="3.24" width="0.127" layer="51"/>
+<wire x1="-2.15" y1="3.24" x2="-2.15" y2="-3.25" width="0.127" layer="51"/>
+<wire x1="-2.15" y1="-3.25" x2="-1.45" y2="-3.25" width="0.127" layer="51"/>
+<smd name="VBUS" x="2.66" y="1.3" dx="1.38" dy="0.45" layer="1" rot="R180"/>
+<smd name="D-" x="2.66" y="0.65" dx="1.38" dy="0.45" layer="1" rot="R180"/>
+<smd name="D+" x="2.66" y="0" dx="1.38" dy="0.45" layer="1" rot="R180"/>
+<smd name="ID" x="2.66" y="-0.65" dx="1.38" dy="0.45" layer="1" rot="R180"/>
+<smd name="GND" x="2.66" y="-1.3" dx="1.38" dy="0.45" layer="1" rot="R180"/>
+<smd name="P1" x="2.3" y="-2.4625" dx="1.475" dy="2.1" layer="1" rot="R90"/>
+<smd name="P2" x="2.3" y="2.4625" dx="1.475" dy="2.1" layer="1" rot="R90"/>
+<smd name="P3" x="0" y="2.9125" dx="1.9" dy="2.375" layer="1"/>
+<smd name="P4" x="0" y="-2.9125" dx="1.9" dy="2.375" layer="1"/>
+<smd name="P5" x="0" y="0.8375" dx="1.9" dy="1.175" layer="1"/>
+<smd name="P6" x="0" y="-0.8375" dx="1.9" dy="1.175" layer="1"/>
+<text x="0" y="0" size="0.635" layer="25" rot="R90" align="center">&gt;NAME</text>
+</package>
+</packages>
+<symbols>
+<symbol name="MICRO_USB">
+<description>Molex Micro-USB</description>
+<wire x1="-12.7" y1="10.16" x2="-12.7" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-12.7" y1="-5.08" x2="10.16" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-5.08" x2="10.16" y2="10.16" width="0.254" layer="94"/>
+<wire x1="10.16" y1="10.16" x2="-12.7" y2="10.16" width="0.254" layer="94"/>
+<pin name="VBUS" x="15.24" y="7.62" length="middle" rot="R180"/>
+<pin name="D-" x="15.24" y="5.08" length="middle" rot="R180"/>
+<pin name="D+" x="15.24" y="2.54" length="middle" rot="R180"/>
+<pin name="ID" x="15.24" y="0" length="middle" rot="R180"/>
+<pin name="GND" x="15.24" y="-2.54" length="middle" rot="R180"/>
+<pin name="P1" x="2.54" y="-10.16" length="middle" rot="R90"/>
+<pin name="P2" x="0" y="-10.16" length="middle" rot="R90"/>
+<pin name="P3" x="-2.54" y="-10.16" length="middle" rot="R90"/>
+<pin name="P4" x="-5.08" y="-10.16" length="middle" rot="R90"/>
+<pin name="P5" x="-7.62" y="-10.16" length="middle" rot="R90"/>
+<pin name="P6" x="-10.16" y="-10.16" length="middle" rot="R90"/>
+<text x="-12.7" y="11.43" size="1.778" layer="95">&gt;NAME</text>
+<text x="7.62" y="-10.16" size="1.778" layer="96">&gt;VALUE</text>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="MICRO-USB" prefix="J">
+<description>&lt;h3&gt;Micro USB from Molex&lt;/h3&gt;
+
+CONN RCPT 5POS MICRO USB R/A
+
+&lt;br&gt;&lt;br&gt;
+&lt;a href="http://www.molex.com/pdm_docs/sd/473460001_sd.pdf"&gt;Datasheet&lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="MICRO_USB" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="MICRO_USB">
+<connects>
+<connect gate="G$1" pin="D+" pad="D+"/>
+<connect gate="G$1" pin="D-" pad="D-"/>
+<connect gate="G$1" pin="GND" pad="GND"/>
+<connect gate="G$1" pin="ID" pad="ID"/>
+<connect gate="G$1" pin="P1" pad="P1"/>
+<connect gate="G$1" pin="P2" pad="P2"/>
+<connect gate="G$1" pin="P3" pad="P3"/>
+<connect gate="G$1" pin="P4" pad="P4"/>
+<connect gate="G$1" pin="P5" pad="P5"/>
+<connect gate="G$1" pin="P6" pad="P6"/>
+<connect gate="G$1" pin="VBUS" pad="VBUS"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="PARTNO" value="AS-ITM-00021" constant="no"/>
+<attribute name="VALUE" value="47346-0001" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -5367,11 +4737,6 @@ Source: http://www.osram.convergy.de/</description>
 </class>
 </classes>
 <parts>
-<part name="U$2" library="Sensors" deviceset="LDK220M33R" device="">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
 <part name="BARO" library="Sensors" deviceset="LPS331AP" device="">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value="LPS331APTR"/>
@@ -5379,7 +4744,6 @@ Source: http://www.osram.convergy.de/</description>
 </part>
 <part name="SUPPLY3" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND2" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="GND5" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="U$5" library="SparkFun-FreqCtrl" deviceset="CRYSTAL-GROUNDED" device="2.5X2" value="CRYSTAL-GROUNDED2.5X2">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
@@ -5434,13 +4798,6 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
-<part name="JP3" library="SparkFun-Connectors" deviceset="M02" device="-JST-2-PTH-NO_SILK">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="GND1" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="SUPPLY1" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="SUPPLY2" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND3" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="U$4" library="Sensors" deviceset="P82B715" device="">
@@ -5451,12 +4808,12 @@ Source: http://www.osram.convergy.de/</description>
 <part name="SUPPLY4" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND4" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="SUPPLY7" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
-<part name="R1" library="ELL-i-Passives" deviceset="R" device="0402" value="pullup">
+<part name="R1" library="ELL-i-Passives" deviceset="R" device="0805" value="pullup">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
-<part name="R4" library="ELL-i-Passives" deviceset="R" device="0402" value="pullup">
+<part name="R4" library="ELL-i-Passives" deviceset="R" device="0805" value="pullup">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
@@ -5500,22 +4857,6 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MPN" value="S103M47Z5UN63L0R"/>
 <attribute name="OC_NEWARK" value="83K9283"/>
 </part>
-<part name="JP4" library="SparkFun-Connectors" deviceset="USB_MICROB_PLUG" device="CONN-11752">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="R6" library="ELL-i-Passives" deviceset="R" device="0402" value="33">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="R7" library="ELL-i-Passives" deviceset="R" device="0402" value="33">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="GND11" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="SUPPLY14" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND12" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="JP5" library="SparkFun-Connectors" deviceset="M04" device="JST">
@@ -5528,81 +4869,12 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
-<part name="C8" library="ELL-i-Passives" deviceset="CPOL" device="1206" value="10uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value="293D106X06R3B2TE3"/>
-<attribute name="OC_NEWARK" value="99M0346"/>
-</part>
-<part name="C9" library="ELL-i-Passives" deviceset="C" device="0402" value="10uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="C10" library="ELL-i-Passives" deviceset="C" device="0402" value="1uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value="MC0402X105M6R3CT"/>
-<attribute name="OC_NEWARK" value="06R4879"/>
-</part>
-<part name="C11" library="ELL-i-Passives" deviceset="C" device="0402" value="0.1uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="C12" library="ELL-i-Passives" deviceset="C" device="0402" value="10uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="C13" library="ELL-i-Passives" deviceset="C" device="0402" value="10uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="C14" library="ELL-i-Passives" deviceset="C" device="0402" value="1uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value="MC0402X105M6R3CT"/>
-<attribute name="OC_NEWARK" value="06R4879"/>
-</part>
-<part name="C15" library="ELL-i-Passives" deviceset="C" device="0402" value="1uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value="MC0402X105M6R3CT"/>
-<attribute name="OC_NEWARK" value="06R4879"/>
-</part>
-<part name="C16" library="ELL-i-Passives" deviceset="C" device="0402" value="0.1uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="C17" library="ELL-i-Passives" deviceset="C" device="0402" value="0.1uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="GND13" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="SUPPLY15" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="SUPPLY16" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
-<part name="S2" library="SparkFun-Electromechanical" deviceset="SWITCH-DPDT" device="AYZ0202" value="DPDT">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="SUPPLY17" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="JP1" library="SparkFun-Connectors" deviceset="M02" device="JST-PTH-2">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
-<part name="C18" library="ELL-i-Passives" deviceset="CPOL" device="1206" value="10uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value="293D106X06R3B2TE3"/>
-<attribute name="OC_NEWARK" value="99M0346"/>
-</part>
-<part name="C19" library="ELL-i-Passives" deviceset="C" device="0402" value="10uF">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
-<part name="GND14" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="LED1" library="adafruit" deviceset="LED" device="CHIPLED_0603">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
@@ -5624,7 +4896,6 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
 <part name="GND15" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="SUPPLY18" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="S1" library="SparkFun-Electromechanical" deviceset="SWITCH-MOMENTARY-2" device="-SMD-1101NE">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
@@ -5636,6 +4907,68 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
 <part name="GND16" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
+<part name="U$6" library="Sensors" deviceset="LDK220M33R" device="">
+<attribute name="MF" value=""/>
+<attribute name="MPN" value=""/>
+<attribute name="OC_NEWARK" value="unknown"/>
+</part>
+<part name="SUPPLY18" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
+<part name="GND5" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
+<part name="U$2" library="Sensors" deviceset="LDK220M33R" device="">
+<attribute name="MF" value=""/>
+<attribute name="MPN" value=""/>
+<attribute name="OC_NEWARK" value="unknown"/>
+</part>
+<part name="SUPPLY19" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
+<part name="GND17" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
+<part name="JP2" library="SparkFun-Connectors" deviceset="M04" device="JST"/>
+<part name="C20" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF">
+<attribute name="MF" value=""/>
+<attribute name="MPN" value="S103M47Z5UN63L0R"/>
+<attribute name="OC_NEWARK" value="83K9283"/>
+</part>
+<part name="C8" library="ELL-i-Passives" deviceset="C" device="0402" value="10uF"/>
+<part name="C9" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C11" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C10" library="ELL-i-Passives" deviceset="C" device="0402" value="10uF"/>
+<part name="C12" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C13" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C14" library="ELL-i-Passives" deviceset="C" device="0402" value="10uF"/>
+<part name="C15" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C16" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="JP8" library="SparkFun-Connectors" deviceset="M02" device="-JST-2-PTH-NO_SILK">
+<attribute name="MF" value=""/>
+<attribute name="MPN" value=""/>
+<attribute name="OC_NEWARK" value="unknown"/>
+</part>
+<part name="GND18" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
+<part name="S4" library="SparkFun-Electromechanical" deviceset="SWITCH-DPDT" device="AYZ0202" value="DPDT">
+<attribute name="MF" value=""/>
+<attribute name="MPN" value=""/>
+<attribute name="OC_NEWARK" value="unknown"/>
+</part>
+<part name="SUPPLY21" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
+<part name="C17" library="ELL-i-Passives" deviceset="C" device="0402" value="1uF"/>
+<part name="C18" library="ELL-i-Passives" deviceset="C" device="0402" value="1uF"/>
+<part name="GND1" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
+<part name="GND13" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
+<part name="R6" library="ELL-i-Passives" deviceset="R" device="0402" value="0"/>
+<part name="C19" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C21" library="ELL-i-Passives" deviceset="C" device="C1206" value="100uF"/>
+<part name="GND14" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
+<part name="C22" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C24" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C25" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C26" library="ELL-i-Passives" deviceset="C" device="0402" value=".1uF"/>
+<part name="C27" library="ELL-i-Passives" deviceset="C" device="0402" value=".01uF"/>
+<part name="C28" library="ELL-i-Passives" deviceset="C" device="0402" value=".01uF"/>
+<part name="C29" library="ELL-i-Passives" deviceset="C" device="0402" value=".01uF"/>
+<part name="C30" library="ELL-i-Passives" deviceset="C" device="0402" value=".01uF"/>
+<part name="R7" library="ELL-i-Passives" deviceset="R" device="0402"/>
+<part name="R10" library="ELL-i-Passives" deviceset="R" device="0402"/>
+<part name="SUPPLY15" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
+<part name="J1" library="ELL-i-Connectors" deviceset="MICRO-USB" device="" value="47346-0001"/>
+<part name="GND11" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -5663,76 +4996,8 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MF" x="33.02" y="66.04" size="1.778" layer="96" display="off"/>
 <attribute name="MPN" x="33.02" y="66.04" size="1.778" layer="96" display="off"/>
 </instance>
-<instance part="JP4" gate="G$1" x="-25.4" y="129.54" rot="R180">
-<attribute name="OC_NEWARK" x="-25.4" y="129.54" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-25.4" y="129.54" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-25.4" y="129.54" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="R6" gate="G$1" x="-5.08" y="129.54">
-<attribute name="OC_NEWARK" x="-5.08" y="129.54" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-5.08" y="129.54" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-5.08" y="129.54" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="R7" gate="G$1" x="-5.08" y="127">
-<attribute name="OC_NEWARK" x="-5.08" y="127" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-5.08" y="127" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-5.08" y="127" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="GND11" gate="1" x="-38.1" y="116.84"/>
 <instance part="SUPPLY14" gate="G$1" x="17.78" y="119.38"/>
 <instance part="GND12" gate="1" x="20.32" y="63.5"/>
-<instance part="C8" gate="G$1" x="-58.42" y="165.1">
-<attribute name="OC_NEWARK" x="-58.42" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-58.42" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-58.42" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C9" gate="G$1" x="-50.8" y="165.1">
-<attribute name="OC_NEWARK" x="-50.8" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-50.8" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-50.8" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C10" gate="G$1" x="-35.56" y="165.1">
-<attribute name="OC_NEWARK" x="-35.56" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-35.56" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-35.56" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C11" gate="G$1" x="-17.78" y="165.1">
-<attribute name="OC_NEWARK" x="-17.78" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-17.78" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-17.78" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C12" gate="G$1" x="-45.72" y="165.1">
-<attribute name="OC_NEWARK" x="-45.72" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-45.72" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-45.72" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C13" gate="G$1" x="-40.64" y="165.1">
-<attribute name="OC_NEWARK" x="-40.64" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-40.64" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-40.64" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C14" gate="G$1" x="-30.48" y="165.1">
-<attribute name="OC_NEWARK" x="-30.48" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-30.48" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-30.48" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C15" gate="G$1" x="-25.4" y="165.1">
-<attribute name="OC_NEWARK" x="-25.4" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-25.4" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-25.4" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C16" gate="G$1" x="-12.7" y="165.1">
-<attribute name="OC_NEWARK" x="-12.7" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-12.7" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-12.7" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C17" gate="G$1" x="-7.62" y="165.1">
-<attribute name="OC_NEWARK" x="-7.62" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-7.62" y="165.1" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-7.62" y="165.1" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="GND13" gate="1" x="-58.42" y="154.94"/>
-<instance part="SUPPLY15" gate="G$1" x="-58.42" y="175.26"/>
 <instance part="SUPPLY16" gate="G$1" x="116.84" y="175.26"/>
 <instance part="S1" gate="G$1" x="142.24" y="152.4" rot="R90">
 <attribute name="OC_NEWARK" x="142.24" y="152.4" size="1.778" layer="96" display="off"/>
@@ -5745,6 +5010,16 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MPN" x="147.32" y="149.86" size="1.778" layer="96" display="off"/>
 </instance>
 <instance part="GND16" gate="1" x="154.94" y="165.1"/>
+<instance part="C22" gate="G$1" x="10.16" y="78.74"/>
+<instance part="C24" gate="G$1" x="5.08" y="78.74"/>
+<instance part="C25" gate="G$1" x="0" y="78.74"/>
+<instance part="C26" gate="G$1" x="-5.08" y="78.74"/>
+<instance part="C27" gate="G$1" x="-15.24" y="78.74"/>
+<instance part="C28" gate="G$1" x="-20.32" y="78.74"/>
+<instance part="C29" gate="G$1" x="-25.4" y="78.74"/>
+<instance part="C30" gate="G$1" x="-30.48" y="78.74"/>
+<instance part="J1" gate="G$1" x="-33.02" y="132.08" rot="MR180"/>
+<instance part="GND11" gate="1" x="-50.8" y="132.08"/>
 </instances>
 <busses>
 </busses>
@@ -5763,18 +5038,6 @@ Source: http://www.osram.convergy.de/</description>
 <pinref part="GND6" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="JP4" gate="G$1" pin="GND"/>
-<wire x1="-17.78" y1="134.62" x2="-12.7" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="134.62" x2="-12.7" y2="142.24" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="142.24" x2="-38.1" y2="142.24" width="0.1524" layer="91"/>
-<wire x1="-38.1" y1="142.24" x2="-38.1" y2="129.54" width="0.1524" layer="91"/>
-<pinref part="JP4" gate="G$1" pin="SHIELD"/>
-<wire x1="-38.1" y1="129.54" x2="-38.1" y2="119.38" width="0.1524" layer="91"/>
-<wire x1="-33.02" y1="129.54" x2="-38.1" y2="129.54" width="0.1524" layer="91"/>
-<junction x="-38.1" y="129.54"/>
-<pinref part="GND11" gate="1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="U1" gate="G$1" pin="VSSA"/>
 <wire x1="27.94" y1="99.06" x2="20.32" y2="99.06" width="0.1524" layer="91"/>
 <wire x1="20.32" y1="99.06" x2="20.32" y2="96.52" width="0.1524" layer="91"/>
@@ -5787,38 +5050,29 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="27.94" y1="73.66" x2="20.32" y2="73.66" width="0.1524" layer="91"/>
 <junction x="20.32" y="73.66"/>
 <pinref part="GND12" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="C8" gate="G$1" pin="-"/>
-<pinref part="C9" gate="G$1" pin="2"/>
-<wire x1="-58.42" y1="160.02" x2="-50.8" y2="160.02" width="0.1524" layer="91"/>
-<pinref part="C12" gate="G$1" pin="2"/>
-<wire x1="-50.8" y1="160.02" x2="-45.72" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-50.8" y="160.02"/>
-<pinref part="C13" gate="G$1" pin="2"/>
-<wire x1="-45.72" y1="160.02" x2="-40.64" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-45.72" y="160.02"/>
-<pinref part="C10" gate="G$1" pin="2"/>
-<wire x1="-40.64" y1="160.02" x2="-35.56" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-40.64" y="160.02"/>
-<pinref part="C14" gate="G$1" pin="2"/>
-<wire x1="-35.56" y1="160.02" x2="-30.48" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-35.56" y="160.02"/>
-<pinref part="C15" gate="G$1" pin="2"/>
-<wire x1="-30.48" y1="160.02" x2="-25.4" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-30.48" y="160.02"/>
-<pinref part="C11" gate="G$1" pin="2"/>
-<wire x1="-25.4" y1="160.02" x2="-17.78" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-25.4" y="160.02"/>
-<pinref part="C16" gate="G$1" pin="2"/>
-<wire x1="-17.78" y1="160.02" x2="-12.7" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-17.78" y="160.02"/>
-<pinref part="C17" gate="G$1" pin="2"/>
-<wire x1="-12.7" y1="160.02" x2="-7.62" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-12.7" y="160.02"/>
-<pinref part="GND13" gate="1" pin="GND"/>
-<wire x1="-58.42" y1="157.48" x2="-58.42" y2="160.02" width="0.1524" layer="91"/>
-<junction x="-58.42" y="160.02"/>
+<pinref part="C30" gate="G$1" pin="2"/>
+<wire x1="-30.48" y1="73.66" x2="-25.4" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="C22" gate="G$1" pin="2"/>
+<wire x1="-25.4" y1="73.66" x2="-20.32" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="-20.32" y1="73.66" x2="-15.24" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="73.66" x2="-5.08" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="-5.08" y1="73.66" x2="0" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="0" y1="73.66" x2="5.08" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="73.66" x2="10.16" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="73.66" x2="20.32" y2="73.66" width="0.1524" layer="91"/>
+<junction x="10.16" y="73.66"/>
+<pinref part="C24" gate="G$1" pin="2"/>
+<junction x="5.08" y="73.66"/>
+<pinref part="C25" gate="G$1" pin="2"/>
+<junction x="0" y="73.66"/>
+<pinref part="C26" gate="G$1" pin="2"/>
+<junction x="-5.08" y="73.66"/>
+<pinref part="C27" gate="G$1" pin="2"/>
+<junction x="-15.24" y="73.66"/>
+<pinref part="C28" gate="G$1" pin="2"/>
+<junction x="-20.32" y="73.66"/>
+<pinref part="C29" gate="G$1" pin="2"/>
+<junction x="-25.4" y="73.66"/>
 </segment>
 <segment>
 <pinref part="S1" gate="G$1" pin="2"/>
@@ -5829,6 +5083,31 @@ Source: http://www.osram.convergy.de/</description>
 <pinref part="GND16" gate="1" pin="GND"/>
 <wire x1="147.32" y1="167.64" x2="154.94" y2="167.64" width="0.1524" layer="91"/>
 <junction x="147.32" y="167.64"/>
+</segment>
+<segment>
+<pinref part="J1" gate="G$1" pin="GND"/>
+<wire x1="-43.18" y1="142.24" x2="-40.64" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="142.24" x2="-38.1" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-38.1" y1="142.24" x2="-35.56" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-35.56" y1="142.24" x2="-33.02" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-33.02" y1="142.24" x2="-30.48" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="142.24" x2="-17.78" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-17.78" y1="142.24" x2="-17.78" y2="134.62" width="0.1524" layer="91"/>
+<pinref part="J1" gate="G$1" pin="P1"/>
+<junction x="-30.48" y="142.24"/>
+<pinref part="J1" gate="G$1" pin="P2"/>
+<junction x="-33.02" y="142.24"/>
+<pinref part="J1" gate="G$1" pin="P3"/>
+<junction x="-35.56" y="142.24"/>
+<pinref part="J1" gate="G$1" pin="P4"/>
+<junction x="-38.1" y="142.24"/>
+<pinref part="J1" gate="G$1" pin="P5"/>
+<junction x="-40.64" y="142.24"/>
+<pinref part="J1" gate="G$1" pin="P6"/>
+<junction x="-43.18" y="142.24"/>
+<wire x1="-43.18" y1="142.24" x2="-50.8" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="-50.8" y1="142.24" x2="-50.8" y2="134.62" width="0.1524" layer="91"/>
+<pinref part="GND11" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -5887,9 +5166,9 @@ Source: http://www.osram.convergy.de/</description>
 </net>
 <net name="SSP1_SSEL" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PIO0_23/ADC_1/R_9/U0_NRI/SSP1_SSEL"/>
-<wire x1="106.68" y1="109.22" x2="124.46" y2="109.22" width="0.1524" layer="91"/>
-<label x="119.38" y="109.22" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="PIO1_13/U1_CTSN/SCT0_OUT3/R_22"/>
+<wire x1="106.68" y1="106.68" x2="124.46" y2="106.68" width="0.1524" layer="91"/>
+<label x="119.38" y="106.68" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SSP1_SCK" class="0">
@@ -5913,39 +5192,25 @@ Source: http://www.osram.convergy.de/</description>
 <label x="124.46" y="149.86" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$14" class="0">
-<segment>
-<pinref part="U1" gate="G$1" pin="USB_DP"/>
-<pinref part="R6" gate="G$1" pin="2"/>
-<wire x1="27.94" y1="129.54" x2="0" y2="129.54" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$15" class="0">
 <segment>
-<pinref part="R6" gate="G$1" pin="1"/>
-<pinref part="JP4" gate="G$1" pin="D+"/>
-<wire x1="-10.16" y1="129.54" x2="-17.78" y2="129.54" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$16" class="0">
-<segment>
-<pinref part="R7" gate="G$1" pin="1"/>
-<pinref part="JP4" gate="G$1" pin="D-"/>
-<wire x1="-10.16" y1="127" x2="-17.78" y2="127" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="USB_DP"/>
+<wire x1="27.94" y1="129.54" x2="-17.78" y2="129.54" width="0.1524" layer="91"/>
+<pinref part="J1" gate="G$1" pin="D+"/>
 </segment>
 </net>
 <net name="N$17" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="USB_DM"/>
-<pinref part="R7" gate="G$1" pin="2"/>
-<wire x1="27.94" y1="127" x2="0" y2="127" width="0.1524" layer="91"/>
+<wire x1="27.94" y1="127" x2="-17.78" y2="127" width="0.1524" layer="91"/>
+<pinref part="J1" gate="G$1" pin="D-"/>
 </segment>
 </net>
 <net name="USB_VBUS" class="0">
 <segment>
-<pinref part="JP4" gate="G$1" pin="VCC"/>
 <wire x1="-17.78" y1="124.46" x2="10.16" y2="124.46" width="0.1524" layer="91"/>
 <label x="2.54" y="124.46" size="1.778" layer="95"/>
+<pinref part="J1" gate="G$1" pin="VBUS"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
@@ -5966,38 +5231,30 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="27.94" y1="81.28" x2="17.78" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="17.78" y1="81.28" x2="17.78" y2="104.14" width="0.1524" layer="91"/>
 <junction x="17.78" y="104.14"/>
-</segment>
-<segment>
-<pinref part="C8" gate="G$1" pin="+"/>
-<pinref part="C9" gate="G$1" pin="1"/>
-<wire x1="-58.42" y1="167.64" x2="-50.8" y2="167.64" width="0.1524" layer="91"/>
-<pinref part="C12" gate="G$1" pin="1"/>
-<wire x1="-50.8" y1="167.64" x2="-45.72" y2="167.64" width="0.1524" layer="91"/>
-<junction x="-50.8" y="167.64"/>
-<pinref part="C13" gate="G$1" pin="1"/>
-<wire x1="-45.72" y1="167.64" x2="-40.64" y2="167.64" width="0.1524" layer="91"/>
-<junction x="-45.72" y="167.64"/>
-<pinref part="C10" gate="G$1" pin="1"/>
-<wire x1="-40.64" y1="167.64" x2="-35.56" y2="167.64" width="0.1524" layer="91"/>
-<junction x="-40.64" y="167.64"/>
-<pinref part="C14" gate="G$1" pin="1"/>
-<wire x1="-35.56" y1="167.64" x2="-30.48" y2="167.64" width="0.1524" layer="91"/>
-<junction x="-35.56" y="167.64"/>
-<pinref part="C15" gate="G$1" pin="1"/>
-<wire x1="-30.48" y1="167.64" x2="-25.4" y2="167.64" width="0.1524" layer="91"/>
-<junction x="-30.48" y="167.64"/>
-<pinref part="C11" gate="G$1" pin="1"/>
-<wire x1="-25.4" y1="167.64" x2="-17.78" y2="167.64" width="0.1524" layer="91"/>
-<junction x="-25.4" y="167.64"/>
-<pinref part="C16" gate="G$1" pin="1"/>
-<wire x1="-17.78" y1="167.64" x2="-12.7" y2="167.64" width="0.1524" layer="91"/>
-<junction x="-17.78" y="167.64"/>
-<pinref part="C17" gate="G$1" pin="1"/>
-<wire x1="-12.7" y1="167.64" x2="-7.62" y2="167.64" width="0.1524" layer="91"/>
-<junction x="-12.7" y="167.64"/>
-<pinref part="SUPPLY15" gate="G$1" pin="3.3V"/>
-<wire x1="-58.42" y1="167.64" x2="-58.42" y2="175.26" width="0.1524" layer="91"/>
-<junction x="-58.42" y="167.64"/>
+<pinref part="C22" gate="G$1" pin="1"/>
+<wire x1="17.78" y1="81.28" x2="10.16" y2="81.28" width="0.1524" layer="91"/>
+<junction x="17.78" y="81.28"/>
+<pinref part="C24" gate="G$1" pin="1"/>
+<wire x1="10.16" y1="81.28" x2="5.08" y2="81.28" width="0.1524" layer="91"/>
+<junction x="10.16" y="81.28"/>
+<pinref part="C25" gate="G$1" pin="1"/>
+<wire x1="5.08" y1="81.28" x2="0" y2="81.28" width="0.1524" layer="91"/>
+<junction x="5.08" y="81.28"/>
+<pinref part="C26" gate="G$1" pin="1"/>
+<wire x1="0" y1="81.28" x2="-5.08" y2="81.28" width="0.1524" layer="91"/>
+<junction x="0" y="81.28"/>
+<pinref part="C27" gate="G$1" pin="1"/>
+<wire x1="-5.08" y1="81.28" x2="-15.24" y2="81.28" width="0.1524" layer="91"/>
+<junction x="-5.08" y="81.28"/>
+<pinref part="C28" gate="G$1" pin="1"/>
+<wire x1="-15.24" y1="81.28" x2="-20.32" y2="81.28" width="0.1524" layer="91"/>
+<junction x="-15.24" y="81.28"/>
+<pinref part="C29" gate="G$1" pin="1"/>
+<wire x1="-20.32" y1="81.28" x2="-25.4" y2="81.28" width="0.1524" layer="91"/>
+<junction x="-20.32" y="81.28"/>
+<pinref part="C30" gate="G$1" pin="1"/>
+<wire x1="-25.4" y1="81.28" x2="-30.48" y2="81.28" width="0.1524" layer="91"/>
+<junction x="-25.4" y="81.28"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="RESETN/PIO0_0"/>
@@ -6059,7 +5316,7 @@ Source: http://www.osram.convergy.de/</description>
 <label x="116.84" y="127" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="USB_FTOGGLE" class="0">
+<net name="PIO0_1" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="PIO0_1/CLKOUT/CT32B0_MAT2/USB_FTOGGLE"/>
 <wire x1="106.68" y1="165.1" x2="127" y2="165.1" width="0.1524" layer="91"/>
@@ -6085,6 +5342,27 @@ Source: http://www.osram.convergy.de/</description>
 <pinref part="U1" gate="G$1" pin="PIO0_8/SSP0_MISO/CT16B0_MAT0/R_6"/>
 <pinref part="S1" gate="G$1" pin="1"/>
 <wire x1="106.68" y1="147.32" x2="142.24" y2="147.32" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="LED_PIN2" class="0">
+<segment>
+<pinref part="U1" gate="G$1" pin="PIO0_18/U0_RXD/CT32B0_MAT0"/>
+<wire x1="106.68" y1="121.92" x2="124.46" y2="121.92" width="0.1524" layer="91"/>
+<label x="116.84" y="121.92" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="DRDY_M" class="0">
+<segment>
+<pinref part="U1" gate="G$1" pin="PIO0_19/U0_TXD/CT32B0_MAT1"/>
+<wire x1="106.68" y1="119.38" x2="121.92" y2="119.38" width="0.1524" layer="91"/>
+<label x="116.84" y="119.38" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="SD_CD" class="0">
+<segment>
+<pinref part="U1" gate="G$1" pin="PIO1_21/U0_DCDN/SSP1_MISO/CT16B0_CAP1"/>
+<wire x1="106.68" y1="91.44" x2="129.54" y2="91.44" width="0.1524" layer="91"/>
+<label x="119.38" y="91.44" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
@@ -6149,6 +5427,21 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MF" x="45.72" y="53.34" size="1.778" layer="96" display="off"/>
 <attribute name="MPN" x="45.72" y="53.34" size="1.778" layer="96" display="off"/>
 </instance>
+<instance part="C20" gate="G$1" x="200.66" y="43.18" rot="R90">
+<attribute name="OC_NEWARK" x="200.66" y="43.18" size="1.778" layer="96" display="off"/>
+<attribute name="MF" x="200.66" y="43.18" size="1.778" layer="96" display="off"/>
+<attribute name="MPN" x="200.66" y="43.18" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="C8" gate="G$1" x="116.84" y="25.4"/>
+<instance part="C9" gate="G$1" x="121.92" y="25.4"/>
+<instance part="C11" gate="G$1" x="127" y="25.4"/>
+<instance part="C10" gate="G$1" x="154.94" y="78.74"/>
+<instance part="C12" gate="G$1" x="160.02" y="78.74"/>
+<instance part="C13" gate="G$1" x="165.1" y="78.74"/>
+<instance part="C14" gate="G$1" x="213.36" y="48.26"/>
+<instance part="C15" gate="G$1" x="218.44" y="48.26"/>
+<instance part="C16" gate="G$1" x="223.52" y="48.26"/>
+<instance part="R6" gate="G$1" x="195.58" y="33.02"/>
 </instances>
 <busses>
 </busses>
@@ -6158,12 +5451,31 @@ Source: http://www.osram.convergy.de/</description>
 <pinref part="BARO" gate="G$1" pin="GND"/>
 <pinref part="GND2" gate="1" pin="GND"/>
 <wire x1="109.22" y1="25.4" x2="114.3" y2="25.4" width="0.1524" layer="91"/>
-<wire x1="114.3" y1="25.4" x2="114.3" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="25.4" x2="114.3" y2="20.32" width="0.1524" layer="91"/>
+<pinref part="C8" gate="G$1" pin="2"/>
+<wire x1="114.3" y1="20.32" x2="114.3" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="20.32" x2="116.84" y2="20.32" width="0.1524" layer="91"/>
+<junction x="114.3" y="20.32"/>
+<pinref part="C9" gate="G$1" pin="2"/>
+<wire x1="116.84" y1="20.32" x2="121.92" y2="20.32" width="0.1524" layer="91"/>
+<junction x="116.84" y="20.32"/>
+<pinref part="C11" gate="G$1" pin="2"/>
+<wire x1="121.92" y1="20.32" x2="127" y2="20.32" width="0.1524" layer="91"/>
+<junction x="121.92" y="20.32"/>
 </segment>
 <segment>
 <pinref part="HIGHG_ACCEL" gate="G$1" pin="GND"/>
 <pinref part="GND8" gate="1" pin="GND"/>
 <wire x1="142.24" y1="73.66" x2="149.86" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="C10" gate="G$1" pin="2"/>
+<wire x1="149.86" y1="73.66" x2="154.94" y2="73.66" width="0.1524" layer="91"/>
+<junction x="149.86" y="73.66"/>
+<pinref part="C12" gate="G$1" pin="2"/>
+<wire x1="154.94" y1="73.66" x2="160.02" y2="73.66" width="0.1524" layer="91"/>
+<junction x="154.94" y="73.66"/>
+<pinref part="C13" gate="G$1" pin="2"/>
+<wire x1="160.02" y1="73.66" x2="165.1" y2="73.66" width="0.1524" layer="91"/>
+<junction x="160.02" y="73.66"/>
 </segment>
 <segment>
 <pinref part="9-AXIS" gate="G$1" pin="GND"/>
@@ -6174,6 +5486,19 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="205.74" y1="38.1" x2="208.28" y2="38.1" width="0.1524" layer="91"/>
 <wire x1="208.28" y1="38.1" x2="208.28" y2="35.56" width="0.1524" layer="91"/>
 <junction x="208.28" y="35.56"/>
+<pinref part="C20" gate="G$1" pin="2"/>
+<wire x1="205.74" y1="43.18" x2="208.28" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="208.28" y1="43.18" x2="208.28" y2="38.1" width="0.1524" layer="91"/>
+<junction x="208.28" y="38.1"/>
+<pinref part="C14" gate="G$1" pin="2"/>
+<pinref part="C15" gate="G$1" pin="2"/>
+<wire x1="213.36" y1="43.18" x2="218.44" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="C16" gate="G$1" pin="2"/>
+<wire x1="218.44" y1="43.18" x2="223.52" y2="43.18" width="0.1524" layer="91"/>
+<junction x="218.44" y="43.18"/>
+<wire x1="213.36" y1="43.18" x2="208.28" y2="43.18" width="0.1524" layer="91"/>
+<junction x="213.36" y="43.18"/>
+<junction x="208.28" y="43.18"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
@@ -6186,10 +5511,20 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="119.38" y1="30.48" x2="119.38" y2="33.02" width="0.1524" layer="91"/>
 <junction x="119.38" y="33.02"/>
 <pinref part="BARO" gate="G$1" pin="VDD_IO"/>
-<wire x1="119.38" y1="30.48" x2="109.22" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="30.48" x2="116.84" y2="30.48" width="0.1524" layer="91"/>
 <pinref part="BARO" gate="G$1" pin="VCCA"/>
+<wire x1="116.84" y1="30.48" x2="109.22" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="109.22" y1="35.56" x2="119.38" y2="35.56" width="0.1524" layer="91"/>
 <junction x="119.38" y="35.56"/>
+<pinref part="C8" gate="G$1" pin="1"/>
+<wire x1="116.84" y1="30.48" x2="116.84" y2="27.94" width="0.1524" layer="91"/>
+<junction x="116.84" y="30.48"/>
+<pinref part="C9" gate="G$1" pin="1"/>
+<wire x1="116.84" y1="27.94" x2="121.92" y2="27.94" width="0.1524" layer="91"/>
+<junction x="116.84" y="27.94"/>
+<pinref part="C11" gate="G$1" pin="1"/>
+<wire x1="121.92" y1="27.94" x2="127" y2="27.94" width="0.1524" layer="91"/>
+<junction x="121.92" y="27.94"/>
 </segment>
 <segment>
 <pinref part="R2" gate="G$1" pin="1"/>
@@ -6214,6 +5549,14 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="142.24" y1="78.74" x2="149.86" y2="78.74" width="0.1524" layer="91"/>
 <wire x1="149.86" y1="78.74" x2="149.86" y2="81.28" width="0.1524" layer="91"/>
 <junction x="149.86" y="81.28"/>
+<pinref part="C10" gate="G$1" pin="1"/>
+<wire x1="149.86" y1="81.28" x2="154.94" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="C12" gate="G$1" pin="1"/>
+<wire x1="154.94" y1="81.28" x2="160.02" y2="81.28" width="0.1524" layer="91"/>
+<junction x="154.94" y="81.28"/>
+<pinref part="C13" gate="G$1" pin="1"/>
+<wire x1="160.02" y1="81.28" x2="165.1" y2="81.28" width="0.1524" layer="91"/>
+<junction x="160.02" y="81.28"/>
 </segment>
 <segment>
 <pinref part="R1" gate="G$1" pin="1"/>
@@ -6268,14 +5611,22 @@ Source: http://www.osram.convergy.de/</description>
 </segment>
 <segment>
 <pinref part="9-AXIS" gate="G$1" pin="VDD"/>
-<wire x1="190.5" y1="40.64" x2="195.58" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="195.58" y1="40.64" x2="200.66" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="200.66" y1="40.64" x2="200.66" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="190.5" y1="40.64" x2="200.66" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="200.66" y1="40.64" x2="200.66" y2="50.8" width="0.1524" layer="91"/>
 <pinref part="SUPPLY13" gate="G$1" pin="3.3V"/>
-<pinref part="9-AXIS" gate="G$1" pin="DEN_A/G"/>
-<wire x1="190.5" y1="33.02" x2="195.58" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="195.58" y1="33.02" x2="195.58" y2="40.64" width="0.1524" layer="91"/>
-<junction x="195.58" y="40.64"/>
+<wire x1="200.66" y1="50.8" x2="200.66" y2="53.34" width="0.1524" layer="91"/>
+<pinref part="C14" gate="G$1" pin="1"/>
+<pinref part="C15" gate="G$1" pin="1"/>
+<wire x1="213.36" y1="50.8" x2="218.44" y2="50.8" width="0.1524" layer="91"/>
+<junction x="213.36" y="50.8"/>
+<pinref part="C16" gate="G$1" pin="1"/>
+<wire x1="218.44" y1="50.8" x2="223.52" y2="50.8" width="0.1524" layer="91"/>
+<junction x="218.44" y="50.8"/>
+<wire x1="200.66" y1="50.8" x2="213.36" y2="50.8" width="0.1524" layer="91"/>
+<junction x="200.66" y="50.8"/>
+<pinref part="R6" gate="G$1" pin="2"/>
+<wire x1="200.66" y1="33.02" x2="200.66" y2="40.64" width="0.1524" layer="91"/>
+<junction x="200.66" y="40.64"/>
 </segment>
 </net>
 <net name="I2C0_SCL" class="0">
@@ -6395,18 +5746,32 @@ Source: http://www.osram.convergy.de/</description>
 <label x="193.04" y="25.4" size="1.778" layer="95"/>
 </segment>
 </net>
+<net name="N$14" class="0">
+<segment>
+<pinref part="9-AXIS" gate="G$1" pin="C1"/>
+<pinref part="C20" gate="G$1" pin="1"/>
+<wire x1="190.5" y1="43.18" x2="198.12" y2="43.18" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="DRDY_M" class="0">
+<segment>
+<pinref part="9-AXIS" gate="G$1" pin="DRDY_M"/>
+<wire x1="149.86" y1="25.4" x2="134.62" y2="25.4" width="0.1524" layer="91"/>
+<label x="137.16" y="25.4" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$1" class="0">
+<segment>
+<pinref part="9-AXIS" gate="G$1" pin="DEN_A/G"/>
+<pinref part="R6" gate="G$1" pin="1"/>
+</segment>
+</net>
 </nets>
 </sheet>
 <sheet>
 <plain>
 </plain>
 <instances>
-<instance part="U$2" gate="G$1" x="10.16" y="33.02">
-<attribute name="OC_NEWARK" x="10.16" y="33.02" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="10.16" y="33.02" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="10.16" y="33.02" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="GND5" gate="1" x="22.86" y="20.32"/>
 <instance part="U$1" gate="G$1" x="35.56" y="73.66">
 <attribute name="OC_NEWARK" x="35.56" y="73.66" size="1.778" layer="96" display="off"/>
 <attribute name="MF" x="35.56" y="73.66" size="1.778" layer="96" display="off"/>
@@ -6417,13 +5782,6 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MF" x="66.04" y="48.26" size="1.778" layer="96" display="off"/>
 <attribute name="MPN" x="66.04" y="48.26" size="1.778" layer="96" display="off"/>
 </instance>
-<instance part="JP3" gate="G$1" x="-17.78" y="55.88">
-<attribute name="OC_NEWARK" x="-17.78" y="55.88" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-17.78" y="55.88" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-17.78" y="55.88" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="GND1" gate="1" x="-7.62" y="38.1"/>
-<instance part="SUPPLY1" gate="G$1" x="43.18" y="43.18"/>
 <instance part="SUPPLY2" gate="G$1" x="45.72" y="53.34"/>
 <instance part="GND3" gate="1" x="99.06" y="40.64"/>
 <instance part="U$4" gate="G$1" x="35.56" y="109.22">
@@ -6472,23 +5830,6 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MF" x="114.3" y="104.14" size="1.778" layer="96" display="off"/>
 <attribute name="MPN" x="114.3" y="104.14" size="1.778" layer="96" display="off"/>
 </instance>
-<instance part="S2" gate="G$1" x="7.62" y="60.96" rot="R180">
-<attribute name="OC_NEWARK" x="7.62" y="60.96" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="7.62" y="60.96" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="7.62" y="60.96" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="SUPPLY17" gate="G$1" x="-2.54" y="76.2"/>
-<instance part="C18" gate="G$1" x="-12.7" y="25.4">
-<attribute name="OC_NEWARK" x="-12.7" y="25.4" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-12.7" y="25.4" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-12.7" y="25.4" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="C19" gate="G$1" x="-5.08" y="25.4">
-<attribute name="OC_NEWARK" x="-5.08" y="25.4" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="-5.08" y="25.4" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="-5.08" y="25.4" size="1.778" layer="96" display="off"/>
-</instance>
-<instance part="GND14" gate="1" x="-12.7" y="17.78"/>
 <instance part="LED1" gate="G$1" x="53.34" y="35.56">
 <attribute name="OC_NEWARK" x="53.34" y="35.56" size="1.778" layer="96" display="off"/>
 <attribute name="MF" x="53.34" y="35.56" size="1.778" layer="96" display="off"/>
@@ -6510,27 +5851,17 @@ Source: http://www.osram.convergy.de/</description>
 <attribute name="MPN" x="60.96" y="35.56" size="1.778" layer="96" display="off"/>
 </instance>
 <instance part="GND15" gate="1" x="58.42" y="15.24"/>
-<instance part="SUPPLY18" gate="G$1" x="53.34" y="45.72"/>
+<instance part="C19" gate="G$1" x="43.18" y="48.26"/>
+<instance part="C21" gate="G$1" x="38.1" y="48.26"/>
+<instance part="GND14" gate="1" x="40.64" y="40.64"/>
+<instance part="R7" gate="G$1" x="66.04" y="66.04"/>
+<instance part="R10" gate="G$1" x="86.36" y="66.04"/>
+<instance part="SUPPLY15" gate="G$1" x="76.2" y="66.04"/>
 </instances>
 <busses>
 </busses>
 <nets>
 <net name="GND" class="0">
-<segment>
-<pinref part="U$2" gate="G$1" pin="GND"/>
-<pinref part="GND5" gate="1" pin="GND"/>
-<wire x1="22.86" y1="27.94" x2="22.86" y2="22.86" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="JP3" gate="G$1" pin="2"/>
-<wire x1="-10.16" y1="58.42" x2="-7.62" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="-7.62" y1="58.42" x2="-7.62" y2="40.64" width="0.1524" layer="91"/>
-<pinref part="GND1" gate="1" pin="GND"/>
-<pinref part="S2" gate="G$1" pin="4"/>
-<wire x1="2.54" y1="63.5" x2="-10.16" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="-10.16" y1="63.5" x2="-10.16" y2="58.42" width="0.1524" layer="91"/>
-<junction x="-10.16" y="58.42"/>
-</segment>
 <segment>
 <pinref part="U$3" gate="G$1" pin="VSS"/>
 <wire x1="93.98" y1="53.34" x2="99.06" y2="53.34" width="0.1524" layer="91"/>
@@ -6573,13 +5904,6 @@ Source: http://www.osram.convergy.de/</description>
 <label x="99.06" y="104.14" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="C18" gate="G$1" pin="-"/>
-<pinref part="C19" gate="G$1" pin="2"/>
-<wire x1="-12.7" y1="20.32" x2="-5.08" y2="20.32" width="0.1524" layer="91"/>
-<junction x="-12.7" y="20.32"/>
-<pinref part="GND14" gate="1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="R8" gate="G$1" pin="1"/>
 <pinref part="R9" gate="G$1" pin="1"/>
 <wire x1="53.34" y1="17.78" x2="58.42" y2="17.78" width="0.1524" layer="91"/>
@@ -6587,30 +5911,16 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="58.42" y1="17.78" x2="60.96" y2="17.78" width="0.1524" layer="91"/>
 <junction x="58.42" y="17.78"/>
 </segment>
-</net>
-<net name="N$1" class="0">
 <segment>
-<pinref part="JP3" gate="G$1" pin="1"/>
-<wire x1="-10.16" y1="55.88" x2="2.54" y2="55.88" width="0.1524" layer="91"/>
-<pinref part="S2" gate="G$1" pin="1"/>
+<pinref part="C21" gate="G$1" pin="2"/>
+<pinref part="C19" gate="G$1" pin="2"/>
+<wire x1="38.1" y1="43.18" x2="40.64" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="GND14" gate="1" pin="GND"/>
+<wire x1="40.64" y1="43.18" x2="43.18" y2="43.18" width="0.1524" layer="91"/>
+<junction x="40.64" y="43.18"/>
 </segment>
 </net>
 <net name="VBUS" class="0">
-<segment>
-<pinref part="U$2" gate="G$1" pin="IN"/>
-<wire x1="5.08" y1="43.18" x2="2.54" y2="43.18" width="0.1524" layer="91"/>
-<label x="-5.08" y="43.18" size="1.778" layer="95"/>
-<pinref part="U$2" gate="G$1" pin="EN"/>
-<wire x1="2.54" y1="43.18" x2="-5.08" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="5.08" y1="38.1" x2="2.54" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="2.54" y1="38.1" x2="2.54" y2="43.18" width="0.1524" layer="91"/>
-<junction x="2.54" y="43.18"/>
-</segment>
-<segment>
-<label x="20.32" y="58.42" size="1.778" layer="95"/>
-<pinref part="S2" gate="G$1" pin="2"/>
-<wire x1="12.7" y1="58.42" x2="25.4" y2="58.42" width="0.1524" layer="91"/>
-</segment>
 <segment>
 <pinref part="JP5" gate="G$1" pin="1"/>
 <wire x1="109.22" y1="127" x2="96.52" y2="127" width="0.1524" layer="91"/>
@@ -6621,27 +5931,20 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="109.22" y1="106.68" x2="96.52" y2="106.68" width="0.1524" layer="91"/>
 <label x="99.06" y="106.68" size="1.778" layer="95"/>
 </segment>
-<segment>
-<pinref part="C18" gate="G$1" pin="+"/>
-<pinref part="C19" gate="G$1" pin="1"/>
-<wire x1="-12.7" y1="27.94" x2="-5.08" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="27.94" x2="-12.7" y2="33.02" width="0.1524" layer="91"/>
-<junction x="-12.7" y="27.94"/>
-<label x="-12.7" y="33.02" size="1.778" layer="95"/>
-</segment>
 </net>
 <net name="3.3V" class="0">
-<segment>
-<pinref part="U$2" gate="G$1" pin="OUT"/>
-<pinref part="SUPPLY1" gate="G$1" pin="3.3V"/>
-<wire x1="40.64" y1="43.18" x2="43.18" y2="43.18" width="0.1524" layer="91"/>
-</segment>
 <segment>
 <pinref part="U$3" gate="G$1" pin="VDD"/>
 <wire x1="60.96" y1="50.8" x2="45.72" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="50.8" x2="45.72" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="SUPPLY2" gate="G$1" pin="3.3V"/>
 <junction x="45.72" y="53.34"/>
+<pinref part="C19" gate="G$1" pin="1"/>
+<wire x1="45.72" y1="50.8" x2="43.18" y2="50.8" width="0.1524" layer="91"/>
+<junction x="45.72" y="50.8"/>
+<pinref part="C21" gate="G$1" pin="1"/>
+<wire x1="43.18" y1="50.8" x2="38.1" y2="50.8" width="0.1524" layer="91"/>
+<junction x="43.18" y="50.8"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="VCC"/>
@@ -6671,15 +5974,12 @@ Source: http://www.osram.convergy.de/</description>
 <pinref part="SUPPLY9" gate="G$1" pin="3.3V"/>
 </segment>
 <segment>
-<pinref part="S2" gate="G$1" pin="6"/>
-<wire x1="2.54" y1="68.58" x2="-2.54" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="-2.54" y1="68.58" x2="-2.54" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="SUPPLY17" gate="G$1" pin="3.3V"/>
-</segment>
-<segment>
-<pinref part="LED1" gate="G$1" pin="A"/>
-<wire x1="53.34" y1="38.1" x2="53.34" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="SUPPLY18" gate="G$1" pin="3.3V"/>
+<pinref part="R7" gate="G$1" pin="2"/>
+<pinref part="R10" gate="G$1" pin="1"/>
+<wire x1="71.12" y1="66.04" x2="76.2" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="SUPPLY15" gate="G$1" pin="3.3V"/>
+<wire x1="76.2" y1="66.04" x2="81.28" y2="66.04" width="0.1524" layer="91"/>
+<junction x="76.2" y="66.04"/>
 </segment>
 </net>
 <net name="SSP1_SCK" class="0">
@@ -6821,20 +6121,6 @@ Source: http://www.osram.convergy.de/</description>
 <wire x1="30.48" y1="76.2" x2="25.4" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="USB_VBUS" class="0">
-<segment>
-<wire x1="2.54" y1="60.96" x2="-5.08" y2="60.96" width="0.1524" layer="91"/>
-<label x="-10.16" y="60.96" size="1.778" layer="95"/>
-<pinref part="S2" gate="G$1" pin="3"/>
-</segment>
-</net>
-<net name="USB_FTOGGLE" class="0">
-<segment>
-<pinref part="S2" gate="G$1" pin="5"/>
-<wire x1="12.7" y1="66.04" x2="25.4" y2="66.04" width="0.1524" layer="91"/>
-<label x="12.7" y="66.04" size="1.778" layer="95"/>
-</segment>
-</net>
 <net name="N$4" class="0">
 <segment>
 <pinref part="LED1" gate="G$1" pin="C"/>
@@ -6854,6 +6140,199 @@ Source: http://www.osram.convergy.de/</description>
 <pinref part="LED2" gate="G$1" pin="A"/>
 <wire x1="60.96" y1="38.1" x2="60.96" y2="45.72" width="0.1524" layer="91"/>
 <label x="60.96" y="40.64" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="LED_PIN2" class="0">
+<segment>
+<pinref part="LED1" gate="G$1" pin="A"/>
+<wire x1="53.34" y1="38.1" x2="53.34" y2="45.72" width="0.1524" layer="91"/>
+<label x="50.8" y="45.72" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$16" class="0">
+<segment>
+<pinref part="U$3" gate="G$1" pin="DAT2"/>
+<wire x1="60.96" y1="58.42" x2="55.88" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="58.42" x2="55.88" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="R7" gate="G$1" pin="1"/>
+<wire x1="55.88" y1="66.04" x2="60.96" y2="66.04" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$21" class="0">
+<segment>
+<pinref part="R10" gate="G$1" pin="2"/>
+<wire x1="91.44" y1="66.04" x2="96.52" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="96.52" y1="66.04" x2="96.52" y2="58.42" width="0.1524" layer="91"/>
+<pinref part="U$3" gate="G$1" pin="DAT1"/>
+<wire x1="96.52" y1="58.42" x2="93.98" y2="58.42" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="SD_CD" class="0">
+<segment>
+<pinref part="U$3" gate="G$1" pin="CD"/>
+<wire x1="78.74" y1="43.18" x2="78.74" y2="25.4" width="0.1524" layer="91"/>
+<label x="78.74" y="27.94" size="1.778" layer="95"/>
+</segment>
+</net>
+</nets>
+</sheet>
+<sheet>
+<description>Power</description>
+<plain>
+</plain>
+<instances>
+<instance part="U$6" gate="G$1" x="17.78" y="7.62">
+<attribute name="OC_NEWARK" x="17.78" y="7.62" size="1.778" layer="96" display="off"/>
+<attribute name="MF" x="17.78" y="7.62" size="1.778" layer="96" display="off"/>
+<attribute name="MPN" x="17.78" y="7.62" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="SUPPLY18" gate="G$1" x="50.8" y="17.78"/>
+<instance part="GND5" gate="1" x="30.48" y="-5.08"/>
+<instance part="U$2" gate="G$1" x="17.78" y="40.64">
+<attribute name="OC_NEWARK" x="17.78" y="40.64" size="1.778" layer="96" display="off"/>
+<attribute name="MF" x="17.78" y="40.64" size="1.778" layer="96" display="off"/>
+<attribute name="MPN" x="17.78" y="40.64" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="SUPPLY19" gate="G$1" x="50.8" y="50.8"/>
+<instance part="GND17" gate="1" x="30.48" y="27.94"/>
+<instance part="JP2" gate="G$1" x="25.4" y="66.04"/>
+<instance part="JP8" gate="G$1" x="106.68" y="40.64">
+<attribute name="OC_NEWARK" x="106.68" y="40.64" size="1.778" layer="96" display="off"/>
+<attribute name="MF" x="106.68" y="40.64" size="1.778" layer="96" display="off"/>
+<attribute name="MPN" x="106.68" y="40.64" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="GND18" gate="1" x="116.84" y="22.86"/>
+<instance part="S4" gate="G$1" x="132.08" y="45.72" rot="R180">
+<attribute name="OC_NEWARK" x="132.08" y="45.72" size="1.778" layer="96" display="off"/>
+<attribute name="MF" x="132.08" y="45.72" size="1.778" layer="96" display="off"/>
+<attribute name="MPN" x="132.08" y="45.72" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="SUPPLY21" gate="G$1" x="121.92" y="60.96"/>
+<instance part="C17" gate="G$1" x="5.08" y="48.26"/>
+<instance part="C18" gate="G$1" x="5.08" y="15.24"/>
+<instance part="GND1" gate="1" x="5.08" y="38.1"/>
+<instance part="GND13" gate="1" x="5.08" y="5.08"/>
+</instances>
+<busses>
+</busses>
+<nets>
+<net name="VBUS" class="0">
+<segment>
+<pinref part="U$6" gate="G$1" pin="IN"/>
+<wire x1="12.7" y1="17.78" x2="10.16" y2="17.78" width="0.1524" layer="91"/>
+<label x="2.54" y="17.78" size="1.778" layer="95"/>
+<pinref part="U$6" gate="G$1" pin="EN"/>
+<wire x1="10.16" y1="17.78" x2="5.08" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="17.78" x2="2.54" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="12.7" x2="10.16" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="12.7" x2="10.16" y2="17.78" width="0.1524" layer="91"/>
+<junction x="10.16" y="17.78"/>
+<pinref part="C18" gate="G$1" pin="1"/>
+<junction x="5.08" y="17.78"/>
+</segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="IN"/>
+<wire x1="12.7" y1="50.8" x2="10.16" y2="50.8" width="0.1524" layer="91"/>
+<label x="2.54" y="50.8" size="1.778" layer="95"/>
+<pinref part="U$2" gate="G$1" pin="EN"/>
+<wire x1="10.16" y1="50.8" x2="5.08" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="50.8" x2="2.54" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="45.72" x2="10.16" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="45.72" x2="10.16" y2="50.8" width="0.1524" layer="91"/>
+<junction x="10.16" y="50.8"/>
+<pinref part="C17" gate="G$1" pin="1"/>
+<junction x="5.08" y="50.8"/>
+</segment>
+<segment>
+<pinref part="JP2" gate="G$1" pin="4"/>
+<wire x1="30.48" y1="71.12" x2="45.72" y2="71.12" width="0.1524" layer="91"/>
+<label x="40.64" y="71.12" size="1.778" layer="95"/>
+</segment>
+<segment>
+<label x="144.78" y="43.18" size="1.778" layer="95"/>
+<pinref part="S4" gate="G$1" pin="2"/>
+<wire x1="137.16" y1="43.18" x2="149.86" y2="43.18" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="3.3V" class="0">
+<segment>
+<pinref part="U$6" gate="G$1" pin="OUT"/>
+<pinref part="SUPPLY18" gate="G$1" pin="3.3V"/>
+<wire x1="48.26" y1="17.78" x2="50.8" y2="17.78" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="OUT"/>
+<pinref part="SUPPLY19" gate="G$1" pin="3.3V"/>
+<wire x1="48.26" y1="50.8" x2="50.8" y2="50.8" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="JP2" gate="G$1" pin="1"/>
+<wire x1="30.48" y1="63.5" x2="45.72" y2="63.5" width="0.1524" layer="91"/>
+<label x="40.64" y="63.5" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="S4" gate="G$1" pin="6"/>
+<wire x1="127" y1="53.34" x2="121.92" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="53.34" x2="121.92" y2="60.96" width="0.1524" layer="91"/>
+<pinref part="SUPPLY21" gate="G$1" pin="3.3V"/>
+</segment>
+</net>
+<net name="GND" class="0">
+<segment>
+<pinref part="U$6" gate="G$1" pin="GND"/>
+<pinref part="GND5" gate="1" pin="GND"/>
+<wire x1="30.48" y1="-2.54" x2="30.48" y2="2.54" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="GND"/>
+<pinref part="GND17" gate="1" pin="GND"/>
+<wire x1="30.48" y1="30.48" x2="30.48" y2="35.56" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="JP2" gate="G$1" pin="3"/>
+<wire x1="30.48" y1="68.58" x2="45.72" y2="68.58" width="0.1524" layer="91"/>
+<label x="40.64" y="68.58" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JP8" gate="G$1" pin="2"/>
+<wire x1="114.3" y1="43.18" x2="116.84" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="43.18" x2="116.84" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="GND18" gate="1" pin="GND"/>
+<pinref part="S4" gate="G$1" pin="4"/>
+<wire x1="127" y1="48.26" x2="114.3" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="48.26" x2="114.3" y2="43.18" width="0.1524" layer="91"/>
+<junction x="114.3" y="43.18"/>
+</segment>
+<segment>
+<pinref part="C18" gate="G$1" pin="2"/>
+<pinref part="GND13" gate="1" pin="GND"/>
+<wire x1="5.08" y1="10.16" x2="5.08" y2="7.62" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C17" gate="G$1" pin="2"/>
+<pinref part="GND1" gate="1" pin="GND"/>
+<wire x1="5.08" y1="43.18" x2="5.08" y2="40.64" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="USB_VBUS" class="0">
+<segment>
+<wire x1="127" y1="45.72" x2="119.38" y2="45.72" width="0.1524" layer="91"/>
+<label x="114.3" y="45.72" size="1.778" layer="95"/>
+<pinref part="S4" gate="G$1" pin="3"/>
+</segment>
+</net>
+<net name="N$20" class="0">
+<segment>
+<pinref part="JP8" gate="G$1" pin="1"/>
+<wire x1="114.3" y1="40.64" x2="127" y2="40.64" width="0.1524" layer="91"/>
+<pinref part="S4" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="PIO0_1" class="0">
+<segment>
+<pinref part="S4" gate="G$1" pin="5"/>
+<wire x1="137.16" y1="50.8" x2="149.86" y2="50.8" width="0.1524" layer="91"/>
+<label x="137.16" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
