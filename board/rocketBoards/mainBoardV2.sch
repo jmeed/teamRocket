@@ -2154,25 +2154,25 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pin name="PIO0_3/USB_VBUS/R_1" x="73.66" y="93.98" length="middle" rot="R180"/>
 <pin name="PIO0_4/I2C0_SCL/R_2" x="73.66" y="91.44" length="middle" rot="R180"/>
 <pin name="PIO0_5/I2C0_SDA/R_3" x="73.66" y="88.9" length="middle" rot="R180"/>
-<pin name="PIO0_6/USB_CONNECTN/SSP0_SCK/R_4" x="73.66" y="86.36" length="middle" rot="R180"/>
+<pin name="PIO0_6/USB_CONNECTN/SSP0_SCK/R_4" x="73.66" y="86.36" length="middle" swaplevel="1" rot="R180"/>
 <pin name="PIO0_7/U0_CTSN/R_5/I2C1_SCL" x="73.66" y="83.82" length="middle" rot="R180"/>
-<pin name="PIO0_8/SSP0_MISO/CT16B0_MAT0/R_6" x="73.66" y="81.28" length="middle" rot="R180"/>
-<pin name="PIO0_9/SSP0_MOSI/CT16B0_MAT1/R_7" x="73.66" y="78.74" length="middle" rot="R180"/>
-<pin name="SWCLK/PIO0_10/SSP0_SCK/CT16B0_MAT2" x="73.66" y="76.2" length="middle" rot="R180"/>
-<pin name="TDI/PIO0_11/ADC_9/CT32B0_MAT3/U1_RTSN/U1_SCLK" x="73.66" y="73.66" length="middle" rot="R180"/>
-<pin name="TMS/PIO0_12/ADC_8/CT32B1_CAP0/U1_CTSN" x="73.66" y="71.12" length="middle" rot="R180"/>
-<pin name="TDO/PIO0_13/ADC_7/CT32B1_MAT0/U1_RXD" x="73.66" y="68.58" length="middle" rot="R180"/>
-<pin name="TRSTN/PIO0_14/ADC_6/CT32B1_MAT1/U1_TXD" x="73.66" y="66.04" length="middle" rot="R180"/>
-<pin name="SWDIO/PIO0_15/ADC_3/CT32B1_MAT2" x="73.66" y="63.5" length="middle" rot="R180"/>
-<pin name="PIO0_16/ADC_2/CT32B1_MAT3/R_8/WAKEUP" x="73.66" y="60.96" length="middle" rot="R180"/>
-<pin name="PIO0_17/U0_RTS/CT32B0_CAP0/U0_SCLK" x="73.66" y="58.42" length="middle" rot="R180"/>
-<pin name="PIO0_18/U0_RXD/CT32B0_MAT0" x="73.66" y="55.88" length="middle" rot="R180"/>
-<pin name="PIO0_19/U0_TXD/CT32B0_MAT1" x="73.66" y="53.34" length="middle" rot="R180"/>
-<pin name="PIO0_20/CT16B1_CAP0/U2_RXD" x="73.66" y="50.8" length="middle" rot="R180"/>
+<pin name="PIO0_8/SSP0_MISO/CT16B0_MAT0/R_6" x="73.66" y="81.28" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO0_9/SSP0_MOSI/CT16B0_MAT1/R_7" x="73.66" y="78.74" length="middle" swaplevel="1" rot="R180"/>
+<pin name="SWCLK/PIO0_10/SSP0_SCK/CT16B0_MAT2" x="73.66" y="76.2" length="middle" swaplevel="1" rot="R180"/>
+<pin name="TDI/PIO0_11/ADC_9/CT32B0_MAT3/U1_RTSN/U1_SCLK" x="73.66" y="73.66" length="middle" swaplevel="1" rot="R180"/>
+<pin name="TMS/PIO0_12/ADC_8/CT32B1_CAP0/U1_CTSN" x="73.66" y="71.12" length="middle" swaplevel="1" rot="R180"/>
+<pin name="TDO/PIO0_13/ADC_7/CT32B1_MAT0/U1_RXD" x="73.66" y="68.58" length="middle" swaplevel="1" rot="R180"/>
+<pin name="TRSTN/PIO0_14/ADC_6/CT32B1_MAT1/U1_TXD" x="73.66" y="66.04" length="middle" swaplevel="1" rot="R180"/>
+<pin name="SWDIO/PIO0_15/ADC_3/CT32B1_MAT2" x="73.66" y="63.5" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO0_16/ADC_2/CT32B1_MAT3/R_8/WAKEUP" x="73.66" y="60.96" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO0_17/U0_RTS/CT32B0_CAP0/U0_SCLK" x="73.66" y="58.42" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO0_18/U0_RXD/CT32B0_MAT0" x="73.66" y="55.88" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO0_19/U0_TXD/CT32B0_MAT1" x="73.66" y="53.34" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO0_20/CT16B1_CAP0/U2_RXD" x="73.66" y="50.8" length="middle" swaplevel="1" rot="R180"/>
 <pin name="PIO0_21/CT16B1_MAT0/SSP1_MOSI" x="73.66" y="48.26" length="middle" rot="R180"/>
 <pin name="PIO0_22/ADC_11/CT16B1_CAP1/SSP1_MISO" x="73.66" y="45.72" length="middle" rot="R180"/>
 <pin name="PIO0_23/ADC_1/R_9/U0_NRI/SSP1_SSEL" x="73.66" y="43.18" length="middle" rot="R180"/>
-<pin name="PIO1_13/U1_CTSN/SCT0_OUT3/R_22" x="73.66" y="40.64" length="middle" rot="R180"/>
+<pin name="PIO1_13/U1_CTSN/SCT0_OUT3/R_22" x="73.66" y="40.64" length="middle" swaplevel="1" rot="R180"/>
 <pin name="USB_DM" x="-5.08" y="60.96" length="middle"/>
 <pin name="USB_DP" x="-5.08" y="63.5" length="middle"/>
 <pin name="RTCXOUT" x="-5.08" y="101.6" length="middle"/>
@@ -2184,14 +2184,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pin name="VBAT" x="-5.08" y="50.8" length="middle"/>
 <pin name="VDD" x="-5.08" y="15.24" length="middle"/>
 <pin name="PIO1_20/U0_DSRN/SSP1_SCK/CT16B0_MAT0" x="73.66" y="27.94" length="middle" rot="R180"/>
-<pin name="PIO1_21/U0_DCDN/SSP1_MISO/CT16B0_CAP1" x="73.66" y="25.4" length="middle" rot="R180"/>
-<pin name="PIO1_23/CT16B1_MAT1/SSP1_SSEL/U2_TXD" x="73.66" y="22.86" length="middle" rot="R180"/>
+<pin name="PIO1_21/U0_DCDN/SSP1_MISO/CT16B0_CAP1" x="73.66" y="25.4" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO1_23/CT16B1_MAT1/SSP1_SSEL/U2_TXD" x="73.66" y="22.86" length="middle" swaplevel="1" rot="R180"/>
 <pin name="PIO1_24/CT32B0_MAT0/I2C1_SDA" x="73.66" y="20.32" length="middle" rot="R180"/>
-<pin name="PIO2_0/XTALIN" x="73.66" y="15.24" length="middle" rot="R180"/>
-<pin name="PIO2_1/XTALOUT" x="73.66" y="12.7" length="middle" rot="R180"/>
-<pin name="PIO2_2/U3_RTSN/U3_SCLK/SCT0_OUT1" x="73.66" y="7.62" length="middle" rot="R180"/>
-<pin name="PIO2_5/U3_CTSN/SCT0_IN1" x="73.66" y="5.08" length="middle" rot="R180"/>
-<pin name="PIO2_7/SSP0_SCK/SCT0_OUT2" x="73.66" y="2.54" length="middle" rot="R180"/>
+<pin name="PIO2_0/XTALIN" x="73.66" y="15.24" length="middle" swaplevel="2" rot="R180"/>
+<pin name="PIO2_1/XTALOUT" x="73.66" y="12.7" length="middle" swaplevel="2" rot="R180"/>
+<pin name="PIO2_2/U3_RTSN/U3_SCLK/SCT0_OUT1" x="73.66" y="7.62" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO2_5/U3_CTSN/SCT0_IN1" x="73.66" y="5.08" length="middle" swaplevel="1" rot="R180"/>
+<pin name="PIO2_7/SSP0_SCK/SCT0_OUT2" x="73.66" y="2.54" length="middle" swaplevel="1" rot="R180"/>
 <pin name="GND" x="-5.08" y="7.62" length="middle"/>
 </symbol>
 </symbols>
@@ -4870,11 +4870,6 @@ CONN RCPT 5POS MICRO USB R/A
 <attribute name="OC_NEWARK" value="unknown"/>
 </part>
 <part name="SUPPLY16" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
-<part name="JP1" library="SparkFun-Connectors" deviceset="M02" device="JST-PTH-2">
-<attribute name="MF" value=""/>
-<attribute name="MPN" value=""/>
-<attribute name="OC_NEWARK" value="unknown"/>
-</part>
 <part name="LED1" library="adafruit" deviceset="LED" device="CHIPLED_0603">
 <attribute name="MF" value=""/>
 <attribute name="MPN" value=""/>
@@ -4969,6 +4964,11 @@ CONN RCPT 5POS MICRO USB R/A
 <part name="SUPPLY15" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="J1" library="ELL-i-Connectors" deviceset="MICRO-USB" device="" value="47346-0001"/>
 <part name="GND11" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
+<part name="JP3" library="SparkFun-Connectors" deviceset="M02" device="JST-PTH-2">
+<attribute name="MF" value=""/>
+<attribute name="MPN" value=""/>
+<attribute name="OC_NEWARK" value="unknown"/>
+</part>
 </parts>
 <sheets>
 <sheet>
@@ -5166,9 +5166,10 @@ CONN RCPT 5POS MICRO USB R/A
 </net>
 <net name="SSP1_SSEL" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PIO1_13/U1_CTSN/SCT0_OUT3/R_22"/>
-<wire x1="106.68" y1="106.68" x2="124.46" y2="106.68" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="PIO0_16/ADC_2/CT32B1_MAT3/R_8/WAKEUP"/>
+<wire x1="106.68" y1="127" x2="119.38" y2="127" width="0.1524" layer="91"/>
 <label x="119.38" y="106.68" size="1.778" layer="95"/>
+<label x="116.84" y="127" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SSP1_SCK" class="0">
@@ -5269,33 +5270,26 @@ CONN RCPT 5POS MICRO USB R/A
 </net>
 <net name="INT1_A/G" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="SWCLK/PIO0_10/SSP0_SCK/CT16B0_MAT2"/>
-<wire x1="106.68" y1="142.24" x2="121.92" y2="142.24" width="0.1524" layer="91"/>
-<label x="116.84" y="142.24" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="PIO0_18/U0_RXD/CT32B0_MAT0"/>
+<wire x1="106.68" y1="121.92" x2="124.46" y2="121.92" width="0.1524" layer="91"/>
+<label x="116.84" y="121.92" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="INT2_A/G" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="TDI/PIO0_11/ADC_9/CT32B0_MAT3/U1_RTSN/U1_SCLK"/>
-<wire x1="106.68" y1="139.7" x2="121.92" y2="139.7" width="0.1524" layer="91"/>
-<label x="116.84" y="139.7" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="PIO0_17/U0_RTS/CT32B0_CAP0/U0_SCLK"/>
+<wire x1="106.68" y1="124.46" x2="124.46" y2="124.46" width="0.1524" layer="91"/>
+<label x="116.84" y="124.46" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="BARO_INT1" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="TMS/PIO0_12/ADC_8/CT32B1_CAP0/U1_CTSN"/>
-<wire x1="106.68" y1="137.16" x2="121.92" y2="137.16" width="0.1524" layer="91"/>
-<label x="116.84" y="137.16" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="SWDIO/PIO0_15/ADC_3/CT32B1_MAT2"/>
+<wire x1="106.68" y1="129.54" x2="121.92" y2="129.54" width="0.1524" layer="91"/>
+<label x="116.84" y="129.54" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="BARO_INT2" class="0">
-<segment>
-<pinref part="U1" gate="G$1" pin="TDO/PIO0_13/ADC_7/CT32B1_MAT0/U1_RXD"/>
-<wire x1="106.68" y1="134.62" x2="121.92" y2="134.62" width="0.1524" layer="91"/>
-<label x="116.84" y="134.62" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="INT_M" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="TRSTN/PIO0_14/ADC_6/CT32B1_MAT1/U1_TXD"/>
 <wire x1="106.68" y1="132.08" x2="121.92" y2="132.08" width="0.1524" layer="91"/>
@@ -5304,16 +5298,15 @@ CONN RCPT 5POS MICRO USB R/A
 </net>
 <net name="HIGHG_INT1" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="SWDIO/PIO0_15/ADC_3/CT32B1_MAT2"/>
-<wire x1="106.68" y1="129.54" x2="121.92" y2="129.54" width="0.1524" layer="91"/>
-<label x="116.84" y="129.54" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="TDO/PIO0_13/ADC_7/CT32B1_MAT0/U1_RXD"/>
+<wire x1="106.68" y1="134.62" x2="121.92" y2="134.62" width="0.1524" layer="91"/>
+<label x="116.84" y="134.62" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="HIGHG_INT2" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PIO0_16/ADC_2/CT32B1_MAT3/R_8/WAKEUP"/>
-<wire x1="106.68" y1="127" x2="121.92" y2="127" width="0.1524" layer="91"/>
-<label x="116.84" y="127" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="PIO1_13/U1_CTSN/SCT0_OUT3/R_22"/>
+<wire x1="106.68" y1="106.68" x2="121.92" y2="106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PIO0_1" class="0">
@@ -5325,9 +5318,9 @@ CONN RCPT 5POS MICRO USB R/A
 </net>
 <net name="LED_PIN" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PIO0_17/U0_RTS/CT32B0_CAP0/U0_SCLK"/>
-<wire x1="106.68" y1="124.46" x2="121.92" y2="124.46" width="0.1524" layer="91"/>
-<label x="116.84" y="124.46" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="PIO0_20/CT16B1_CAP0/U2_RXD"/>
+<wire x1="106.68" y1="116.84" x2="121.92" y2="116.84" width="0.1524" layer="91"/>
+<label x="116.84" y="116.84" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$18" class="0">
@@ -5346,9 +5339,9 @@ CONN RCPT 5POS MICRO USB R/A
 </net>
 <net name="LED_PIN2" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PIO0_18/U0_RXD/CT32B0_MAT0"/>
-<wire x1="106.68" y1="121.92" x2="124.46" y2="121.92" width="0.1524" layer="91"/>
-<label x="116.84" y="121.92" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="PIO0_2/SSP0_SSEL/CT16B0_CAP0/R_0"/>
+<wire x1="106.68" y1="162.56" x2="129.54" y2="162.56" width="0.1524" layer="91"/>
+<label x="119.38" y="162.56" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="DRDY_M" class="0">
@@ -5422,11 +5415,6 @@ CONN RCPT 5POS MICRO USB R/A
 <attribute name="MF" x="200.66" y="38.1" size="1.778" layer="96" display="off"/>
 <attribute name="MPN" x="200.66" y="38.1" size="1.778" layer="96" display="off"/>
 </instance>
-<instance part="JP1" gate="G$1" x="45.72" y="53.34">
-<attribute name="OC_NEWARK" x="45.72" y="53.34" size="1.778" layer="96" display="off"/>
-<attribute name="MF" x="45.72" y="53.34" size="1.778" layer="96" display="off"/>
-<attribute name="MPN" x="45.72" y="53.34" size="1.778" layer="96" display="off"/>
-</instance>
 <instance part="C20" gate="G$1" x="200.66" y="43.18" rot="R90">
 <attribute name="OC_NEWARK" x="200.66" y="43.18" size="1.778" layer="96" display="off"/>
 <attribute name="MF" x="200.66" y="43.18" size="1.778" layer="96" display="off"/>
@@ -5442,6 +5430,11 @@ CONN RCPT 5POS MICRO USB R/A
 <instance part="C15" gate="G$1" x="218.44" y="48.26"/>
 <instance part="C16" gate="G$1" x="223.52" y="48.26"/>
 <instance part="R6" gate="G$1" x="195.58" y="33.02"/>
+<instance part="JP3" gate="G$1" x="48.26" y="73.66">
+<attribute name="OC_NEWARK" x="48.26" y="73.66" size="1.778" layer="96" display="off"/>
+<attribute name="MF" x="48.26" y="73.66" size="1.778" layer="96" display="off"/>
+<attribute name="MPN" x="48.26" y="73.66" size="1.778" layer="96" display="off"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -5644,6 +5637,8 @@ CONN RCPT 5POS MICRO USB R/A
 <wire x1="68.58" y1="71.12" x2="55.88" y2="71.12" width="0.1524" layer="91"/>
 <label x="55.88" y="71.12" size="1.778" layer="95"/>
 <pinref part="R3" gate="G$1" pin="2"/>
+<pinref part="JP3" gate="G$1" pin="1"/>
+<wire x1="55.88" y1="71.12" x2="55.88" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <wire x1="149.86" y1="40.64" x2="139.7" y2="40.64" width="0.1524" layer="91"/>
@@ -5666,6 +5661,7 @@ CONN RCPT 5POS MICRO USB R/A
 <wire x1="68.58" y1="76.2" x2="55.88" y2="76.2" width="0.1524" layer="91"/>
 <label x="55.88" y="76.2" size="1.778" layer="95"/>
 <pinref part="R2" gate="G$1" pin="2"/>
+<pinref part="JP3" gate="G$1" pin="2"/>
 </segment>
 <segment>
 <wire x1="149.86" y1="38.1" x2="139.7" y2="38.1" width="0.1524" layer="91"/>
@@ -5678,7 +5674,6 @@ CONN RCPT 5POS MICRO USB R/A
 <wire x1="68.58" y1="55.88" x2="53.34" y2="55.88" width="0.1524" layer="91"/>
 <label x="55.88" y="55.88" size="1.778" layer="95"/>
 <pinref part="R1" gate="G$1" pin="2"/>
-<pinref part="JP1" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="I2C1_SCL" class="0">
@@ -5686,7 +5681,6 @@ CONN RCPT 5POS MICRO USB R/A
 <wire x1="68.58" y1="50.8" x2="53.34" y2="50.8" width="0.1524" layer="91"/>
 <label x="55.88" y="50.8" size="1.778" layer="95"/>
 <pinref part="R4" gate="G$1" pin="2"/>
-<pinref part="JP1" gate="G$1" pin="1"/>
 <wire x1="53.34" y1="50.8" x2="53.34" y2="53.34" width="0.1524" layer="91"/>
 </segment>
 </net>
