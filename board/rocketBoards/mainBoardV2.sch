@@ -169,22 +169,22 @@ Source: http://www.zetex.com/3.0/pdf/ZXSC300.pdf</description>
 <rectangle x1="0.725" y1="0.9" x2="1.175" y2="1.6" layer="51" rot="R180"/>
 </package>
 <package name="LGA-16-3X3X1">
-<smd name="1" x="0.275" y="2.5" dx="0.45" dy="0.35" layer="1"/>
-<smd name="2" x="0.275" y="2" dx="0.45" dy="0.35" layer="1"/>
-<smd name="3" x="0.275" y="1.5" dx="0.45" dy="0.35" layer="1"/>
-<smd name="4" x="0.275" y="1" dx="0.45" dy="0.35" layer="1"/>
-<smd name="5" x="0.275" y="0.5" dx="0.45" dy="0.35" layer="1"/>
-<smd name="6" x="1" y="0.275" dx="0.45" dy="0.35" layer="1" rot="R90"/>
-<smd name="7" x="1.5" y="0.275" dx="0.45" dy="0.35" layer="1" rot="R90"/>
-<smd name="8" x="2" y="0.275" dx="0.45" dy="0.35" layer="1" rot="R90"/>
-<smd name="9" x="2.725" y="0.5" dx="0.45" dy="0.35" layer="1"/>
-<smd name="10" x="2.725" y="1" dx="0.45" dy="0.35" layer="1"/>
-<smd name="11" x="2.725" y="1.5" dx="0.45" dy="0.35" layer="1"/>
-<smd name="12" x="2.725" y="2" dx="0.45" dy="0.35" layer="1"/>
-<smd name="13" x="2.725" y="2.5" dx="0.45" dy="0.35" layer="1"/>
-<smd name="14" x="2" y="2.725" dx="0.45" dy="0.35" layer="1" rot="R90"/>
-<smd name="15" x="1.5" y="2.725" dx="0.45" dy="0.35" layer="1" rot="R90"/>
-<smd name="16" x="1" y="2.725" dx="0.45" dy="0.35" layer="1" rot="R90"/>
+<smd name="1" x="0.275" y="2.5" dx="0.45" dy="0.3" layer="1"/>
+<smd name="2" x="0.275" y="2" dx="0.45" dy="0.3" layer="1"/>
+<smd name="3" x="0.275" y="1.5" dx="0.45" dy="0.3" layer="1"/>
+<smd name="4" x="0.275" y="1" dx="0.45" dy="0.3" layer="1"/>
+<smd name="5" x="0.275" y="0.5" dx="0.45" dy="0.3" layer="1"/>
+<smd name="6" x="1" y="0.275" dx="0.45" dy="0.3" layer="1" rot="R90"/>
+<smd name="7" x="1.5" y="0.275" dx="0.45" dy="0.3" layer="1" rot="R90"/>
+<smd name="8" x="2" y="0.275" dx="0.45" dy="0.3" layer="1" rot="R90"/>
+<smd name="9" x="2.725" y="0.5" dx="0.45" dy="0.3" layer="1"/>
+<smd name="10" x="2.725" y="1" dx="0.45" dy="0.3" layer="1"/>
+<smd name="11" x="2.725" y="1.5" dx="0.45" dy="0.3" layer="1"/>
+<smd name="12" x="2.725" y="2" dx="0.45" dy="0.3" layer="1"/>
+<smd name="13" x="2.725" y="2.5" dx="0.45" dy="0.3" layer="1"/>
+<smd name="14" x="2" y="2.725" dx="0.45" dy="0.3" layer="1" rot="R90"/>
+<smd name="15" x="1.5" y="2.725" dx="0.45" dy="0.3" layer="1" rot="R90"/>
+<smd name="16" x="1" y="2.725" dx="0.45" dy="0.3" layer="1" rot="R90"/>
 <wire x1="0" y1="3" x2="0" y2="0" width="0.127" layer="21"/>
 <wire x1="0" y1="0" x2="3" y2="0" width="0.127" layer="21"/>
 <wire x1="3" y1="0" x2="3" y2="3" width="0.127" layer="21"/>
@@ -258,30 +258,30 @@ Source: http://www.zetex.com/3.0/pdf/ZXSC300.pdf</description>
 <wire x1="3.5" y1="0" x2="3.5" y2="3" width="0.127" layer="21"/>
 <wire x1="3.5" y1="3" x2="0" y2="3" width="0.127" layer="21"/>
 <wire x1="0" y1="3" x2="0" y2="0" width="0.127" layer="21"/>
-<smd name="1" x="0.245" y="2.675" dx="0.33" dy="0.45" layer="1"/>
-<smd name="24" x="0.675" y="2.675" dx="0.33" dy="0.45" layer="1"/>
-<smd name="23" x="1.105" y="2.675" dx="0.33" dy="0.45" layer="1"/>
-<smd name="22" x="1.535" y="2.675" dx="0.33" dy="0.45" layer="1"/>
-<smd name="21" x="1.965" y="2.675" dx="0.33" dy="0.45" layer="1"/>
-<smd name="20" x="2.395" y="2.675" dx="0.33" dy="0.45" layer="1"/>
-<smd name="19" x="2.825" y="2.675" dx="0.33" dy="0.45" layer="1"/>
-<smd name="18" x="3.255" y="2.675" dx="0.33" dy="0.45" layer="1"/>
-<smd name="2" x="0.325" y="2.145" dx="0.33" dy="0.45" layer="1" rot="R90"/>
-<smd name="3" x="0.325" y="1.715" dx="0.33" dy="0.45" layer="1" rot="R90"/>
-<smd name="4" x="0.325" y="1.285" dx="0.33" dy="0.45" layer="1" rot="R90"/>
-<smd name="5" x="0.325" y="0.855" dx="0.33" dy="0.45" layer="1" rot="R90"/>
-<smd name="6" x="0.245" y="0.325" dx="0.33" dy="0.45" layer="1"/>
-<smd name="7" x="0.675" y="0.325" dx="0.33" dy="0.45" layer="1"/>
-<smd name="8" x="1.105" y="0.325" dx="0.33" dy="0.45" layer="1"/>
-<smd name="9" x="1.535" y="0.325" dx="0.33" dy="0.45" layer="1"/>
-<smd name="10" x="1.965" y="0.325" dx="0.33" dy="0.45" layer="1"/>
-<smd name="11" x="2.395" y="0.325" dx="0.33" dy="0.45" layer="1"/>
-<smd name="12" x="2.825" y="0.325" dx="0.33" dy="0.45" layer="1"/>
-<smd name="13" x="3.255" y="0.325" dx="0.33" dy="0.45" layer="1"/>
-<smd name="14" x="3.175" y="0.855" dx="0.33" dy="0.45" layer="1" rot="R90"/>
-<smd name="15" x="3.175" y="1.285" dx="0.33" dy="0.45" layer="1" rot="R90"/>
-<smd name="16" x="3.175" y="1.715" dx="0.33" dy="0.45" layer="1" rot="R90"/>
-<smd name="17" x="3.175" y="2.145" dx="0.33" dy="0.45" layer="1" rot="R90"/>
+<smd name="1" x="0.245" y="2.675" dx="0.24" dy="0.45" layer="1"/>
+<smd name="24" x="0.675" y="2.675" dx="0.24" dy="0.45" layer="1"/>
+<smd name="23" x="1.105" y="2.675" dx="0.24" dy="0.45" layer="1"/>
+<smd name="22" x="1.535" y="2.675" dx="0.24" dy="0.45" layer="1"/>
+<smd name="21" x="1.965" y="2.675" dx="0.24" dy="0.45" layer="1"/>
+<smd name="20" x="2.395" y="2.675" dx="0.24" dy="0.45" layer="1"/>
+<smd name="19" x="2.825" y="2.675" dx="0.24" dy="0.45" layer="1"/>
+<smd name="18" x="3.255" y="2.675" dx="0.24" dy="0.45" layer="1"/>
+<smd name="2" x="0.325" y="2.145" dx="0.24" dy="0.45" layer="1" rot="R90"/>
+<smd name="3" x="0.325" y="1.715" dx="0.24" dy="0.45" layer="1" rot="R90"/>
+<smd name="4" x="0.325" y="1.285" dx="0.24" dy="0.45" layer="1" rot="R90"/>
+<smd name="5" x="0.325" y="0.855" dx="0.24" dy="0.45" layer="1" rot="R90"/>
+<smd name="6" x="0.245" y="0.325" dx="0.24" dy="0.45" layer="1"/>
+<smd name="7" x="0.675" y="0.325" dx="0.24" dy="0.45" layer="1"/>
+<smd name="8" x="1.105" y="0.325" dx="0.24" dy="0.45" layer="1"/>
+<smd name="9" x="1.535" y="0.325" dx="0.24" dy="0.45" layer="1"/>
+<smd name="10" x="1.965" y="0.325" dx="0.24" dy="0.45" layer="1"/>
+<smd name="11" x="2.395" y="0.325" dx="0.24" dy="0.45" layer="1"/>
+<smd name="12" x="2.825" y="0.325" dx="0.24" dy="0.45" layer="1"/>
+<smd name="13" x="3.255" y="0.325" dx="0.24" dy="0.45" layer="1"/>
+<smd name="14" x="3.175" y="0.855" dx="0.24" dy="0.45" layer="1" rot="R90"/>
+<smd name="15" x="3.175" y="1.285" dx="0.24" dy="0.45" layer="1" rot="R90"/>
+<smd name="16" x="3.175" y="1.715" dx="0.24" dy="0.45" layer="1" rot="R90"/>
+<smd name="17" x="3.175" y="2.145" dx="0.24" dy="0.45" layer="1" rot="R90"/>
 <circle x="-0.3" y="2.7" radius="0.1" width="0.2" layer="21"/>
 <text x="-0.1" y="-0.6" size="0.5" layer="27">&gt;VALUE</text>
 <text x="-0.1" y="3.1" size="0.5" layer="25">&gt;NAME</text>
