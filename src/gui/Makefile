@@ -1,7 +1,7 @@
 CMP = g++
 FLAGS = -Wall
 LINK = -lgdi32
-SRC = gui.cpp draw.cpp
+SRC = gui.cpp draw.cpp rocketio.cpp
 EXE = gui.exe
 
 all:
