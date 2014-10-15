@@ -8,19 +8,26 @@
 #define LPS331AP_WHO_ID		0xBB
 #define TEST_REG_NACK		-1
 
+// Dimensions
+#define ALTITUDE 		1
+#define TEMPERATURE 	2
+
 class LPS : public Sensor {
 
 // From abstract base class - see Sensor.h
 protected:
 	int8_t read_reg(uint8_t addr);
-	int8_t write_reg(uint8_t addr, uint8_t data);
+	void write_reg(uint8_t addr, int8_t data);
 public:
 	bool init();
+	// Dimensions are ALTITUDE and TEMPERATURE for this sensor
 	int32_t read_data(uint8_t dimension);
+	// Unused so far
 	void set_mode(void* mode);
+	// Unused so far
 	uint8_t get_status(uint8_t status);
 
-// Other members
+// Device specific members
 	enum regAddr {
 		REF_P_XL		= 0x08,
 		REF_P_L 		= 0x09,
@@ -47,20 +54,19 @@ public:
 		DELTA_PRESS_L 	= 0x3D,
 		DELTA_PRESS_H	= 0x3E,
 	}
-
 	LPS();
 	uint8_t get_address() {return address;}
 	// Turns on sensor and enables continuous output
-	void enable_default();
+	void enable();
 	int32_t read_pressure_raw();
 	float read_pressure_millibars();
 	int16_t read_temperature_raw();
 	float read_temperature_C();
-	static float pressure_to_altitude_meters(float pressure_mbar, float altimeter_setting_mbar = 1013.25);
+	// Formula only applies to 11 km / 36000 ft
+	static float pressure_to_altitude_m(float pressure_mbar, float altimeter_setting_mbar = 1013.25);
 private:
 	uint8_t address;
 	bool detect_device();
-	//int testWhoAmI(uint8_t address);
 };
 
 #endif /* LPS_H */

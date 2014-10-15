@@ -10,7 +10,7 @@ protected:
     virtual int8_t read_reg(uint8_t addr) = 0;
 
     // Write one byte to the register specified by addr in a sensor.
-    virtual int8_t write_reg(uint8_t addr, uint8_t data) = 0;
+    virtual void write_reg(uint8_t addr, int8_t data) = 0;
 
 public:
 
