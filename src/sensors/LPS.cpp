@@ -1,14 +1,18 @@
 #include "LPS.h"
 
-int8_t LPS::read_reg(uint8_t addr) {
-
+int8_t LPS::read_reg(uint8_t reg_addr) {
+	uint8_t buf[1];
+	int n = Chip_I2C_MasterRead(i2c_id, slave_address, buf, 1);
+	return buf[0];
 }
 
-void LPS::write_reg(uint8_t addr, int8_t data) {
-
+int LPS::write_reg(uint8_t reg_addr, uint8_t data) {
+	uint8_t buf[2] = {reg_addr, data};
+	return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
 }
 
-bool LPS::init() {
+bool LPS::init(void* in) {
+	i2c_id = *((I2C_ID_T *) in);
 	return detect_device();
 }
 
@@ -34,7 +38,7 @@ uint8_t LPS::get_status(uint8_t status) {
 // Device specific members
 
 LPS::LPS() {
-	address = SA0_HIGH_ADDRESS;
+	slave_address = SA0_HIGH_ADDRESS;
 }
 
 void LPS::enable() {
@@ -44,7 +48,12 @@ void LPS::enable() {
 }
 
 int32_t LPS::read_pressure_raw() {
-
+	// assert MSB to enable register address auto-increment
+	uint8_t *p_xl, *p_l, *p_h;
+	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, PRESS_OUT_XL, p_xl, 1);
+	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, PRESS_OUT_L, p_l, 1);
+	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, PRESS_OUT_H, p_h, 1);
+	return (int32_t)(int8_t)*p_h << 16 | (uint16_t)*p_l << 8 | p_xl;
 }
 
 float LPS::read_pressure_millibars() {
@@ -52,7 +61,10 @@ float LPS::read_pressure_millibars() {
 }
 
 int16_t LPS::read_temperature_raw() {
-
+	uint8_t *t_l, *t_h;
+	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, TEMP_OUT_L, t_l, 1);
+	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, TEMP_OUT_H, t_h, 1);
+	return (int16_t)(*t_h << 8 | *t_l);
 }
 
 float LPS::read_temperature_C() {
@@ -64,9 +76,9 @@ static float LPS::pressure_to_altitude_m(float pressure_mbar, float altimeter_se
 }
 
 bool LPS::detect_device() {
-
-
-	if (id == 0xBB) {
+	uint8_t *id;
+	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, WHO_AM_I, buf, 1);
+	if (*id == 0xBB) {
 		return true;
 	} else {
 		return false;
