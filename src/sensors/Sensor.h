@@ -7,27 +7,23 @@ class Sensor {
 protected:
 
     // Read a one byte register at the specified address in a sensor.
-    virtual int8_t read_reg(uint8_t addr) = 0;
+    virtual int8_t read_reg(uint8_t reg_addr) = 0;
 
     // Write one byte to the register specified by addr in a sensor.
-    virtual int8_t write_reg(uint8_t addr, uint8_t data) = 0;
+    virtual void write_reg(uint8_t reg_addr, int8_t data) = 0;
 
 public:
 
     // Perform all initialization steps associated with a specific sensor.
     // This will likely make use of write_reg() to send sensor-specific
     // command bytes.
-    virtual void init() = 0;
+    virtual bool init(void* in) = 0;
 
     // Read the full value of the data stored in a sensor, for one dimension.
     // This dimension could be X, Y, or Z for a gyro/accelerometer,
     // altitude or pressure for the barometric pressure sensor, etc.
-    //
-    // Note: this returns a full 32-bit int. For a sensor with 16 bit output, 
-    // this function must call read_reg() twice, and combine the two int8_ts
-    // into a int32_t, with sign extension. Similarly, a 24 bit sensor must
-    // call read_reg() three times for each data point.
-    virtual int32_t read_data(uint8_t dimension) = 0;
+    // Note: this is already calibrated, returns float.
+    virtual float read_data(uint8_t dimension) = 0;
 
     // Configure mode options available to the sensor. Each sensor will
     // interpret the input to set all of its various modes. This function
