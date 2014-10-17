@@ -13,22 +13,21 @@
 #define TEMPERATURE 	2
 
 class LPS : public Sensor {
-
 // From abstract base class - see Sensor.h
 protected:
 	int8_t read_reg(uint8_t reg_addr);
-	int write_reg(uint8_t addr, uint8_t reg_data);
+	int write_reg(uint8_t reg_addr, uint8_t data);
 public:
 	bool init(void* in);
 	// Dimensions are ALTITUDE and TEMPERATURE for this sensor
-	int32_t read_data(uint8_t dimension);
+	float read_data(uint8_t dimension);
 	// Unused so far
 	void set_mode(void* mode);
 	// Unused so far
 	uint8_t get_status(uint8_t status);
 
 // Device specific members
-	enum regAddr {
+	enum reg_addr {
 		REF_P_XL		= 0x08,
 		REF_P_L 		= 0x09,
 		REF_P_H 		= 0x0A,
@@ -52,9 +51,9 @@ public:
 		RPDS_H			= 0x3A,
 		DELTA_PRESS_XL 	= 0x3C,
 		DELTA_PRESS_L 	= 0x3D,
-		DELTA_PRESS_H	= 0x3E,
+		DELTA_PRESS_H	= 0x3E
 	}
-	LPS();
+	LPS() {}
 	uint8_t get_address() {return address;}
 	// Turns on sensor and enables continuous output
 	void enable();

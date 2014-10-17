@@ -16,13 +16,15 @@ bool LPS::init(void* in) {
 	return detect_device();
 }
 
-int32_t LPS::read_data(uint8_t dimension) {
+float LPS::read_data(uint8_t dimension) {
 	switch (dimension) {
 		case ALTITUDE:
 			float p_mbar = read_pressure_millibars();
 			return pressure_to_altitude_m(p_mbar);
 		case TEMPERATURE:
 			return read_temperature_C();
+		default:
+			return 0.0f;
 	}
 }
 
@@ -36,10 +38,6 @@ uint8_t LPS::get_status(uint8_t status) {
 }
 
 // Device specific members
-
-LPS::LPS() {
-	slave_address = SA0_HIGH_ADDRESS;
-}
 
 void LPS::enable() {
 	// 0xE0 = 0b11100000
@@ -76,11 +74,19 @@ static float LPS::pressure_to_altitude_m(float pressure_mbar, float altimeter_se
 }
 
 bool LPS::detect_device() {
-	uint8_t *id;
+	/*uint8_t *id;
 	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, WHO_AM_I, buf, 1);
 	if (*id == 0xBB) {
 		return true;
 	} else {
 		return false;
-	}
+	}*/
+	slave_address = SA0_HIGH_ADDRESS;
+	if (read_reg(WHO_AM_I) == LPS331AP_WHO_ID)
+		return true;
+	slave_address = SA0_LOW_ADDRESS;
+	if (read_reg(WHO_AM_I) == LPS331AP_WHO_ID)
+		return true;
+
+	return false;
 }
