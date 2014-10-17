@@ -38,6 +38,10 @@ void L3G::enable() {
 	// 0x0F = 0b00001111
 	// Normal power mode, all axes enabled
 	write_reg(CTRL_REG1, 0x0F);
+
+	// 0x20 = 0b00100000
+	// 2000 dps mode
+	write_reg(CTRL_REG4, 0x20);
 }
 
 /*static void L3G::vector_cross(const vector *a, const vector *b, vector *out) {
@@ -73,6 +77,10 @@ int16_t read_spin_rate_raw(uint8_t dimension) {
 			reg_addr_l = OUT_Z_L;
 			reg_addr_h = OUT_Z_H;
 			break;
+		default:
+			reg_addr_l = OUT_X_L;
+			reg_addr_h = OUT_X_H;
+			break;
 	}
 	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_l, r_l, 1);
 	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_h, r_h, 1);
@@ -80,7 +88,7 @@ int16_t read_spin_rate_raw(uint8_t dimension) {
 }
 
 float read_spin_rate_dps(uint8_t dimension) {
-	return 0.0f + (float)read_spin_rate_raw(dimension) / 1.0f;
+	return 0.0f + (float)read_spin_rate_raw(dimension) / 16.384f;
 }
 
 uint8_t read_temperature_raw() {

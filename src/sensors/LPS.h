@@ -54,7 +54,7 @@ public:
 		DELTA_PRESS_H	= 0x3E
 	}
 	LPS() {}
-	uint8_t get_address() {return address;}
+	uint8_t get_address() {return slave_address;}
 	// Turns on sensor and enables continuous output
 	void enable();
 	int32_t read_pressure_raw();

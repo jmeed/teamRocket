@@ -65,20 +65,20 @@ public:
 	} vector;
 	//vector g; // gyro angular velocity readings
 	L3G() {}
-	uint8_t get_address() {return address;}
+	uint8_t get_address() {return slave_address;}
 	// Turns on sensor and enables continuous output
 	void enable();
-	// Vector functions
-    //static void vector_cross(const vector *a, const vector *b, vector *out);
-    //static float vector_dot(const vector *a,const vector *b);
-    //static void vector_normalize(vector *a);
     // Reading data
     int16_t read_spin_rate_raw(uint8_t dimension);
-    // Has absolutely no calibration yet
+    // May need calibration
     float read_spin_rate_dps(uint8_t dimension);
     uint8_t read_temperature_raw();
  	// Using same raw conversion as LPS sensor, probably needs calibration
     float read_temperature_C();
+	// Vector functions
+    //static void vector_cross(const vector *a, const vector *b, vector *out);
+    //static float vector_dot(const vector *a,const vector *b);
+    //static void vector_normalize(vector *a);
 private:
 	I2C_ID_T i2c_id;
 	uint8_t slave_address;
