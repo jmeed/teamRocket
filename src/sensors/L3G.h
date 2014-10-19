@@ -39,7 +39,7 @@ public:
 		CTRL_REG4		0x23,
 		CTRL_REG5		0x24,
 		REFERENCE		0x25,
-		TEMP_OUT		0x26,
+		OUT_TEMP		0x26,
 		STATUS_REG		0x27,
 		OUT_X_L			0x28,
 		OUT_X_H			0x29,

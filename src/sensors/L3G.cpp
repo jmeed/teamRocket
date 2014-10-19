@@ -93,7 +93,7 @@ float read_spin_rate_dps(uint8_t dimension) {
 
 uint8_t read_temperature_raw() {
 	uint8_t *t;
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, TEMP_OUT, t, 1);
+	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, OUT_TEMP, t, 1);
 	return *t;
 }
 

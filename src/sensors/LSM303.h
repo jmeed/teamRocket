@@ -35,8 +35,8 @@ public:
 
 // Device specific members
 	enum reg_addr {
-		TEMP_OUT_L		0x05,
-		TEMP_OUT_H		0x06,
+		OUT_TEMP_L		0x05,
+		OUT_TEMP_H		0x06,
 		STATUS_M		0x07,
 		OUT_X_L_M		0x08,
 		OUT_X_H_M		0x09,

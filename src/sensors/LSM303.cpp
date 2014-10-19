@@ -142,8 +142,8 @@ int16_t LSM303::read_mag_raw(uint8_t dimension) {
 
 int16_t LSM303::read_temperature_raw() {
 	uint8_t *t_l, *t_h;
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, TEMP_OUT_L, t_l, 1);
-	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, TEMP_OUT_H, t_h, 1);
+	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, OUT_TEMP_L, t_l, 1);
+	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, OUT_TEMP_H, t_h, 1);
 	return (int16_t)(*t_h << 8 | *t_l);
 }
 
