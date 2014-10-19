@@ -33,7 +33,7 @@ public:
 	// Unused so far
 	uint8_t get_status(uint8_t status);
 
-// Device specific members
+	// Device specific members
 	enum reg_addr {
 		OUT_TEMP_L		0x05,
 		OUT_TEMP_H		0x06,
