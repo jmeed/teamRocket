@@ -111,8 +111,8 @@ public:
 	the registers it writes to.
 	*/
 	void enable();
-	void set_timeout(unsigned int timeout);
-	unsigned int get_timeout();
+	//void set_timeout(unsigned int timeout);
+	//unsigned int get_timeout();
 	//bool timeout_occured();
 	int16_t read_accel_raw(uint8_t dimension);
 	// May need calibration
