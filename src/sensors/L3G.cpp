@@ -1,14 +1,16 @@
 #include "L3G.h"
 
-int8_t L3G::read_reg(uint8_t reg_addr) {
-	uint8_t buf[1];
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
-	return buf[0];
+uint8_t L3G::read_reg(uint8_t reg_addr) {
+	read_i2c_register(slave_address | 0x01, slave_address, reg_addr);
+	// uint8_t buf[1];
+	// int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
+	// return buf[0];
 }
 
-int L3G::write_reg(uint8_t reg_addr, uint8_t data) {
-	uint8_t buf[2] = {reg_addr, data};
-	return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
+void L3G::write_reg(uint8_t reg_addr, uint8_t data) {
+	write_i2c_register(slave_address, reg_addr, data);
+	// uint8_t buf[2] = {reg_addr, data};
+	// return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
 }
 
 bool L3G::init(I2C_ID_T in) {
@@ -102,13 +104,15 @@ float read_temperature_C() {
 }
 
 bool L3G::detect_device() {
-	// Try each possible address and return if reading WHO_AM_I returns the expected response
+	// Try each possible address and return if reading L3G_WHO_AM_I returns the expected response
 	slave_address = L3G_SA0_LOW_ADDRESS;
 	if (read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_1 || read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_2)
 		return true;
 	slave_address = L3G_SA0_HIGH_ADDRESS;
-	if (read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_1 || read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_2)
+	if (read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_1 || read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_2) {
+		slave_address = L3G_SA0_LOW_ADDRESS;
 		return true;
+	}
 
 	return false;
 }

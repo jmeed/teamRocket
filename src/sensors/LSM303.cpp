@@ -1,14 +1,16 @@
 #include "LSM303.h"
 
-int8_t LSM303::read_reg(uint8_t reg_addr) {
-	uint8_t buf[1];
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
-	return buf[0];
+uint8_t LSM303::read_reg(uint8_t reg_addr) {
+	read_i2c_register(slave_address | 0x01, slave_address, reg_addr);
+	// uint8_t buf[1];
+	// int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
+	// return buf[0];
 }
 
-int LSM303::write_reg(uint8_t reg_addr, uint8_t data) {
-	uint8_t buf[2] = {reg_addr, data};
-	return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
+void LSM303::write_reg(uint8_t reg_addr, uint8_t data) {
+	write_i2c_register(slave_address, reg_addr, data);
+	// uint8_t buf[2] = {reg_addr, data};
+	// return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
 }
 
 bool LSM303::init(I2C_ID_T in) {
@@ -198,12 +200,14 @@ int16_t LSM303::read_temperature_raw() {
 // }
 
 bool LSM303::detect_device() {
+	slave_address = LSM303_SA0_LOW_ADDRESS;
+	if (read_reg(LSM303_WHO_AM_I) == LSM303D_WHO_ID)
+		return true;
 	slave_address = LSM303_SA0_HIGH_ADDRESS;
-	if (read_reg(LSM303_WHO_AM_I) == LSM303D_WHO_ID)
+	if (read_reg(LSM303_WHO_AM_I) == LSM303D_WHO_ID) {
+		slave_address = LSM303_SA0_LOW_ADDRESS;
 		return true;
-	slave_address = LSM303_SA0_LOW_ADDRESS
-	if (read_reg(LSM303_WHO_AM_I) == LSM303D_WHO_ID)
-		return true;
+	}
 
 	return false;
 }

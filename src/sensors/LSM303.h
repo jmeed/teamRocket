@@ -1,9 +1,10 @@
 #ifndef LSM303_H
 #define LSM303_H
 
-#include "i2c_17xx_40xx.h"
+//#include "i2c_17xx_40xx.h"
 #include <cstdint>
 #include <math.h>
+#include "../i2c/i2c_com.h"
 
 #define LSM303_SA0_HIGH_ADDRESS		0b0011101 // D with SA0 high
 #define LSM303_SA0_LOW_ADDRESS		0b0011110 // D with SA0 low
@@ -80,8 +81,8 @@
 class LSM303 {
 // From abstract base class - see Sensor.h
 protected:
-	int8_t read_reg(uint8_t reg_addr);
-	int write_reg(uint8_t reg_addr, uint8_t data);
+	uint8_t read_reg(uint8_t reg_addr);
+	void write_reg(uint8_t reg_addr, uint8_t data);
 public:
 	bool init(I2C_ID_T in);
 	// Dimensions are LSM303_ACCEL_X, LSM303_ACCEL_Y, LSM303_ACCEL_Z,

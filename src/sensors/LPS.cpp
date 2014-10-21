@@ -1,14 +1,16 @@
 #include "LPS.h"
 
-int8_t LPS::read_reg(uint8_t reg_addr) {
-	uint8_t buf[1];
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
-	return buf[0];
+uint8_t LPS::read_reg(uint8_t reg_addr) {
+	read_i2c_register(slave_address | 0x01, slave_address, reg_addr);
+	// uint8_t buf[1];
+	// int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
+	// return buf[0];
 }
 
-int LPS::write_reg(uint8_t reg_addr, uint8_t data) {
-	uint8_t buf[2] = {reg_addr, data};
-	return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
+void LPS::write_reg(uint8_t reg_addr, uint8_t data) {
+	write_i2c_register(slave_address, reg_addr, data);
+	// uint8_t buf[2] = {reg_addr, data};
+	// return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
 }
 
 bool LPS::init(I2C_ID_T in) {
@@ -74,19 +76,14 @@ static float LPS::pressure_to_altitude_m(float pressure_mbar, float altimeter_se
 }
 
 bool LPS::detect_device() {
-	/*uint8_t *id;
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, WHO_AM_I, buf, 1);
-	if (*id == 0xBB) {
+	slave_address = LPS_SA0_LOW_ADDRESS;
+	if (read_reg(LPS_WHO_AM_I) == LPS331AP_WHO_ID)
 		return true;
-	} else {
-		return false;
-	}*/
 	slave_address = LPS_SA0_HIGH_ADDRESS;
-	if (read_reg(LPS_WHO_AM_I) == LPS331AP_WHO_ID)
+	if (read_reg(LPS_WHO_AM_I) == LPS331AP_WHO_ID) {
+		slave_address = LPS_SA0_LOW_ADDRESS;
 		return true;
-	slave_address = SA0_LOW_ADDRESS;
-	if (read_reg(LPS_WHO_AM_I) == LPS331AP_WHO_ID)
-		return true;
+	}
 
 	return false;
 }

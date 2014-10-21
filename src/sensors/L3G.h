@@ -1,9 +1,10 @@
 #ifndef L3G_H
 #define L3G_H
 
-#include "i2c_17xx_40xx.h"
+//#include "i2c_17xx_40xx.h"
 #include <cstdint>
 #include <math.h>
+#include "../i2c/i2c_com.h"
 
 #define L3G_SA0_LOW_ADDRESS    (0xD4 >> 1)
 #define L3G_SA0_HIGH_ADDRESS   (0xD6 >> 1)
@@ -45,11 +46,11 @@
 #define L3G_SPIN_RATE_Z	3
 #define L3G_TEMPERATURE	4
 
-class L3G : {
+class L3G {
 // From abstract base class - see Sensor.h
 protected:
-	int8_t read_reg(uint8_t reg_addr);
-	int write_reg(uint8_t reg_addr, uint8_t reg_data);
+	uint8_t read_reg(uint8_t reg_addr);
+	void write_reg(uint8_t reg_addr, uint8_t reg_data);
 public:
 	bool init(I2C_ID_T in);
 	// Dimensions are L3G_SPIN_RATE_X, L3G_SPIN_RATE_Y, L3G_SPIN_RATE_Z, and L3G_TEMPERATURE for this sensor
@@ -60,9 +61,9 @@ public:
 	uint8_t get_status(uint8_t status);
 
 // Device specific members
-	typedef struct vector {
-		float x, y, z;
-	} vector;
+	//typedef struct vector {
+	//	float x, y, z;
+	//} vector;
 	//vector g; // gyro angular velocity readings
 	L3G() {}
 	uint8_t get_address() {return slave_address;}

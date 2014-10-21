@@ -1,8 +1,9 @@
 #ifndef LPS_H
 #define LPS_H
 
-#include "i2c_17xx_40xx.h"
+//#include "i2c_17xx_40xx.h"
 #include <cstdint>
+#include "../i2c/i2c_com.h"
 
 #define LPS_SA0_LOW_ADDRESS		0b1011100
 #define LPS_SA0_HIGH_ADDRESS	0b1011101
@@ -41,8 +42,8 @@
 class LPS {
 // From abstract base class - see Sensor.h
 protected:
-	int8_t read_reg(uint8_t reg_addr);
-	int write_reg(uint8_t reg_addr, uint8_t data);
+	uint8_t read_reg(uint8_t reg_addr);
+	void write_reg(uint8_t reg_addr, uint8_t data);
 public:
 	bool init(I2C_ID_T in);
 	// Dimensions are LPS_ALTITUDE and LPS_TEMPERATURE for this sensor
