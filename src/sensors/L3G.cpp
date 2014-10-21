@@ -2,7 +2,7 @@
 
 int8_t L3G::read_reg(uint8_t reg_addr) {
 	uint8_t buf[1];
-	int n = Chip_I2C_MasterRead(i2c_id, slave_address, buf, 1);
+	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
 	return buf[0];
 }
 

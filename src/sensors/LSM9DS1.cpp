@@ -24,8 +24,8 @@ bool LSM9DS1::init(gyro_scale g_sc,
 	calc_m_res(); // Calculate Gs / ADC tick, stored in m_res variable
 	
 	// Test if our devices respond
-	uint8_t xlg_test = read_reg_xlg(WHO_AM_I_XLG);
-	uint8_t m_test = read_reg_mag(WHO_AM_I_M);
+	uint8_t xlg_test = read_reg_xlg(LSM_WHO_AM_I_XLG);
+	uint8_t m_test = read_reg_mag(LSM_WHO_AM_I_M);
 	// Return false if we didn't communicate successfully
 	if !((xlg_test == LSM9DS1_XLG_WHO_ID) && (m_test == LSM9DS1_M_WHO_ID))
 		return false;
@@ -53,21 +53,21 @@ int16_t LSM9DS1::read_gyro_raw(uint8_t dimension) {
 	int8_t out_l, out_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
-		case GYRO_X:
-			reg_addr_l = OUT_X_L_G;
-			reg_addr_h = OUT_X_H_G;
+		case LSM_GYRO_X:
+			reg_addr_l = LSM_OUT_X_L_G;
+			reg_addr_h = LSM_OUT_X_H_G;
 			break;
-		case GYRO_Y:
-			reg_addr_l = OUT_Y_L_G;
-			reg_addr_h = OUT_Y_H_G;
+		case LSM_GYRO_Y:
+			reg_addr_l = LSM_OUT_Y_L_G;
+			reg_addr_h = LSM_OUT_Y_H_G;
 			break;
-		case GYRO_Z:
-			reg_addr_l = OUT_Z_L_G;
-			reg_addr_h = OUT_Z_H_G;
+		case LSM_GYRO_Z:
+			reg_addr_l = LSM_OUT_Z_L_G;
+			reg_addr_h = LSM_OUT_Z_H_G;
 			break;
 		default:
-			reg_addr_l = OUT_X_L_G;
-			reg_addr_h = OUT_X_H_G;
+			reg_addr_l = LSM_OUT_X_L_G;
+			reg_addr_h = LSM_OUT_X_H_G;
 			break;
 	}
 	out_l = read_reg_xlg(reg_addr_l);
@@ -83,21 +83,21 @@ int16_t LSM9DS1::read_accel_raw(uint8_t dimension) {
 	int8_t out_l, out_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
-		case ACCEL_X:
-			reg_addr_l = OUT_X_L_XL;
-			reg_addr_h = OUT_X_H_XL;
+		case LSM_ACCEL_X:
+			reg_addr_l = LSM_OUT_X_L_XL;
+			reg_addr_h = LSM_OUT_X_H_XL;
 			break;
-		case ACCEL_Y:
-			reg_addr_l = OUT_Y_L_XL;
-			reg_addr_h = OUT_Y_H_XL;
+		case LSM_ACCEL_Y:
+			reg_addr_l = LSM_OUT_Y_L_XL;
+			reg_addr_h = LSM_OUT_Y_H_XL;
 			break;
-		case ACCEL_Z:
-			reg_addr_l = OUT_Z_L_XL;
-			reg_addr_h = OUT_Z_H_XL;
+		case LSM_ACCEL_Z:
+			reg_addr_l = LSM_OUT_Z_L_XL;
+			reg_addr_h = LSM_OUT_Z_H_XL;
 			break;
 		default:
-			reg_addr_l = OUT_X_L_XL;
-			reg_addr_h = OUT_X_H_XL;
+			reg_addr_l = LSM_OUT_X_L_XL;
+			reg_addr_h = LSM_OUT_X_H_XL;
 			break;
 	}
 	out_l = read_reg_xlg(reg_addr_l);
@@ -113,21 +113,21 @@ int16_t LSM9DS1::read_mag_raw(uint8_t dimension) {
 	int8_t out_l, out_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
-		case MAG_X:
-			reg_addr_l = OUT_X_L_M;
-			reg_addr_h = OUT_X_H_M;
+		case LSM_MAG_X:
+			reg_addr_l = LSM_OUT_X_L_M;
+			reg_addr_h = LSM_OUT_X_H_M;
 			break;
-		case MAG_Y:
-			reg_addr_l = OUT_Y_L_M;
-			reg_addr_h = OUT_Y_H_M;
+		case LSM_MAG_Y:
+			reg_addr_l = LSM_OUT_Y_L_M;
+			reg_addr_h = LSM_OUT_Y_H_M;
 			break;
-		case MAG_Z:
-			reg_addr_l = OUT_Z_L_M;
-			reg_addr_h = OUT_Z_H_M;
+		case LSM_MAG_Z:
+			reg_addr_l = LSM_OUT_Z_L_M;
+			reg_addr_h = LSM_OUT_Z_H_M;
 			break;
 		default:
-			reg_addr_l = OUT_X_L_M;
-			reg_addr_h = OUT_X_H_M;
+			reg_addr_l = LSM_OUT_X_L_M;
+			reg_addr_h = LSM_OUT_X_H_M;
 			break;
 	}
 	out_l = read_reg_mag(reg_addr_l);
@@ -141,8 +141,8 @@ float LSM9DS1::read_mag_gs(uint8_t dimension) {
 
 int16_t LSM9DS1::read_temperature_raw() {
 	int8_t out_l, out_h;
-	out_l = read_reg_xlg(OUT_TEMP_L);
-	out_h = read_reg_xlg(OUT_TEMP_H);
+	out_l = read_reg_xlg(LSM_OUT_TEMP_L);
+	out_h = read_reg_xlg(LSM_OUT_TEMP_H);
 	return ((int16_t)(out_h << 12 | out_l << 4)) >> 4; // 12 bit signed integer
 }
 
@@ -152,13 +152,13 @@ float LSM9DS1::read_temperature_C() {
 
 void LSM9DS1::set_gyro_scale(gyro_scale g_sc) {
 	// Get current reg value
-	uint8_t ctrl = (uint8_t)read_reg_xlg(CTRL_REG1_G);
+	uint8_t ctrl = (uint8_t)read_reg_xlg(LSM_CTRL_REG1_G);
 	// Mask out scale bits
 	ctrl &= 0xFF ^ (0x3 << 3);
 	// Set scale bits
 	ctrl |= (g_sc << 3);
 	// Write back to reg
-	write_reg_xlg(CTRL_REG1_G, ctrl);
+	write_reg_xlg(LSM_CTRL_REG1_G, ctrl);
 	// Update class variable
 	g_scale = g_sc;
 	calc_g_res();
@@ -166,13 +166,13 @@ void LSM9DS1::set_gyro_scale(gyro_scale g_sc) {
 
 void LSM9DS1::set_accel_scale(accel_scale a_sc) {
 	// Get current reg value
-	uint8_t ctrl = (uint8_t)read_reg_xlg(CTRL_REG6_XL);
+	uint8_t ctrl = (uint8_t)read_reg_xlg(LSM_CTRL_REG6_XL);
 	// Mask out scale bits
 	ctrl &= 0xFF ^ (0x3 << 3);
 	// Set scale bits
 	ctrl |= (a_sc << 3);
 	// Write back to reg
-	write_reg_xlg(CTRL_REG6_XL, ctrl);
+	write_reg_xlg(LSM_CTRL_REG6_XL, ctrl);
 	// Update class variable
 	a_scale = a_sc;
 	calc_a_res();
@@ -180,13 +180,13 @@ void LSM9DS1::set_accel_scale(accel_scale a_sc) {
 
 void LSM9DS1::set_mag_scale(mag_scale m_sc) {
 	// Get current reg value
-	uint8_t ctrl = (uint8_t)read_reg_mag(CTRL_REG2_M);
+	uint8_t ctrl = (uint8_t)read_reg_mag(LSM_CTRL_REG2_M);
 	// Mask out scale bits
 	ctrl &= 0xFF ^ (0x3 << 5);
 	// Set scale bits
 	ctrl |= (m_sc << 5);
 	// Write back to reg
-	write_reg_mag(CTRL_REG2_M, ctrl);
+	write_reg_mag(LSM_CTRL_REG2_M, ctrl);
 	// Update class variable
 	m_scale = m_sc;
 	calc_m_res();
@@ -194,82 +194,82 @@ void LSM9DS1::set_mag_scale(mag_scale m_sc) {
 
 void LSM9DS1::set_gyro_odr(gyro_odr g_odr) {
 	// Get current reg value
-	uint8_t ctrl = (uint8_t)read_reg_xlg(CTRL_REG1_G);
+	uint8_t ctrl = (uint8_t)read_reg_xlg(LSM_CTRL_REG1_G);
 	// Mask out ODR bits
 	ctrl &= 0xFF ^ (0x7 << 5);
 	// Set ODR bits
 	ctrl |= (g_odr << 5);
 	// Write back to reg
-	write_reg_xlg(CTRL_REG1_G, ctrl);
+	write_reg_xlg(LSM_CTRL_REG1_G, ctrl);
 }
 
 void LSM9DS1::set_accel_odr(accel_odr a_odr) {
 	// Get current reg value
-	uint8_t ctrl = (uint8_t)read_reg_xlg(CTRL_REG6_XL);
+	uint8_t ctrl = (uint8_t)read_reg_xlg(LSM_CTRL_REG6_XL);
 	// Mask out ODR bits
 	ctrl &= 0xFF ^ (0x7 << 5);
 	// Set ODR bits
 	ctrl |= (a_odr << 5);
 	// Write back to reg
-	write_reg_xlg(CTRL_REG6_XL, ctrl);
+	write_reg_xlg(LSM_CTRL_REG6_XL, ctrl);
 }
 
 void LSM9DS1::set_mag_odr(mag_odr m_odr) {
 	// Get current reg value
-	uint8_t ctrl = (uint8_t)read_reg_mag(CTRL_REG1_M);
+	uint8_t ctrl = (uint8_t)read_reg_mag(LSM_CTRL_REG1_M);
 	// Mask out ODR bits
 	ctrl &= 0xFF ^ (0x7 << 2);
 	// Set ODR bits
 	ctrl |= (m_odr << 2);
 	// Write back to reg
-	write_reg_mag(CTRL_REG1_M, ctrl);
+	write_reg_mag(LSM_CTRL_REG1_M, ctrl);
 }
 
 void LSM9DS1::set_accel_abw(accel_abw a_abw) {
 	// Get current reg value
-	uint8_t ctrl = (uint8_t)read_reg_xlg(CTRL_REG6_XL);
+	uint8_t ctrl = (uint8_t)read_reg_xlg(LSM_CTRL_REG6_XL);
 	// Mask out ABW bits
 	ctrl &= 0xFF ^ 0x3;
 	// Set ABW bits
 	ctrl |= a_abw;
 	// Write back to reg
-	write_reg_xlg(CTRL_REG6_XL, ctrl);
+	write_reg_xlg(LSM_CTRL_REG6_XL, ctrl);
 }
 
 void LSM9DS1::configure_gyro_int(uint8_t int1_cfg, uint16_t int1_ths_x,
 		uint16_t int1_ths_y, uint16_t int1_ths_z, uint8_t duration) {
 	// Write directly to each register
-	write_reg_xlg(INT_GEN_CFG_G, int1_cfg);
-	write_reg_xlg(INT_GEN_THS_XH_G, (int1_ths_x & 0xFF00) >> 8);
-	write_reg_xlg(INT_GEN_THS_XL_G, (int1_ths_x & 0xFF));
-	write_reg_xlg(INT_GEN_THS_YH_G, (int1_ths_y & 0xFF00) >> 8);
-	write_reg_xlg(INT_GEN_THS_YL_G, (int1_ths_y & 0xFF));
-	write_reg_xlg(INT_GEN_THS_ZH_G, (int1_ths_z & 0xFF00) >> 8);
-	write_reg_xlg(INT_GEN_THS_ZL_G, (int1_ths_z & 0xFF));
+	write_reg_xlg(LSM_INT_GEN_CFG_G, int1_cfg);
+	write_reg_xlg(LSM_INT_GEN_THS_XH_G, (int1_ths_x & 0xFF00) >> 8);
+	write_reg_xlg(LSM_INT_GEN_THS_XL_G, (int1_ths_x & 0xFF));
+	write_reg_xlg(LSM_INT_GEN_THS_YH_G, (int1_ths_y & 0xFF00) >> 8);
+	write_reg_xlg(LSM_INT_GEN_THS_YL_G, (int1_ths_y & 0xFF));
+	write_reg_xlg(LSM_INT_GEN_THS_ZH_G, (int1_ths_z & 0xFF00) >> 8);
+	write_reg_xlg(LSM_INT_GEN_THS_ZL_G, (int1_ths_z & 0xFF));
 	if (duration)
-		write_reg_xlg(INT1_GEN_DUR_G, 0x80 | duration);
+		write_reg_xlg(LSM_INT1_GEN_DUR_G, 0x80 | duration);
 	else
-		write_reg_xlg(INT1_GEN_DUR_G, 0x00);
+		write_reg_xlg(LSM_INT1_GEN_DUR_G, 0x00);
 }
 
 void LSM9DS1::configure_accel_int(uint8_t int1_cfg, uint8_t int1_ths_x,
 		uint8_t int1_ths_y, uint8_t int1_ths_z, uint8_t duration) {
 	// Write directly to each register
-	write_reg_xlg(INT_GEN_CFG_XL, int1_cfg);
-	write_reg_xlg(INT_GEN_THS_X_XL, (int1_ths_x & 0xFF));
-	write_reg_xlg(INT_GEN_THS_Y_XL, (int1_ths_y & 0xFF));
-	write_reg_xlg(INT_GEN_THS_Z_XL, (int1_ths_z & 0xFF));
+	write_reg_xlg(LSM_INT_GEN_CFG_XL, int1_cfg);
+	write_reg_xlg(LSM_INT_GEN_THS_X_XL, (int1_ths_x & 0xFF));
+	write_reg_xlg(LSM_INT_GEN_THS_Y_XL, (int1_ths_y & 0xFF));
+	write_reg_xlg(LSM_INT_GEN_THS_Z_XL, (int1_ths_z & 0xFF));
 	if (duration)
-		write_reg_xlg(INT1_GEN_DUR_XL, 0x80 | duration);
+		write_reg_xlg(LSM_INT1_GEN_DUR_XL, 0x80 | duration);
 	else
-		write_reg_xlg(INT1_GEN_DUR_XL, 0x00);
+		write_reg_xlg(LSM_INT1_GEN_DUR_XL, 0x00);
 }
 
 void LSM9DS1::configure_mag_int(uint8_t int1_cfg, uint16_t int1_ths) {
 	// Write directly to each register
-	write_reg_mag(INT_CFG_M, int1_cfg);
-	write_reg_mag(INT_THS_H_M, (int1_ths & 0xFF00) >> 8);
-	write_reg_mag(INT_THS_L_M, (int1_ths & 0xFF));
+	write_reg_mag(LSM_INT_CFG_M, int1_cfg);
+	write_reg_mag(LSM_INT_THS_H_M, (int1_ths & 0xFF00) >> 8);
+	write_reg_mag(LSM_INT_THS_L_M, (int1_ths & 0xFF));
 }
 
 /*void LSM9DS1::calibrate(float g_bias[3], float a_bias[3]) {
@@ -353,26 +353,26 @@ void LSM9DS1::configure_mag_int(uint8_t int1_cfg, uint16_t int1_ths) {
 
 void LSM9DS1::init_gyro() {
 	// See header file for command descriptions
-	write_reg_xlg(CTRL_REG1_G, 0x38);
-	write_reg_xlg(CTRL_REG2_G, 0x00);
-	write_reg_xlg(CTRL_REG3_G, 0x00);
-	write_reg_xlg(CTRL_REG4_G, 0x38);
+	write_reg_xlg(LSM_CTRL_REG1_G, 0x38);
+	write_reg_xlg(LSM_CTRL_REG2_G, 0x00);
+	write_reg_xlg(LSM_CTRL_REG3_G, 0x00);
+	write_reg_xlg(LSM_CTRL_REG4_G, 0x38);
 }
 
 void LSM9DS1::init_accel() {
 	// See header file for command descriptions
-	write_reg_xlg(CTRL_REG5_XL, 0x38);
-	write_reg_xlg(CTRL_REG6_XL, 0xD8);
-	write_reg_xlg(CTRL_REG7_XL, 0x00);
+	write_reg_xlg(LSM_CTRL_REG5_XL, 0x38);
+	write_reg_xlg(LSM_CTRL_REG6_XL, 0xD8);
+	write_reg_xlg(LSM_CTRL_REG7_XL, 0x00);
 }
 
 void LSM9DS1::init_mag() {
 	// See header file for command descriptions
-	write_reg_mag(CTRL_REG1_M, 0xC0);
-	write_reg_mag(CTRL_REG2_M, 0x00);
-	write_reg_mag(CTRL_REG3_M, 0x00);
-	write_reg_mag(CTRL_REG4_M, 0x0C);
-	write_reg_mag(CTRL_REG5_M, 0x00);
+	write_reg_mag(LSM_CTRL_REG1_M, 0xC0);
+	write_reg_mag(LSM_CTRL_REG2_M, 0x00);
+	write_reg_mag(LSM_CTRL_REG3_M, 0x00);
+	write_reg_mag(LSM_CTRL_REG4_M, 0x0C);
+	write_reg_mag(LSM_CTRL_REG5_M, 0x00);
 }
 
 void LSM9DS1::calc_g_res() {
