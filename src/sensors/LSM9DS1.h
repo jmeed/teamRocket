@@ -161,7 +161,7 @@ public:
 	float g_bias[3];
 
 	// Constructor - call with I2C slave addresses for accel/gyro and mag
-	LSM9DS1(uint8_t xg_address, uint8_t mag_address, I2C_ID_T id);
+	LSM9DS1(uint8_t xg_addr, uint8_t mag_addr);
 	
 	// Initialize the gyro, accelerometer, and magnetometer.
 	// This will set up the scale and output rate of each sensor. It'll also

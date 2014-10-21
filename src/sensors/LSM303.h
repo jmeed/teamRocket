@@ -84,7 +84,7 @@ protected:
 	uint8_t read_reg(uint8_t reg_addr);
 	void write_reg(uint8_t reg_addr, uint8_t data);
 public:
-	bool init(I2C_ID_T in);
+	bool init();
 	// Dimensions are LSM303_ACCEL_X, LSM303_ACCEL_Y, LSM303_ACCEL_Z,
 	// LSM303_MAG_X, LSM303_MAG_Y, LSM303_MAG_Z, LSM303_MAG_HEADING
 	// and LSM303_TEMPERATURE for this sensor

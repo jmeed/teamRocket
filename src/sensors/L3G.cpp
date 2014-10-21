@@ -13,8 +13,7 @@ void L3G::write_reg(uint8_t reg_addr, uint8_t data) {
 	// return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
 }
 
-bool L3G::init(I2C_ID_T in) {
-	i2c_id = in;
+bool L3G::init() {
 	return detect_device();
 }
 
