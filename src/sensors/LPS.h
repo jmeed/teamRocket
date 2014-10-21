@@ -65,7 +65,6 @@ public:
 	// Formula only applies to 11 km / 36000 ft
 	static float pressure_to_altitude_m(float pressure_mbar, float altimeter_setting_mbar = 1013.25);
 private:
-	I2C_ID_T i2c_id;
 	uint8_t slave_address;
 	bool detect_device();
 };

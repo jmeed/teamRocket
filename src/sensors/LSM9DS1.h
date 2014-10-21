@@ -266,9 +266,6 @@ public:
 	// void calibrate(float gbias[3], float abias[3]);
 
 private:
-	// I2C id
-	I2C_ID_T i2c_id;
-
 	// The I2C slave addresses for both devices
 	uint8_t xlg_address;
 	uint8_t mag_address;

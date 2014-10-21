@@ -81,7 +81,6 @@ public:
     //static float vector_dot(const vector *a,const vector *b);
     //static void vector_normalize(vector *a);
 private:
-	I2C_ID_T i2c_id;
 	uint8_t slave_address;
 	bool detect_device();
 };
