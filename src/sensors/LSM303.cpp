@@ -49,25 +49,25 @@ void LSM303::enable() {
 
 	// 0x20 = 0b00100000
 	// AFS = 0b100 (+/- 16 g full scale)
-	int n = write_reg(LSM303_CTRL_REG2, 0x20);
+	write_reg(LSM303_CTRL_REG2, 0x20);
 	
 	// 0x57 = 0b01010111
 	// ADDR = 0101 (50 Hz ODR), AZEN = AYEN = AXEN = 1 (all axes enabled)
-	n = write_reg(LSM303_CTRL_REG1, 0x57);
+	write_reg(LSM303_CTRL_REG1, 0x57);
 
 	// Magnetometer
 
 	// 0x64 = 0b01100100
 	// M_RES = 11 (high resolution mode), M_ODR = 001 (6.25 Hz ODR)
-	n = write_reg(LSM303_CTRL_REG5, 0x64)
+	write_reg(LSM303_CTRL_REG5, 0x64);
 
 	// 0x20 = 0b00100000
 	// MFS = 01 (+/- 4 gauss full scale)
-	n = write_reg(LSM303_CTRL_REG6, 0x20);
+	write_reg(LSM303_CTRL_REG6, 0x20);
 
 	// 0x00 = 00000000
 	// MLP = 0 (low power mode off), MD = 00 (continuous-conversion mode)
-	n = write_reg(LSM303_CTRL_REG7, 0x00);
+	write_reg(LSM303_CTRL_REG7, 0x00);
 }
 
 /*void LSM303::set_timeout(unsigned int timeout) {
