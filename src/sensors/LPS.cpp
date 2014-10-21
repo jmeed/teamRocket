@@ -47,12 +47,11 @@ void LPS::enable() {
 }
 
 int32_t LPS::read_pressure_raw() {
-	// assert MSB to enable register address auto-increment
-	uint8_t *p_xl, *p_l, *p_h;
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, LPS_OUT_PRESS_XL, p_xl, 1);
-	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, LPS_OUT_PRESS_L, p_l, 1);
-	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, LPS_OUT_PRESS_H, p_h, 1);
-	return (int32_t)(int8_t)*p_h << 16 | (uint16_t)*p_l << 8 | p_xl;
+	uint8_t p_xl, p_l, p_h;
+	p_xl = read_reg(LPS_OUT_PRESS_XL);
+	p_l = read_reg(LPS_OUT_PRESS_L);
+	p_h = read_reg(LPS_OUT_PRESS_H);
+	return (int32_t)(int8_t)p_h << 16 | (uint16_t)p_l << 8 | p_xl;
 }
 
 float LPS::read_pressure_millibars() {
@@ -60,10 +59,10 @@ float LPS::read_pressure_millibars() {
 }
 
 int16_t LPS::read_temperature_raw() {
-	uint8_t *t_l, *t_h;
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, LPS_OUT_TEMP_L, t_l, 1);
-	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, LPS_OUT_TEMP_H, t_h, 1);
-	return (int16_t)(*t_h << 8 | *t_l);
+	uint8_t t_l, t_h;
+	t_l = read_reg(LPS_OUT_TEMP_L);
+	t_h = read_reg(LPS_OUT_TEMP_H);
+	return (int16_t)(t_h << 8 | t_l);
 }
 
 float LPS::read_temperature_C() {

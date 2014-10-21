@@ -79,10 +79,6 @@
 #define LSM303_TEMPERATURE	8
 
 class LSM303 {
-// From abstract base class - see Sensor.h
-protected:
-	uint8_t read_reg(uint8_t reg_addr);
-	void write_reg(uint8_t reg_addr, uint8_t data);
 public:
 	bool init();
 	// Dimensions are LSM303_ACCEL_X, LSM303_ACCEL_Y, LSM303_ACCEL_Z,
@@ -146,6 +142,8 @@ public:
     //template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a,const vector<Tb> *b);
     //static void vector_normalize(vector<float> *a);
 private:
+	uint8_t read_reg(uint8_t reg_addr);
+	void write_reg(uint8_t reg_addr, uint8_t data);
 	uint8_t slave_address;
 	//unsigned int io_timeout;
 	//bool did_timeout;

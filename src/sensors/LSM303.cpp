@@ -28,7 +28,7 @@ float LSM303::read_data(uint8_t dimension) {
 		case LSM303_MAG_Z:
 			return read_mag_raw(dimension);
 		case LSM303_MAG_HEADING:
-			return 0.0f
+			return 0.0f;
 			//return read_mag_heading();
 		case LSM303_TEMPERATURE:
 			return read_temperature_C();
@@ -85,7 +85,7 @@ void LSM303::enable() {
 }*/
 
 int16_t LSM303::read_accel_raw(uint8_t dimension) {
-	uint8_t *a_l, *a_h;
+	uint8_t a_l, a_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
 		case LSM303_ACCEL_X:
@@ -105,9 +105,9 @@ int16_t LSM303::read_accel_raw(uint8_t dimension) {
 			reg_addr_h = LSM303_OUT_X_H_A;
 			break;
 	}
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_l, a_l, 1);
-	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_h, a_h, 1);
-	return (int16_t)(*a_h << 8 | *a_l);
+	a_l = read_reg(reg_addr_l);
+	a_h = read_reg(reg_addr_h);
+	return (int16_t)(a_h << 8 | a_l);
 }
 
 float LSM303::read_accel_g(uint8_t dimension) {
@@ -115,7 +115,7 @@ float LSM303::read_accel_g(uint8_t dimension) {
 }
 
 int16_t LSM303::read_mag_raw(uint8_t dimension) {
-	uint8_t *m_l, *m_h;
+	uint8_t m_l, m_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
 		case LSM303_MAG_X:
@@ -135,16 +135,16 @@ int16_t LSM303::read_mag_raw(uint8_t dimension) {
 			reg_addr_h = LSM303_OUT_X_H_M;
 			break;
 	}
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_l, m_l, 1);
-	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_h, m_h, 1);
-	return (int16_t)(*m_h << 8 | *m_l);
+	m_l = read_reg(reg_addr_l);
+	m_h = read_reg(reg_addr_h);
+	return (int16_t)(m_h << 8 | m_l);
 }
 
 int16_t LSM303::read_temperature_raw() {
-	uint8_t *t_l, *t_h;
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, LSM303_OUT_TEMP_L, t_l, 1);
-	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, LSM303_OUT_TEMP_H, t_h, 1);
-	return (int16_t)(*t_h << 8 | *t_l);
+	uint8_t t_l, t_h;
+	t_l = read_reg(LSM303_OUT_TEMP_L);
+	t_h = read_reg(LSM303_OUT_TEMP_H);
+	return (int16_t)(t_h << 8 | t_l);
 }
 
 // float LSM303::read_temperature_C() {

@@ -63,7 +63,7 @@ void L3G::enable() {
 }*/
 
 int16_t read_spin_rate_raw(uint8_t dimension) {
-	uint8_t *r_l, *r_h;
+	uint8_t r_l, r_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
 		case L3G_SPIN_RATE_X:
@@ -83,9 +83,9 @@ int16_t read_spin_rate_raw(uint8_t dimension) {
 			reg_addr_h = L3G_OUT_X_H;
 			break;
 	}
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_l, r_l, 1);
-	n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_h, r_h, 1);
-	return (int16_t)(*r_h << 8 | *r_l);
+	r_l = read_reg(reg_addr_l);
+	r_h = read_reg(reg_addr_h);
+	return (int16_t)(r_h << 8 | r_l);
 }
 
 float read_spin_rate_dps(uint8_t dimension) {
@@ -93,9 +93,8 @@ float read_spin_rate_dps(uint8_t dimension) {
 }
 
 uint8_t read_temperature_raw() {
-	uint8_t *t;
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, L3G_OUT_TEMP, t, 1);
-	return *t;
+	uint8_t t;
+	return read_reg(L3G_OUT_TEMP);
 }
 
 float read_temperature_C() {
