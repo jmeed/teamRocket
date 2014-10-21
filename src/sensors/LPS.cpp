@@ -13,8 +13,7 @@ void LPS::write_reg(uint8_t reg_addr, uint8_t data) {
 	// return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
 }
 
-bool LPS::init(I2C_ID_T in) {
-	i2c_id = in;
+bool LPS::init() {
 	return detect_device();
 }
 

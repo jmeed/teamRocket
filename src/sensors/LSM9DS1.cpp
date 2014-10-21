@@ -1,7 +1,6 @@
 #include "LSM9DS1.h"
 
-LSM9DS1::LSM9DS1(uint8_t xlg_addr, uint8_t mag_addr, I2C_ID_T id) {
-	i2c_id = id;
+LSM9DS1::LSM9DS1(uint8_t xlg_addr, uint8_t mag_addr) {
 	xlg_address = xlg_addr;
 	mag_address = mag_addr;
 }
@@ -18,16 +17,11 @@ bool LSM9DS1::init(gyro_scale g_sc,
 	a_scale = a_sc;
 	m_scale = m_sc;
 	
-	// Now calculate the resolution of each sensor
-	calc_g_res(); // Calculate DPS / ADC tick, stored in g_res variable
-	calc_a_res(); // Calculate g / ADC tick, stored in a_res variable
-	calc_m_res(); // Calculate Gs / ADC tick, stored in m_res variable
-	
 	// Test if our devices respond
 	uint8_t xlg_test = read_reg_xlg(LSM_WHO_AM_I_XLG);
 	uint8_t m_test = read_reg_mag(LSM_WHO_AM_I_M);
 	// Return false if we didn't communicate successfully
-	if !((xlg_test == LSM9DS1_XLG_WHO_ID) && (m_test == LSM9DS1_M_WHO_ID))
+	if (!((xlg_test == LSM9DS1_XLG_WHO_ID) && (m_test == LSM9DS1_M_WHO_ID)))
 		return false;
 
 	// Gyro initialization
@@ -44,6 +38,11 @@ bool LSM9DS1::init(gyro_scale g_sc,
 	init_mag();
 	set_mag_odr(m_odr);
 	set_mag_scale(m_scale);
+	
+	// Now calculate the resolution of each sensor
+	calc_g_res(); // Calculate DPS / ADC tick, stored in g_res variable
+	calc_a_res(); // Calculate g / ADC tick, stored in a_res variable
+	calc_m_res(); // Calculate Gs / ADC tick, stored in m_res variable
 	
 	// We communicated successfully
 	return true;

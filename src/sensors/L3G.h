@@ -52,7 +52,7 @@ protected:
 	uint8_t read_reg(uint8_t reg_addr);
 	void write_reg(uint8_t reg_addr, uint8_t reg_data);
 public:
-	bool init(I2C_ID_T in);
+	bool init();
 	// Dimensions are L3G_SPIN_RATE_X, L3G_SPIN_RATE_Y, L3G_SPIN_RATE_Z, and L3G_TEMPERATURE for this sensor
 	float read_data(uint8_t dimension);
 	// Unused so far

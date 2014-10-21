@@ -45,7 +45,7 @@ protected:
 	uint8_t read_reg(uint8_t reg_addr);
 	void write_reg(uint8_t reg_addr, uint8_t data);
 public:
-	bool init(I2C_ID_T in);
+	bool init();
 	// Dimensions are LPS_ALTITUDE and LPS_TEMPERATURE for this sensor
 	float read_data(uint8_t dimension);
 	// Unused so far

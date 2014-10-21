@@ -51,18 +51,21 @@ public:
 		H3L_ODR_400,	// 0x02: 400 Hz, 292 Hz cutoff
 		H3L_ODR_1000	// 0x03: 1000 Hz, 780 Hz cutoff
 	}
-	H3L(uint8_t slave_address, I2C_ID_T id);
+	H3L(uint8_t slave_address);
 	bool init(accel_scale a_sc);
+	// Read accelerometer values
+	// Possible dimensions are H3L_X, H3L_Y, H3L_Z for this device
 	int16_t read_accel_raw(uint8_t dimension);
 	float read_accel_g(uint8_t dimension);
+	// Set the full range scale to H3L_SCALE_100G, H3L_SCALE_200G, or H3L_SCALLE_400G
 	void set_accel_scale(accel_scale a_sc);
+	// Set the output data rate to H3L_ODR_50, H3L_ODR_100, H3L_ODR_400, or H3L_ODR_1000
 	void set_accel_odr(accel_odr a_odr);
-	void configure_int_1();
-	void configure_int_2();
+	// Configure the device's first interrupt. Check datasheet for register values
+	void configure_int_1(uint8_t int1_cfg, uint8_t int1_ths, uint8_t duration);
+	// Configure the device's second interrupt. Check datasheet for register values
+	void configure_int_2(uint8_t int2_cfg, uint8_t int2_ths, uint8_t duration);
 private:
-	// I2C id
-	I2C_ID_T i2c_id;
-
 	// The I2C slave address
 	uint8_t slave_address;
 
@@ -76,8 +79,8 @@ private:
 	//	- H3L_CTRL_REG1 = 0x3F: Normal power, 1000 Hz ODR, all axes enabled
 	//  - H3L_CTRL_REG2 = 0x00: High-pass filters disabled
 	//  - H3L_CTRL_REG3 = 0x00: Interrupts active high, push-pull drain, int requests not latched
-	//  - H3L_CTRL_REG4 = 0x00: 
-	//  - H3L_CTRL_REG5 = 0x00: 
+	//  - H3L_CTRL_REG4 = 0x30: No block data update, LSB @ low address, 400 g range 
+	//  - H3L_CTRL_REG5 = 0x00: Turn on mode default, not using low power mode
 	void init_accel();
 
 	// Calculate the resolution of the accelerometer.
