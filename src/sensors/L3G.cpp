@@ -11,14 +11,14 @@ int L3G::write_reg(uint8_t reg_addr, uint8_t data) {
 	return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
 }
 
-bool L3G::init(void* in) {
-	i2c_id = *((I2C_ID_T *) in);
+bool L3G::init(I2C_ID_T in) {
+	i2c_id = in;
 	return detect_device();
 }
 
 float L3G::read_data(uint8_t dimension) {
 	switch (dimension) {
-		case TEMPERATURE:
+		case L3G_TEMPERATURE:
 			return read_temperature_C();
 		default:
 			return read_spin_rate_dps(dimension);
@@ -37,11 +37,11 @@ uint8_t L3G::get_status(uint8_t status) {
 void L3G::enable() {
 	// 0x0F = 0b00001111
 	// Normal power mode, all axes enabled
-	write_reg(CTRL_REG1, 0x0F);
+	write_reg(L3G_CTRL_REG1, 0x0F);
 
 	// 0x20 = 0b00100000
 	// 2000 dps mode
-	write_reg(CTRL_REG4, 0x20);
+	write_reg(L3G_CTRL_REG4, 0x20);
 }
 
 /*static void L3G::vector_cross(const vector *a, const vector *b, vector *out) {
@@ -65,21 +65,21 @@ int16_t read_spin_rate_raw(uint8_t dimension) {
 	uint8_t *r_l, *r_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
-		case SPIN_RATE_X:
-			reg_addr_l = OUT_X_L;
-			reg_addr_h = OUT_X_H;
+		case L3G_SPIN_RATE_X:
+			reg_addr_l = L3G_OUT_X_L;
+			reg_addr_h = L3G_OUT_X_H;
 			break;
-		case SPIN_RATE_Y:
-			reg_addr_l = OUT_Y_L;
-			reg_addr_h = OUT_Y_H;
+		case L3G_SPIN_RATE_Y:
+			reg_addr_l = L3G_OUT_Y_L;
+			reg_addr_h = L3G_OUT_Y_H;
 			break;
-		case SPIN_RATE_Z:
-			reg_addr_l = OUT_Z_L;
-			reg_addr_h = OUT_Z_H;
+		case L3G_SPIN_RATE_Z:
+			reg_addr_l = L3G_OUT_Z_L;
+			reg_addr_h = L3G_OUT_Z_H;
 			break;
 		default:
-			reg_addr_l = OUT_X_L;
-			reg_addr_h = OUT_X_H;
+			reg_addr_l = L3G_OUT_X_L;
+			reg_addr_h = L3G_OUT_X_H;
 			break;
 	}
 	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr_l, r_l, 1);
@@ -93,7 +93,7 @@ float read_spin_rate_dps(uint8_t dimension) {
 
 uint8_t read_temperature_raw() {
 	uint8_t *t;
-	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, OUT_TEMP, t, 1);
+	int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, L3G_OUT_TEMP, t, 1);
 	return *t;
 }
 
@@ -103,11 +103,11 @@ float read_temperature_C() {
 
 bool L3G::detect_device() {
 	// Try each possible address and return if reading WHO_AM_I returns the expected response
-	slave_address = SA0_LOW_ADDRESS;
-	if (read_reg(WHO_AM_I) == L3GD20_WHO_ID_1 || read_reg(WHO_AM_I) == L3GD20_WHO_ID_2)
+	slave_address = L3G_SA0_LOW_ADDRESS;
+	if (read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_1 || read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_2)
 		return true;
-	slave_address = SA0_HIGH_ADDRESS;
-	if (read_reg(WHO_AM_I) == L3GD20_WHO_ID_1 || read_reg(WHO_AM_I) == L3GD20_WHO_ID_2)
+	slave_address = L3G_SA0_HIGH_ADDRESS;
+	if (read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_1 || read_reg(L3G_WHO_AM_I) == L3GD20_WHO_ID_2)
 		return true;
 
 	return false;
