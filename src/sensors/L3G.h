@@ -10,6 +10,35 @@
 #define L3GD20_WHO_ID_1		0xD4
 #define L3GD20_WHO_ID_2		0xD7
 
+// Registers
+#define WHO_AM_I		0x0F
+#define CTRL_REG1		0x20
+#define CTRL_REG2		0x21
+#define CTRL_REG3		0x22
+#define CTRL_REG4		0x23
+#define CTRL_REG5		0x24
+#define REFERENCE		0x25
+#define OUT_TEMP		0x26
+#define STATUS_REG		0x27
+#define OUT_X_L			0x28
+#define OUT_X_H			0x29
+#define OUT_Y_L			0x2A
+#define OUT_Y_H			0x2B
+#define OUT_Z_L			0x2C
+#define OUT_Z_H			0x2D
+#define FIFO_CTRL_REG	0x2E
+#define FIFO_SRC_REG	0x2F
+#define INT1_CFG		0x30
+#define INT1_SRC		0x31
+#define INT1_THS_XH		0x32
+#define INT1_THS_XL		0x33
+#define INT1_THS_YH		0x34
+#define INT1_THS_YL		0x35
+#define INT1_THS_ZH		0x36
+#define INT1_THS_ZL		0x37
+#define INT1_DURATION	0x38
+#define LOW_ODR			0x39
+
 // Dimensions
 #define SPIN_RATE_X	1
 #define SPIN_RATE_Y	2
@@ -31,35 +60,6 @@ public:
 	uint8_t get_status(uint8_t status);
 
 // Device specific members
-	enum reg_addr {
-		WHO_AM_I		0x0F,
-		CTRL_REG1		0x20,
-		CTRL_REG2		0x21,
-		CTRL_REG3		0x22,
-		CTRL_REG4		0x23,
-		CTRL_REG5		0x24,
-		REFERENCE		0x25,
-		TEMP_OUT		0x26,
-		STATUS_REG		0x27,
-		OUT_X_L			0x28,
-		OUT_X_H			0x29,
-		OUT_Y_L			0x2A,
-		OUT_Y_H			0x2B,
-		OUT_Z_L			0x2C,
-		OUT_Z_H			0x2D,
-		FIFO_CTRL_REG	0x2E,
-		FIFO_SRC_REG	0x2F,
-		INT1_CFG		0x30,
-		INT1_SRC		0x31,
-		INT1_THS_XH		0x32,
-		INT1_THS_XL		0x33,
-		INT1_THS_YH		0x34,
-		INT1_THS_YL		0x35,
-		INT1_THS_ZH		0x36,
-		INT1_THS_ZL		0x37,
-		INT1_DURATION	0x38,
-		LOW_ODR			0x39
-	}
 	typedef struct vector {
 		float x, y, z;
 	} vector;

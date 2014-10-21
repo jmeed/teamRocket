@@ -2,8 +2,16 @@
 #define LSM303_H
 
 #include "Sensor.h"
-#include "../lxp11u6x/i2c_11u6x.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "i2c_17xx_40xx.h"
 #include <math.h>
+
+#ifdef __cplusplus
+}
+#endif
 
 #define SA0_HIGH_ADDRESS	0b0011101 // D with SA0 high
 #define SA0_LOW_ADDRESS		0b0011110 // D with SA0 low
@@ -77,13 +85,13 @@
 #define MAG_HEADING 7
 #define TEMPERATURE	8
 
-class LSM303 : public Sensor {
+class LSM303 {
 // From abstract base class - see Sensor.h
 protected:
 	int8_t read_reg(uint8_t reg_addr);
 	int write_reg(uint8_t reg_addr, uint8_t data);
 public:
-	bool init(void* in);
+	bool init(I2C_ID_T in);
 	// Dimensions are ACCEL_X, ACCEL_Y, ACCEL_Z, MAG_X, MAG_Y, MAG_Z, MAG_HEADING and TEMPERATURE for this sensor
 	float read_data(uint8_t dimension);
 	// Unused so far
@@ -131,17 +139,17 @@ public:
 	This is the +X axis on the Pololu LSM303D carrier and the -Y axis on
 	the Pololu LSM303DLHC, LSM303DLM, and LSM303DLH carriers.
 	*/
-	float read_mag_heading();
+	//float read_mag_heading();
 	/*
 	Returns the angular difference in the horizontal plane between the
 	"from" vector and north, in degrees.
 	*/
-	template <typename T> float heading(vector<T> from);
+	//template <typename T> float heading(vector<T> from);
 
 	// Vector functions
-    template <typename Ta, typename Tb, typename To> static void vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out);
-    template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a,const vector<Tb> *b);
-    static void vector_normalize(vector<float> *a);
+    //template <typename Ta, typename Tb, typename To> static void vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out);
+    //template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a,const vector<Tb> *b);
+    //static void vector_normalize(vector<float> *a);
 private:
 	I2C_ID_T i2c_id;
 	uint8_t slave_address;
