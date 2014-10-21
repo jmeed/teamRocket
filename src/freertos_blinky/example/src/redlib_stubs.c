@@ -6,16 +6,14 @@
  *      Author: Max Zhao
  */
 
-
 #include "./drivers/uart0.h"
 #include "morse.h"
 #include "error_codes.h"
 
 int __sys_write(int iFileHandle, char *pcBuffer, int iLength) {
 	if (iFileHandle == 1) {
+		// stderr totally doesn't work
 		uart0_write((const uint8_t*) pcBuffer, iLength);
-	} else if (iFileHandle == 2) {
-		uart0_write_critical((const uint8_t*) pcBuffer, iLength);
 	}
 	return 0;
 }

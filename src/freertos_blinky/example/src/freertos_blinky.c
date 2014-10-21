@@ -117,7 +117,6 @@ int main(void)
 
 	printf("Hello World! from main!\n");
 	printf("main Test float %s\r\n", "abc");
-	LOG_CRITICAL("CRITICAL: a\n\r");
 
 	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
 				256, NULL, (tskIDLE_PRIORITY + 1UL),
@@ -125,7 +124,7 @@ int main(void)
 
 	/* LED2 toggle thread */
 	xTaskCreate(vLEDTask2, (signed char *) "vTaskLed2",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+				256, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
 
 	/* LED0 toggle thread */

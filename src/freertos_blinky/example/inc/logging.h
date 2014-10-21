@@ -4,7 +4,11 @@
 /**
  * This is blocking!
  */
-#define LOG_CRITICAL(msg, ...) { fprintf(stderr, msg, ##__VA_ARGS__); }
+#define LOG_CRITICAL(msg, ...) { \
+	char buffer[50]; \
+	sprintf(buffer, msg, ##__VA_ARGS__); \
+	uart0_write_string_critical(buffer); \
+}
 #define LOG_ERROR(msg, ...) {}
 #define LOG_WARN(msg, ...) {}
 #define LOG_INFO(msg, ...) {}

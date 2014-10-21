@@ -137,16 +137,11 @@ void uart0_write(const uint8_t* data, size_t size) {
 		if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
 			uart0_write_internal(data, size, false);
 		} else {
-			if (!xSemaphoreTake(mutex_uart_in_use, 2000)) {
-				exit_error(24);
-			}
+			xSemaphoreTake(mutex_uart_in_use, portMAX_DELAY);
 
 			// locked
 			uart0_write_internal(data, size, true);
-
-			if (!xSemaphoreTake(sem_uart_ready, 2000)) {
-				exit_error(23);
-			}
+			xSemaphoreTake(sem_uart_ready, portMAX_DELAY);
 
 			xSemaphoreGive(mutex_uart_in_use);
 		}
