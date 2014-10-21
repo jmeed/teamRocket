@@ -1,5 +1,5 @@
-#ifndef LSM9DS1
-#define LSM9DS1
+#ifndef LSM9DS1_H
+#define LSM9DS1_H
 
 #include "../lcp11u6x/i2c_11u6x.h"
 #include <cstdint>
@@ -9,90 +9,90 @@
 #define LSM9DS1_M_WHO_ID	0x3D
 
 // Registers
-#define ACT_THS				0x04
-#define ACT_DUR				0x05
-#define INT_GEN_CFG_XL		0x06
-#define INT_GEN_THS_X_XL	0x07
-#define INT_GEN_THS_Y_XL	0x08
-#define INT_GEN_THS_Z_XL	0x09
-#define INT_GEN_DUR_XL		0x0A
-#define REFERENCE_G			0x0B
-#define INT1_CTRL			0x0C
-#define INT2_CTRL			0x0D
-#define WHO_AM_I_XLG		0x0F
-#define CTRL_REG1_G			0x10
-#define CTRL_REG2_G			0x11
-#define CTRL_REG3_G			0x12
-#define ORIENT_CFG_G		0x13
-#define INT_GEN_SRC_G		0x14
-#define OUT_TEMP_L			0x15
-#define OUT_TEMP_H			0x16
-#define STATUS_REG1_XL		0x17
-#define OUT_X_L_G			0x18
-#define OUT_X_H_G			0x19
-#define OUT_Y_L_G			0x1A
-#define OUT_Y_H_G			0x1B
-#define OUT_Z_L_G			0x1C
-#define OUT_Z_H_G			0x1D
-#define CTRL_REG4			0x1E
-#define CTRL_REG5_XL		0x1F
-#define CTRL_REG6_XL		0x20
-#define CTRL_REG7_XL		0x21
-#define CTRL_REG8			0x22
-#define CTRL_REG9			0x23
-#define CTRL_REG10			0x24
-#define INT_GEN_SRC_XL		0x26
-#define STATUS_REG2_XL		0x27 // typo in datasheet
-#define OUT_X_L_XL			0x28
-#define OUT_X_H_XL			0x29
-#define OUT_Y_L_XL			0x2A
-#define OUT_Y_H_XL			0x2B
-#define OUT_Z_L_XL			0x2C
-#define OUT_Z_H_XL			0x2D
-#define FIFO_CTRL			0x2E
-#define FIFO_SRC			0x2F
-#define INT_GEN_CFG_G		0x30
-#define INT_GEN_THS_XH_G	0x31
-#define INT_GEN_THS_XL_G	0x32
-#define INT_GEN_THS_YH_G	0x33
-#define INT_GEN_THS_YL_G	0x34
-#define INT_GEN_THS_ZH_G	0x35
-#define INT_GEN_THS_ZL_G	0x36
-#define INT_GEN_DUR_G		0x37
-#define OFFSET_X_REG_L_M	0x05
-#define OFFSET_X_REG_H_M	0x06
-#define OFFSET_Y_REG_L_M	0x07
-#define OFFSET_Y_REG_H_M	0x08
-#define OFFSET_Z_REG_L_M	0x09
-#define OFFSET_Z_REG_H_M	0x0A
-#define WHO_AM_I_M 			0x0F
-#define CTRL_REG1_M			0x20
-#define CTRL_REG2_M			0x21
-#define CTRL_REG3_M			0x22
-#define CTRL_REG4_M			0x23
-#define CTRL_REG5_M			0x24
-#define STATUS_REG_M		0x27
-#define OUT_X_L_M			0x28
-#define OUT_X_H_M			0x29
-#define OUT_Y_L_M			0x2A
-#define OUT_Y_H_M			0x2B
-#define OUT_Z_L_M			0x2C
-#define OUT_Z_H_M			0x2D
-#define INT_CFG_M			0x30
-#define INT_SRC_M			0x31
-#define INT_THS_L_M			0x32
-#define INT_THS_H_M			0x33
+#define LSM_ACT_THS				0x04
+#define LSM_ACT_DUR				0x05
+#define LSM_INT_GEN_CFG_XL		0x06
+#define LSM_INT_GEN_THS_X_XL	0x07
+#define LSM_INT_GEN_THS_Y_XL	0x08
+#define LSM_INT_GEN_THS_Z_XL	0x09
+#define LSM_INT_GEN_DUR_XL		0x0A
+#define LSM_REFERENCE_G			0x0B
+#define LSM_INT1_CTRL			0x0C
+#define LSM_INT2_CTRL			0x0D
+#define LSM_WHO_AM_I_XLG		0x0F
+#define LSM_CTRL_REG1_G			0x10
+#define LSM_CTRL_REG2_G			0x11
+#define LSM_CTRL_REG3_G			0x12
+#define LSM_ORIENT_CFG_G		0x13
+#define LSM_INT_GEN_SRC_G		0x14
+#define LSM_OUT_TEMP_L			0x15
+#define LSM_OUT_TEMP_H			0x16
+#define LSM_STATUS_REG1_XL		0x17
+#define LSM_OUT_X_L_G			0x18
+#define LSM_OUT_X_H_G			0x19
+#define LSM_OUT_Y_L_G			0x1A
+#define LSM_OUT_Y_H_G			0x1B
+#define LSM_OUT_Z_L_G			0x1C
+#define LSM_OUT_Z_H_G			0x1D
+#define LSM_CTRL_REG4			0x1E
+#define LSM_CTRL_REG5_XL		0x1F
+#define LSM_CTRL_REG6_XL		0x20
+#define LSM_CTRL_REG7_XL		0x21
+#define LSM_CTRL_REG8			0x22
+#define LSM_CTRL_REG9			0x23
+#define LSM_CTRL_REG10			0x24
+#define LSM_INT_GEN_SRC_XL		0x26
+#define LSM_STATUS_REG2_XL		0x27 // typo in datasheet
+#define LSM_OUT_X_L_XL			0x28
+#define LSM_OUT_X_H_XL			0x29
+#define LSM_OUT_Y_L_XL			0x2A
+#define LSM_OUT_Y_H_XL			0x2B
+#define LSM_OUT_Z_L_XL			0x2C
+#define LSM_OUT_Z_H_XL			0x2D
+#define LSM_FIFO_CTRL			0x2E
+#define LSM_FIFO_SRC			0x2F
+#define LSM_INT_GEN_CFG_G		0x30
+#define LSM_INT_GEN_THS_XH_G	0x31
+#define LSM_INT_GEN_THS_XL_G	0x32
+#define LSM_INT_GEN_THS_YH_G	0x33
+#define LSM_INT_GEN_THS_YL_G	0x34
+#define LSM_INT_GEN_THS_ZH_G	0x35
+#define LSM_INT_GEN_THS_ZL_G	0x36
+#define LSM_INT_GEN_DUR_G		0x37
+#define LSM_OFFSET_X_REG_L_M	0x05
+#define LSM_OFFSET_X_REG_H_M	0x06
+#define LSM_OFFSET_Y_REG_L_M	0x07
+#define LSM_OFFSET_Y_REG_H_M	0x08
+#define LSM_OFFSET_Z_REG_L_M	0x09
+#define LSM_OFFSET_Z_REG_H_M	0x0A
+#define LSM_WHO_AM_I_M 			0x0F
+#define LSM_CTRL_REG1_M			0x20
+#define LSM_CTRL_REG2_M			0x21
+#define LSM_CTRL_REG3_M			0x22
+#define LSM_CTRL_REG4_M			0x23
+#define LSM_CTRL_REG5_M			0x24
+#define LSM_STATUS_REG_M		0x27
+#define LSM_OUT_X_L_M			0x28
+#define LSM_OUT_X_H_M			0x29
+#define LSM_OUT_Y_L_M			0x2A
+#define LSM_OUT_Y_H_M			0x2B
+#define LSM_OUT_Z_L_M			0x2C
+#define LSM_OUT_Z_H_M			0x2D
+#define LSM_INT_CFG_M			0x30
+#define LSM_INT_SRC_M			0x31
+#define LSM_INT_THS_L_M			0x32
+#define LSM_INT_THS_H_M			0x33
 
 // Dimensions
-#define GYRO_X	1
-#define GYRO_Y	2
-#define GYRO_Z	3
-#define ACCEL_X	4
-#define ACCEL_Y	5
-#define ACCEL_Z	6
-#define MAG_X	7
-#define MAG_Y	8
-#define MAG_Z	9
+#define LSM_GYRO_X	1
+#define LSM_GYRO_Y	2
+#define LSM_GYRO_Z	3
+#define LSM_ACCEL_X	4
+#define LSM_ACCEL_Y	5
+#define LSM_ACCEL_Z	6
+#define LSM_MAG_X	7
+#define LSM_MAG_Y	8
+#define LSM_MAG_Z	9
 
 class LSM9DS1 {
 public:
@@ -149,8 +149,7 @@ public:
 		M_ODR_80		// 80.0 Hz (0x07)
 	};
     // accel_abw defines all possible anti-aliasing filter rates of the accelerometer:
-	enum accel_abw
-	{
+	enum accel_abw {
 		A_ABW_408,		// 408 Hz (0x0)
 		A_ABW_211,		// 211 Hz (0x1)
 		A_ABW_105,		// 105 Hz (0x2)
@@ -162,7 +161,7 @@ public:
 	float g_bias[3];
 
 	// Constructor - call with I2C slave addresses for accel/gyro and mag
-	LSM9DS1(uint8_t xg_address, uint8_t mag_address, I2C_ID_T id);
+	LSM9DS1(uint8_t xg_addr, uint8_t mag_addr);
 	
 	// Initialize the gyro, accelerometer, and magnetometer.
 	// This will set up the scale and output rate of each sensor. It'll also
@@ -267,9 +266,6 @@ public:
 	// void calibrate(float gbias[3], float abias[3]);
 
 private:
-	// I2C id
-	I2C_ID_T i2c_id;
-
 	// The I2C slave addresses for both devices
 	uint8_t xlg_address;
 	uint8_t mag_address;
@@ -285,24 +281,24 @@ private:
 	float g_res, a_res, m_res;
 
 	// Sets up the gyroscope to begin reading
-	//	- CTRL_REG1_G = 0x38: 14.9 Hz ODR, 5 Hz cutoff, 2000 DPS, 00 BW_G[1:0]
-	//	- CTRL_REG2_G = 0x00: INT_SEL and OUT_SEL set to 00 and 00 (?)
-	//	- CTRL_REG3_G = 0x00: Low-power disabled, high-pass filter disabled 
-	//	- CTRL_REG4_G = 0x38: Output enabled on all axes
+	//	- LSM_CTRL_REG1_G = 0x38: 14.9 Hz ODR, 5 Hz cutoff, 2000 DPS, 00 BW_G[1:0]
+	//	- LSM_CTRL_REG2_G = 0x00: INT_SEL and OUT_SEL set to 00 and 00 (?)
+	//	- LSM_CTRL_REG3_G = 0x00: Low-power disabled, high-pass filter disabled 
+	//	- LSM_CTRL_REG4_G = 0x38: Output enabled on all axes
 	void init_gyro();
 	
 	// Sets up the accelerometer to begin reading.
-	//	- CTRL_REG5_XL = 0x38: No decimation, output enabled on all axes
-	//  - CTRL_REG6_XL = 0xD8: 952 Hz ODR, 8g range, default BW
-	//  - CTRL_REG7_XL = 0x00: High resolution disabled, low and high pass filter disabled
+	//	- LSM_CTRL_REG5_XL = 0x38: No decimation, output enabled on all axes
+	//  - LSM_CTRL_REG6_XL = 0xD8: 952 Hz ODR, 8g range, default BW
+	//  - LSM_CTRL_REG7_XL = 0x00: High resolution disabled, low and high pass filter disabled
 	void init_accel();
 	
 	// Sets up the magnetometer to begin reading.
-	//  - CTRL_REG1_M = 0xC0: Temperature compensation enabled, high-performance XY, self test disabled
-	//  - CTRL_REG2_M = 0x00: 4 gauss full scale range, normal mode
-	//  - CTRL_REG3_M = 0x00: I2C enabled, low power mode disabled, continuous-conversion mode
-	//  - CTRL_REG4_M = 0x0C: High performance Z, data LSB at lower address
-	//  - CTRL_REG5_M = 0x00: Block data update disabled
+	//  - LSM_CTRL_REG1_M = 0xC0: Temperature compensation enabled, high-performance XY, self test disabled
+	//  - LSM_CTRL_REG2_M = 0x00: 4 gauss full scale range, normal mode
+	//  - LSM_CTRL_REG3_M = 0x00: I2C enabled, low power mode disabled, continuous-conversion mode
+	//  - LSM_CTRL_REG4_M = 0x0C: High performance Z, data LSB at lower address
+	//  - LSM_CTRL_REG5_M = 0x00: Block data update disabled
 	void init_mag();
 
 	// Calculate the resolution of the gyroscope.
@@ -333,3 +329,5 @@ private:
 	void write_reg_mag(uint8_t reg_addr, uint8_t data);
 	
 };
+
+#endif /* LSM9DS1_H */
