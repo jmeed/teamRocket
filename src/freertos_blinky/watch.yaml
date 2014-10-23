@@ -1,0 +1,6 @@
+#The following exception rule is no longer needed because of a fixing update to 
+#watch.py, which eliminated problems related to multi-threaded execution.
+#- match: "^deploy/.*|.*tags.*"
+#  command: null
+- match: (.*bin)
+  command: deploy_windows.py $1
