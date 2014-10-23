@@ -431,13 +431,13 @@ static void i2c_write_test(I2C_XFER_T *xfer)
 {
 	int tmp, i;
 
-	tmp = 0xff;
+	tmp = 0x20;
 	tmp &= 0xFF;
 	xfer->slaveAddr = tmp;
 	xfer->rxBuff = 0;
 	xfer->txBuff = 0;
 	xfer->txSz = 0;
-	xfer->rxSz = 5;
+	xfer->rxSz = 1;
 
 //	if (ops & 1) {
 //		tmp = con_get_input("Enter number of bytes to read : ");
@@ -449,9 +449,10 @@ static void i2c_write_test(I2C_XFER_T *xfer)
 		tmp = 1;
 		tmp &= 0xFF;
 		buffer[0][0]=0x20;
+		buffer[1][0] = 0x00;
 		xfer->txSz = tmp;
 		xfer->txBuff = buffer[0];
-		xfer->rxBuff = buffer[0];
+		xfer->rxBuff = buffer[1];
 }
 
 
@@ -483,9 +484,10 @@ i2c_write_test(&xfer);
 
 	while(1){
 		Chip_I2C_MasterSend(I2C0, I2CWRITE >> 1, xfer.txBuff, xfer.txSz);
-		//for( i = 0; i < 500000; i++);
+		for( i = 0; i < 1000; i++ );
 		Chip_I2C_MasterRead(I2C0, I2CREAD >> 1, xfer.rxBuff, xfer.rxSz);
-//		for( i = 0; i < 1000; i++);
+		for( i = 0; i < 1000; i++ );
+
 	}
 
 while(1);
