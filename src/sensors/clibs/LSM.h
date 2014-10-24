@@ -99,6 +99,21 @@
 #define LSM_MAG_Y	8
 #define LSM_MAG_Z	9
 
+// The I2C identifier
+I2C_ID_T LSM_i2c_id;
+// The I2C slave addresses for both devices
+uint8_t LSM_xlg_address;
+uint8_t LSM_mag_address;
+// Store the current full-range scales
+gyro_scale LSM_g_scale;
+accel_scale LSM_a_scale;
+mag_scale LSM_m_scale;
+
+// Store the current resolution for each sensor
+// Units of these values would be DPS (or g's or Gs's) per ADC tick.
+// This value is calculated as (sensor scale) / (2^15).
+float LSM_g_res, LSM_a_res, LSM_m_res;
+
 // gyro_scale defines the possible full-scale ranges of the gyroscope:
 enum gyro_scale {
 	G_SCALE_245DPS,		// 00:  245 degrees per second
@@ -265,23 +280,6 @@ void LSM_configure_mag_int(uint8_t int1_cfg, uint16_t int1_ths);
 // remove errors due to imprecise or varying initial placement. Calibration of sensor data in this manner
 // is good practice.
 // void LSM_calibrate(float gbias[3], float abias[3]);
-
-// The I2C identifier
-I2C_ID_T LSM_i2c_id;
-
-// The I2C slave addresses for both devices
-uint8_t LSM_xlg_address;
-uint8_t LSM_mag_address;
-
-// Store the current full-range scales
-gyro_scale LSM_g_scale;
-accel_scale LSM_a_scale;
-mag_scale LSM_m_scale;
-
-// Store the current resolution for each sensor
-// Units of these values would be DPS (or g's or Gs's) per ADC tick.
-// This value is calculated as (sensor scale) / (2^15).
-float LSM_g_res, LSM_a_res, LSM_m_res;
 
 // Sets up the gyroscope to begin reading
 //	- LSM_CTRL_REG1_G = 0x38: 14.9 Hz ODR, 5 Hz cutoff, 2000 DPS, 00 BW_G[1:0]
