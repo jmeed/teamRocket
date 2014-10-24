@@ -119,7 +119,7 @@ int16_t LSM303_read_accel_raw(uint8_t dimension) {
 }
 
 float LSM303_read_accel_g(uint8_t dimension) {
-	return 0.0f + (float)read_accel_raw(dimension) / 2048.0f;
+	return 0.0f + (float)read_accel_raw(dimension) * (16.0f / 32768.0f);
 }
 
 int16_t LSM303_read_mag_raw(uint8_t dimension) {
