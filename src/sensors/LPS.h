@@ -3,11 +3,10 @@
 
 //#include "i2c_17xx_40xx.h"
 #include <cstdint>
-#include "../i2c/i2c_com.h"
 
-#define LPS_SA0_LOW_ADDRESS		0b1011100
-#define LPS_SA0_HIGH_ADDRESS	0b1011101
-#define LPS331AP_WHO_ID		0xBB
+#define LPS_SA0_LOW_ADDRESS		(0xB8 >> 1)
+#define LPS_SA0_HIGH_ADDRESS	(0xBA >> 1)
+#define LPS331AP_WHO_ID			0xBB
 
 // Registers
 #define LPS_REF_P_XL		= 0x08
@@ -40,18 +39,10 @@
 #define LPS_TEMPERATURE 	2
 
 class LPS {
-// From abstract base class - see Sensor.h
-protected:
-	uint8_t read_reg(uint8_t reg_addr);
-	void write_reg(uint8_t reg_addr, uint8_t data);
 public:
-	bool init();
+	bool init(I2C_ID_T id_in);
 	// Dimensions are LPS_ALTITUDE and LPS_TEMPERATURE for this sensor
 	float read_data(uint8_t dimension);
-	// Unused so far
-	void set_mode(void* mode);
-	// Unused so far
-	uint8_t get_status(uint8_t status);
 
 // Device specific members
 	LPS() {}
@@ -65,8 +56,11 @@ public:
 	// Formula only applies to 11 km / 36000 ft
 	static float pressure_to_altitude_m(float pressure_mbar, float altimeter_setting_mbar = 1013.25);
 private:
+	I2C_ID_T i2c_id;
 	uint8_t slave_address;
 	bool detect_device();
+	uint8_t read_reg(uint8_t reg_addr);
+	void write_reg(uint8_t reg_addr, uint8_t data);
 };
 
 #endif /* LPS_H */

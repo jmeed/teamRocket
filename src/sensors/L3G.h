@@ -1,13 +1,11 @@
 #ifndef L3G_H
 #define L3G_H
 
-//#include "i2c_17xx_40xx.h"
 #include <cstdint>
 #include <math.h>
-#include "../i2c/i2c_com.h"
 
-#define L3G_SA0_LOW_ADDRESS    (0xD4 >> 1)
-#define L3G_SA0_HIGH_ADDRESS   (0xD6 >> 1)
+#define L3G_SA0_LOW_ADDRESS    (0xD4)
+#define L3G_SA0_HIGH_ADDRESS   (0xD6)
 #define L3GD20_WHO_ID_1		0xD4
 #define L3GD20_WHO_ID_2		0xD7
 
@@ -47,24 +45,12 @@
 #define L3G_TEMPERATURE	4
 
 class L3G {
-// From abstract base class - see Sensor.h
-protected:
-	uint8_t read_reg(uint8_t reg_addr);
-	void write_reg(uint8_t reg_addr, uint8_t reg_data);
 public:
-	bool init();
+	bool init(I2C_ID_T id_in);
 	// Dimensions are L3G_SPIN_RATE_X, L3G_SPIN_RATE_Y, L3G_SPIN_RATE_Z, and L3G_TEMPERATURE for this sensor
 	float read_data(uint8_t dimension);
-	// Unused so far
-	void set_mode(void* mode);
-	// Unused so far
-	uint8_t get_status(uint8_t status);
 
 // Device specific members
-	//typedef struct vector {
-	//	float x, y, z;
-	//} vector;
-	//vector g; // gyro angular velocity readings
 	L3G() {}
 	uint8_t get_address() {return slave_address;}
 	// Turns on sensor and enables continuous output
@@ -76,13 +62,12 @@ public:
     uint8_t read_temperature_raw();
  	// Using same raw conversion as LPS sensor, probably needs calibration
     float read_temperature_C();
-	// Vector functions
-    //static void vector_cross(const vector *a, const vector *b, vector *out);
-    //static float vector_dot(const vector *a,const vector *b);
-    //static void vector_normalize(vector *a);
 private:
+	I2C_ID_T i2c_id;
 	uint8_t slave_address;
 	bool detect_device();
+	uint8_t read_reg(uint8_t reg_addr);
+	void write_reg(uint8_t reg_addr, uint8_t reg_data);
 };
 
 #endif /* L3G_H */
