@@ -35,6 +35,9 @@
 #include "L3G.h"
 #include "LPS.h"
 #include "LSM303.h"
+
+#include "H3L.h"
+#include "LSM.h"
 // FIXME - nneds check
 /*****************************************************************************
  * Private types/enumerations/variables
