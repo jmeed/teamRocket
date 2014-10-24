@@ -23,9 +23,9 @@ float LPS_read_data(uint8_t dimension) {
 // Device specific members
 
 void LPS_enable() {
-	// 0xE0 = 0b11100000
-	// PD = 1 (active mode); ODR = 110 (12.5 Hz pressure & temperature output data rate)
-	LPS_write_reg(LPS_CTRL_REG1, 0xE0);
+	// 0xC0 = 0b11000000
+	// PD = 1 (active mode); ODR = 100 (25.0 Hz pressure & temperature output data rate)
+	LPS_write_reg(LPS_CTRL_REG1, 0xC0);
 }
 
 int32_t LPS_read_pressure_raw() {

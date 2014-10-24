@@ -61,7 +61,7 @@ uint8_t L3G_read_temperature_raw() {
 }
 
 float L3G_read_temperature_C() {
-	return 42.5f + (float)L3G_read_temperature_raw() / 480.0f;
+	return 22.5f + (float)L3G_read_temperature_raw() / 3.0f;
 }
 
 // bool L3G_detect_device() {

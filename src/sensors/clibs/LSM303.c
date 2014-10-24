@@ -1,162 +1,121 @@
-#include "LSM303.h"
+#ifndef LSM303_H
+#define LSM303_H
 
-uint8_t LSM303_read_reg(uint8_t reg_addr) {
-	// Write the register we want to read
-	// - Make a transmit buffer
-	uint8_t tx_size = 1;
-	uint8_t tx_buf[tx_size];
-	// - Set the register address
-	tx_buf[0] = reg_addr;
-	// - Write the register value
-	Chip_I2C_MasterSend(LSM303_i2c_id, LSM303_slave_address >> 1, tx_buf, tx_size);
+#include "i2c_11u6x.h"
+#include <stdint.h>
+#include <math.h>
 
-	// Read the register value
-	// - Make a receive buffer
-	uint8_t rx_size = 1;
-	uint8_t rx_buf[rx_size];
-	// - Read the register value
-	Chip_I2C_MasterRead(LSM303_i2c_id, (LSM303_slave_address | 0x01) >> 1, rx_buf, rx_size);
+#define LSM303_SA0_LOW_ADDRESS		(0x3C) // D with SA0 low
+#define LSM303_SA0_HIGH_ADDRESS		(0x3A) // D with SA0 high
+#define LSM303D_WHO_ID				0x49
 
-	return rx_buf[0];
-}
+// Registers
+#define LSM303_OUT_TEMP_L		0x05
+#define LSM303_OUT_TEMP_H		0x06
+#define LSM303_STATUS_M			0x07
+#define LSM303_OUT_X_L_M		0x08
+#define LSM303_OUT_X_H_M		0x09
+#define LSM303_OUT_Y_L_M		0x0A
+#define LSM303_OUT_Y_H_M		0x0B
+#define LSM303_OUT_Z_L_M		0x0C
+#define LSM303_OUT_Z_H_M		0x0D
+#define LSM303_WHO_AM_I			0x0F
+#define LSM303_INT_CTRL_M		0x12
+#define LSM303_INT_SRC_M		0x13
+#define LSM303_INT_THS_L_M		0x14
+#define LSM303_INT_THS_H_M		0x15
+#define LSM303_OFFSET_X_L_M		0x16
+#define LSM303_OFFSET_X_H_M		0x17
+#define LSM303_OFFSET_Y_L_M		0x18
+#define LSM303_OFFSET_Y_H_M		0x19
+#define LSM303_OFFSET_Z_L_M		0x1A
+#define LSM303_OFFSET_Z_H_M		0x1B
+#define LSM303_REFERENCE_X		0x1C
+#define LSM303_REFERENCE_Y		0x1D
+#define LSM303_REFERENCE_Z		0x1E
+#define LSM303_CTRL_REG0		0x1F
+#define LSM303_CTRL_REG1		0x20
+#define LSM303_CTRL_REG2		0x21
+#define LSM303_CTRL_REG3		0x22
+#define LSM303_CTRL_REG4		0x23
+#define LSM303_CTRL_REG5		0x24
+#define LSM303_CTRL_REG6		0x25
+#define LSM303_CTRL_REG7		0x26
+#define LSM303_STATUS_A			0x27
+#define LSM303_OUT_X_L_A		0x28
+#define LSM303_OUT_X_H_A		0x29
+#define LSM303_OUT_Y_L_A		0x2A
+#define LSM303_OUT_Y_H_A		0x2B
+#define LSM303_OUT_Z_L_A		0x2C
+#define LSM303_OUT_Z_H_A		0x2D
+#define LSM303_FIFO_CTRL		0x2E
+#define LSM303_FIFO_SRC			0x2F
+#define LSM303_IG_CFG1			0x30
+#define LSM303_IG_SRC1			0x31
+#define LSM303_IG_THS1			0x32
+#define LSM303_IG_DUR1			0x33
+#define LSM303_IG_CFG2			0x34
+#define LSM303_IG_SRC2			0x35
+#define LSM303_IG_THS2			0x36
+#define LSM303_IG_DUR2			0x37
+#define LSM303_CLICK_CFG		0x38
+#define LSM303_CLICK_SRC		0x39
+#define LSM303_CLICK_THS		0x3A
+#define LSM303_TIME_LIMIT		0x3B
+#define LSM303_TIME_LATENCY		0x3C
+#define LSM303_TIME_WINDOW		0x3D
+#define LSM303_Act_THS			0x3E
+#define LSM303_Act_DUR			0x3F
 
-void LSM303_write_reg(uint8_t reg_addr, uint8_t data) {
-	// Write the register and then the data
-	// - Make a transmit buffer
-	uint8_t tx_size = 2;
-	uint8_t tx_buf[tx_size];
-	// - Set the register address
-	tx_buf[0] = reg_addr;
-	tx_buf[1] = data;
-	// - Write the data
-	Chip_I2C_MasterSend(LSM303_i2c_id, LSM303_slave_address >> 1, tx_buf, tx_size);
-}
+// Dimensions
+#define LSM303_ACCEL_X		1
+#define LSM303_ACCEL_Y		2
+#define LSM303_ACCEL_Z		3
+#define LSM303_MAG_X		4
+#define LSM303_MAG_Y		5
+#define LSM303_MAG_Z		6
+#define LSM303_MAG_HEADING 	7
+#define LSM303_TEMPERATURE	8
 
-int LSM303_init(I2C_ID_T id_in) {
-	LSM303_i2c_id = id_in;
-	LSM303_slave_address = LSM303_SA0_HIGH_ADDRESS;
-	return 1;
-	//return detect_device();
-}
+I2C_ID_T LSM303_i2c_id;
+uint8_t LSM303_slave_address;
 
-float LSM303_read_data(uint8_t dimension) {
-	switch (dimension) {
-		case LSM303_ACCEL_X:
-		case LSM303_ACCEL_Y:
-		case LSM303_ACCEL_Z:
-			return LSM303_read_accel_g(dimension);
-		case LSM303_MAG_X:
-		case LSM303_MAG_Y:
-		case LSM303_MAG_Z:
-			return LSM303_read_mag_raw(dimension);
-		case LSM303_MAG_HEADING:
-			return 0.0f;
-			//return read_mag_heading();
-		case LSM303_TEMPERATURE:
-			return LSM303_read_temperature_C();
-		default:
-			return 0.0f;
-	}
-}
+int LSM303_init(I2C_ID_T id_in);
 
-void LSM303_enable() {
-	// Accelerometer
+// Dimensions are LSM303_ACCEL_X, LSM303_ACCEL_Y, LSM303_ACCEL_Z,
+// LSM303_MAG_X, LSM303_MAG_Y, LSM303_MAG_Z, LSM303_MAG_HEADING
+// and LSM303_TEMPERATURE for this sensor
+float LSM303_read_data(uint8_t dimension);
 
-	// 0x20 = 0b00100000
-	// AFS = 0b100 (+/- 16 g full scale)
-	LSM303_write_reg(LSM303_CTRL_REG2, 0x20);
+/*
+Enables the LSM303's accelerometer and magnetometer. Also:
+- Sets sensor full scales (gain) to default power-on values, which are
+  +/- 2 g for accelerometer and +/- 1.3 gauss for magnetometer
+  (+/- 4 gauss on LSM303D).
+- Selects 50 Hz ODR (output data rate) for accelerometer and 7.5 Hz
+  ODR for magnetometer (6.25 Hz on LSM303D). (These are the ODR
+  settings for which the electrical characteristics are specified in
+  the datasheets.)
+- Enables high resolution modes (if available).
+Note that this function will also reset other settings controlled by
+the registers it writes to.
+*/
+void LSM303_enable();
 
-	// 0x57 = 0b01010111
-	// ADDR = 0101 (50 Hz ODR), AZEN = AYEN = AXEN = 1 (all axes enabled)
-	LSM303_write_reg(LSM303_CTRL_REG1, 0x57);
+// Read data
+int16_t LSM303_read_accel_raw(uint8_t dimension);
+float LSM303_read_accel_g(uint8_t dimension);
+int16_t LSM303_read_mag_raw(uint8_t dimension);
+float LSM303_read_mag_gauss(uint8_t dimension);
+int16_t LSM303_read_temperature_raw();
+// Using same raw conversion as LPS sensor, probably needs calibration
+float LSM303_read_temperature_C();
 
-	// Magnetometer
+// Low level register work
+uint8_t LSM303_read_reg(uint8_t reg_addr);
+void LSM303_write_reg(uint8_t reg_addr, uint8_t data);
 
-	// 0x64 = 0b01100100
-	// M_RES = 11 (high resolution mode), M_ODR = 001 (6.25 Hz ODR)
-	LSM303_write_reg(LSM303_CTRL_REG5, 0x64);
+// Unused
+//bool detect_device();
 
-	// 0x20 = 0b00100000
-	// MFS = 01 (+/- 4 gauss full scale)
-	LSM303_write_reg(LSM303_CTRL_REG6, 0x20);
-
-	// 0x00 = 00000000
-	// MLP = 0 (low power mode off), MD = 00 (continuous-conversion mode)
-	LSM303_write_reg(LSM303_CTRL_REG7, 0x00);
-}
-
-int16_t LSM303_read_accel_raw(uint8_t dimension) {
-	uint8_t a_l, a_h;
-	uint8_t reg_addr_l, reg_addr_h;
-	switch (dimension) {
-		case LSM303_ACCEL_X:
-			reg_addr_l = LSM303_OUT_X_L_A;
-			reg_addr_h = LSM303_OUT_X_H_A;
-			break;
-		case LSM303_ACCEL_Y:
-			reg_addr_l = LSM303_OUT_Y_L_A;
-			reg_addr_h = LSM303_OUT_Y_H_A;
-			break;
-		case LSM303_ACCEL_Z:
-			reg_addr_l = LSM303_OUT_Z_L_A;
-			reg_addr_h = LSM303_OUT_Z_H_A;
-			break;
-		default:
-			reg_addr_l = LSM303_OUT_X_L_A;
-			reg_addr_h = LSM303_OUT_X_H_A;
-			break;
-	}
-	a_l = LSM303_read_reg(reg_addr_l);
-	a_h = LSM303_read_reg(reg_addr_h);
-	return (int16_t)(a_h << 8 | a_l);
-}
-
-float LSM303_read_accel_g(uint8_t dimension) {
-	return 0.0f + (float)LSM303_read_accel_raw(dimension) * (16.0f / 32768.0f);
-}
-
-int16_t LSM303_read_mag_raw(uint8_t dimension) {
-	uint8_t m_l, m_h;
-	uint8_t reg_addr_l, reg_addr_h;
-	switch (dimension) {
-		case LSM303_MAG_X:
-			reg_addr_l = LSM303_OUT_X_L_M;
-			reg_addr_h = LSM303_OUT_X_H_M;
-			break;
-		case LSM303_MAG_Y:
-			reg_addr_l = LSM303_OUT_Y_L_M;
-			reg_addr_h = LSM303_OUT_Y_H_M;
-			break;
-		case LSM303_MAG_Z:
-			reg_addr_l = LSM303_OUT_Z_L_M;
-			reg_addr_h = LSM303_OUT_Z_H_M;
-			break;
-		default:
-			reg_addr_l = LSM303_OUT_X_L_M;
-			reg_addr_h = LSM303_OUT_X_H_M;
-			break;
-	}
-	m_l = LSM303_read_reg(reg_addr_l);
-	m_h = LSM303_read_reg(reg_addr_h);
-	return (int16_t)(m_h << 8 | m_l);
-}
-
-int16_t LSM303_read_temperature_raw() {
-	uint8_t t_l, t_h;
-	t_l = LSM303_read_reg(LSM303_OUT_TEMP_L);
-	t_h = LSM303_read_reg(LSM303_OUT_TEMP_H);
-	return (int16_t)(t_h << 8 | t_l);
-}
-
-// bool LSM303_detect_device() {
-// 	slave_address = LSM303_SA0_LOW_ADDRESS;
-// 	if (read_reg(LSM303_WHO_AM_I) == LSM303D_WHO_ID)
-// 		return true;
-// 	slave_address = LSM303_SA0_HIGH_ADDRESS;
-// 	if (read_reg(LSM303_WHO_AM_I) == LSM303D_WHO_ID) {
-// 		slave_address = LSM303_SA0_LOW_ADDRESS;
-// 		return true;
-// 	}
-
-// 	return false;
-// }
+#endif /* LSM303_H */

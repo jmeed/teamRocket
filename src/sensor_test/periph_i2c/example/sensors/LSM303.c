@@ -148,6 +148,10 @@ int16_t LSM303_read_temperature_raw() {
 	return (int16_t)(t_h << 8 | t_l);
 }
 
+float LSM303_read_temperature_C() {
+	return 42.5f + (float)LSM303_read_temperature_raw() / 480.0f;
+}
+
 // bool LSM303_detect_device() {
 // 	slave_address = LSM303_SA0_LOW_ADDRESS;
 // 	if (read_reg(LSM303_WHO_AM_I) == LSM303D_WHO_ID)

@@ -439,8 +439,8 @@ static void i2c_write_test(I2C_XFER_T *xfer)
 	xfer->slaveAddr = tmp;
 	xfer->rxBuff = 0;
 	xfer->txBuff = 0;
-	xfer->txSz = 0;
-	xfer->rxSz = 5;
+	xfer->txSz = 1;
+	xfer->rxSz = 1;
 
 //	if (ops & 1) {
 //		tmp = con_get_input("Enter number of bytes to read : ");
@@ -473,41 +473,35 @@ int main(void)
 	i2c_app_init(I2C0, I2C_DEFAULT_SPEED);
 	volatile int i;
 
-	/* Simulate an EEPROM slave in I2C0 */
-	//i2c_eeprom_init(I2C_EEPROM_BUS);
-
-	/* Simuldate an IO Expansion slave in I2C0 */
-	//i2c_iox_init(I2C_IOX_BUS);
 
 
+//	i2c_write_test(&xfer);
+//
+//
+//	while(1){
+//		Chip_I2C_MasterSend(I2C0, I2CWRITE >> 1, xfer.txBuff, xfer.txSz);
+//		//for( i = 0; i < 500000; i++);
+//		Chip_I2C_MasterRead(I2C0, I2CREAD >> 1, xfer.rxBuff, xfer.rxSz);
+////		for( i = 0; i < 1000; i++);
+//	}
 
-	i2c_write_test(&xfer);
+	 volatile float myAlt = 0.0f;
+	 volatile float myTemp = 0.0f;
+	 volatile float myXAccel = 0.0f;
+	 LPS_init(I2C0);
+	 L3G_init(I2C0);
+	 LSM303_init(I2C0);
+	 LPS_enable();
+	 L3G_enable();
+	 LSM303_enable();
+	 while (1) {
+	 		myAlt = LPS_read_data(LPS_ALTITUDE);
+	 		myTemp = L3G_read_data(L3G_TEMPERATURE);
+	 		myXAccel = LSM303_read_data(LSM303_ACCEL_X);
+	 		DEBUGOUT("alt:%.2f, temp:%.2f, x accel:%.2f\r\n", myAlt, myTemp, myXAccel);
+	 		for (i = 0; i < 50000; ++i);
+	 }
 
-
-	while(1){
-		Chip_I2C_MasterSend(I2C0, I2CWRITE >> 1, xfer.txBuff, xfer.txSz);
-		//for( i = 0; i < 500000; i++);
-		Chip_I2C_MasterRead(I2C0, I2CREAD >> 1, xfer.rxBuff, xfer.rxSz);
-//		for( i = 0; i < 1000; i++);
-	}
-
-	/* float myAlt = 0.0f;
-	 * float myTemp = 0.0f;
-	 * float myXAccel = 0.0f;
-	 * LPS_init(I2C0);
-	 * L3G_init(I2C0);
-	 * LSM303_init(I2C0);
-	 * LPS_enable();
-	 * L3G_enable();
-	 * LSM303_enable();
-	 * while (1) {
-	 * 		myAlt = LPS_read_data(LPS_ALTITUDE);
-	 * 		myTemp = L3G_read_data(L3G_TEMPERATURE);
-	 * 		myXAccel = LSM303_read_data(LSM303_ACCEL_X);
-	 * 		DEBUGOUT("alt:%.2f, temp:%.2f, x accel:%.2f\n", myAlt, myTemp, myXAccel);
-	 * 		for (i = 0; i < 50000; ++i);
-	 * }
-	 */
 
 	while(1);
 
