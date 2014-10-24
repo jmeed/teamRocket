@@ -1,20 +1,42 @@
 #include "LSM303.h"
 
 uint8_t LSM303::read_reg(uint8_t reg_addr) {
-	read_i2c_register(slave_address | 0x01, slave_address, reg_addr);
-	// uint8_t buf[1];
-	// int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
-	// return buf[0];
+	// Write the register we want to read
+	// - Make a transmit buffer
+	uint8_t tx_size = 1;
+	uint8_t tx_buf[tx_size];
+	// - Set the register address
+	tx_buf[0] = reg_addr;
+	// - Write the register value
+	Chip_I2C_MasterSend(i2c_id, slave_address >> 1, tx_buf, tx_size);
+
+	// Read the register value
+	// - Make a receive buffer
+	uint8_t rx_size = 1;
+	uint8_t rx_buf[rx_size];
+	// - Read the register value
+	Chip_I2C_MasterRead(i2c_id, (slave_address | 0x01) >> 1, rx_buf, rx_size);
+
+	return rx_buf[0];
 }
 
 void LSM303::write_reg(uint8_t reg_addr, uint8_t data) {
-	write_i2c_register(slave_address, reg_addr, data);
-	// uint8_t buf[2] = {reg_addr, data};
-	// return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
+	// Write the register and then the data
+	// - Make a transmit buffer
+	uint8_t tx_size = 2;
+	uint8_t tx_buf[tx_size];
+	// - Set the register address
+	tx_buf[0] = reg_addr;
+	tx_buf[1] = data;
+	// - Write the data
+	Chip_I2C_MasterSend(i2c_id, slave_address >> 1, tx_buf, tx_size);
 }
 
-bool LSM303::init() {
-	return detect_device();
+bool LSM303::init(I2C_ID_T id_in) {
+	i2c_id = id_in;
+	slave_address = LSM303_SA0_HIGH_ADDRESS;
+	return true;
+	//return detect_device();
 }
 
 float LSM303::read_data(uint8_t dimension) {
@@ -69,20 +91,6 @@ void LSM303::enable() {
 	// MLP = 0 (low power mode off), MD = 00 (continuous-conversion mode)
 	write_reg(LSM303_CTRL_REG7, 0x00);
 }
-
-/*void LSM303::set_timeout(unsigned int timeout) {
-	io_timeout = timeout;
-}*/
-
-/*unsigned int LSM303::get_timeout() {
-	return io_timeout;
-}*/
-
-/*bool LSM303::timeout_occured() {
-	bool tmp = did_timeout;
-	did_timeout = false;
-	return tmp;
-}*/
 
 int16_t LSM303::read_accel_raw(uint8_t dimension) {
 	uint8_t a_l, a_h;
@@ -146,57 +154,6 @@ int16_t LSM303::read_temperature_raw() {
 	t_h = read_reg(LSM303_OUT_TEMP_H);
 	return (int16_t)(t_h << 8 | t_l);
 }
-
-// float LSM303::read_temperature_C() {
-// 	return 42.5f + (float)read_temperature_raw() / 480.0f;
-// }
-
-// float LSM303::read_mag_heading() {
-// 	return heading(vector<int>{1, 0, 0});
-// }
-
-// template <typename T> float LSM303::heading(vector<T> from){
-//     vector<int32_t> temp_m = {
-//     	(int32_t)read_mag_raw(MAG_X),
-//     	(int32_t)read_mag_raw(MAG_Y),
-//     	(int32_t)read_mag_raw(MAG_Z)
-//     }
-
-//     // subtract offset (average of min and max) from magnetometer readings
-//     temp_m.x -= ((int32_t)m_min.x + m_max.x) / 2;
-//     temp_m.y -= ((int32_t)m_min.y + m_max.y) / 2;
-//     temp_m.z -= ((int32_t)m_min.z + m_max.z) / 2;
-
-//     // compute E and N
-//     vector<float> E;
-//     vector<float> N;
-//     vector_cross(&temp_m, &a, &E);
-//     vector_normalize(&E);
-//     vector_cross(&a, &E, &N);
-//     vector_normalize(&N);
-
-//     // compute heading
-//     float heading = atan2(vector_dot(&E, &from), vector_dot(&N, &from)) * 180 / M_PI;
-//     if (heading < 0) heading += 360;
-//     return heading;
-// }
-
-// template <typename Ta, typename Tb, typename To> void LSM303::vector_cross(const vector<Ta> *a,const vector<Tb> *b, vector<To> *out){
-//     out->x = (a->y * b->z) - (a->z * b->y);
-//     out->y = (a->z * b->x) - (a->x * b->z);
-//     out->z = (a->x * b->y) - (a->y * b->x);
-// }
-
-// template <typename Ta, typename Tb> float LSM303::vector_dot(const vector<Ta> *a, const vector<Tb> *b){
-//     return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
-// }
-
-// void LSM303::vector_normalize(vector<float> *a){
-//     float mag = sqrt(vector_dot(a, a));
-//     a->x /= mag;
-//     a->y /= mag;
-//     a->z /= mag;
-// }
 
 bool LSM303::detect_device() {
 	slave_address = LSM303_SA0_LOW_ADDRESS;

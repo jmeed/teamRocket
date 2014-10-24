@@ -1,11 +1,13 @@
 #ifndef H3L_H
 #define H3L_H
 
-#include "../lcp11u6x/i2c_11u6x.h"
+//#include "../lcp11u6x/i2c_11u6x.h"
 #include <cstdint>
 
 // Identification
-#define H3L_WHO_ID		0x32
+#define H3L_SA0_LOW_ADDRESS		(0x30)
+#define H3L_SA0_HIGH_ADDRESS	(0x32)
+#define H3L_WHO_ID				0x32
 
 // Registers
 #define H3L_WHO_AM_I		0x0F // r
@@ -52,7 +54,7 @@ public:
 		H3L_ODR_1000	// 0x03: 1000 Hz, 780 Hz cutoff
 	}
 	H3L(uint8_t slave_address);
-	bool init(accel_scale a_sc);
+	bool init(I2C_ID_T id_in, accel_scale a_sc);
 	// Read accelerometer values
 	// Possible dimensions are H3L_X, H3L_Y, H3L_Z for this device
 	int16_t read_accel_raw(uint8_t dimension);
@@ -66,6 +68,9 @@ public:
 	// Configure the device's second interrupt. Check datasheet for register values
 	void configure_int_2(uint8_t int2_cfg, uint8_t int2_ths, uint8_t duration);
 private:
+	// The I2C identifier
+	I2C_ID_T i2c_id;
+
 	// The I2C slave address
 	uint8_t slave_address;
 
