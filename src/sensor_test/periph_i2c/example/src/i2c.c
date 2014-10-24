@@ -32,6 +32,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "board.h"
+#include "../sensors/L3G.h"
+#include "../sensors/LPS.h"
+#include "../sensors/LSM303.h"
 // FIXME - nneds check
 /*****************************************************************************
  * Private types/enumerations/variables
@@ -468,17 +471,17 @@ int main(void)
 	SystemCoreClockUpdate();
 	Board_Init();
 	i2c_app_init(I2C0, I2C_DEFAULT_SPEED);
+	volatile int i;
 
 	/* Simulate an EEPROM slave in I2C0 */
-	i2c_eeprom_init(I2C_EEPROM_BUS);
+	//i2c_eeprom_init(I2C_EEPROM_BUS);
 
 	/* Simuldate an IO Expansion slave in I2C0 */
-	i2c_iox_init(I2C_IOX_BUS);
+	//i2c_iox_init(I2C_IOX_BUS);
 
-volatile int i;
-int j;
 
-i2c_write_test(&xfer);
+
+	i2c_write_test(&xfer);
 
 
 	while(1){
@@ -488,60 +491,26 @@ i2c_write_test(&xfer);
 //		for( i = 0; i < 1000; i++);
 	}
 
-while(1);
+	/* float myAlt = 0.0f;
+	 * float myTemp = 0.0f;
+	 * float myXAccel = 0.0f;
+	 * LPS_init(I2C0);
+	 * L3G_init(I2C0);
+	 * LSM303_init(I2C0);
+	 * LPS_enable();
+	 * L3G_enable();
+	 * LSM303_enable();
+	 * while (1) {
+	 * 		myAlt = LPS_read_data(LPS_ALTITUDE);
+	 * 		myTemp = L3G_read_data(L3G_TEMPERATURE);
+	 * 		myXAccel = LSM303_read_data(LSM303_ACCEL_X);
+	 * 		DEBUGOUT("alt:%.2f, temp:%.2f, x accel:%.2f\n", myAlt, myTemp, myXAccel);
+	 * 		for (i = 0; i < 50000; ++i);
+	 * }
+	 */
 
-//	while (!xflag) {
-//		switch (i2c_menu()) {
-//		case 0:
-//			xflag = 1;
-//			DEBUGOUT("End of I2C Demo! Bye!\r\n");
-//			break;
-//
-//		case 1:
-//			i2cDev = I2C0;
-//			break;
-//
-//		case 2:
-//			i2c_set_mode(i2cDev, !(mode_poll & (1 << i2cDev)));
-//			break;
-//
-//		case 3:
-//			i2c_probe_slaves(i2cDev);
-//			break;
-//
-//		case 4:
-//			i2c_rw_input(&xfer, 1);
-//			tmp = Chip_I2C_MasterRead(i2cDev, xfer.slaveAddr, xfer.rxBuff, xfer.rxSz);
-//			DEBUGOUT("Read %d bytes of data from slave 0x%02X.\r\n", tmp, xfer.slaveAddr);
-//			con_print_data(buffer[1], tmp);
-//			break;
-//
-//		case 5:
-//			i2c_rw_input(&xfer, 2);
-//			if (xfer.txSz == 0) {
-//				break;
-//			}
-//			tmp = Chip_I2C_MasterSend(i2cDev, xfer.slaveAddr, xfer.txBuff, xfer.txSz);
-//			DEBUGOUT("Written %d bytes of data to slave 0x%02X.\r\n", tmp, xfer.slaveAddr);
-//			break;
-//
-//		case 6:
-//			i2c_rw_input(&xfer, 3);
-//			tmp = xfer.rxSz;
-//			if (!tmp && !xfer.txSz) {
-//				break;
-//			}
-//			Chip_I2C_MasterTransfer(i2cDev, &xfer);
-//			DEBUGOUT("Master transfer : %s\r\n",
-//					 xfer.status == I2C_STATUS_DONE ? "SUCCESS" : "FAILURE");
-//			DEBUGOUT("Received %d bytes from slave 0x%02X\r\n", tmp - xfer.rxSz, xfer.slaveAddr);
-//			con_print_data(buffer[1], tmp - xfer.rxSz);
-//			break;
-//
-//		default:
-//			DEBUGOUT("Input Invalid! Try Again.\r\n");
-//		}
-//	}
+	while(1);
+
 	Chip_I2C_DeInit(I2C0);
 
 	return 0;
