@@ -35,7 +35,10 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "logging.h"
+#include "error_codes.h"
 #include "drivers/uart0.h"
+#include "drivers/spi.h"
+#include "drivers/sdcard.h"
 
 /*****************************************************************************
  * Private types/enumerations/variables
@@ -51,12 +54,26 @@
 
 /* Sets up system hardware */
 
-static void hardware_init(void) {
-	// Setup UART clocks
-	Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
+static void setup_pinmux() {
+	// SPI0 SDCard
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 12, (IOCON_FUNC1 | IOCON_MODE_INACT)); // MOSI
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 29, (IOCON_FUNC1 | IOCON_MODE_INACT)); // SCK
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 8, (IOCON_FUNC1 | IOCON_MODE_INACT)); // MISO
+}
 
+static void debug_uart_init(void) {
+	Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
 	uart0_init();
 	uart0_setup(115200, 1);
+}
+
+static void hardware_init(void) {
+	// Setup UART clocks
+
+	setup_pinmux();
+	spi_init();
+	spi_setup_device(SPI_DEVICE_0, SSP_BITS_8, SSP_FRAMEFORMAT_SPI, SSP_CLOCK_MODE0, true);
+	SDCardInit();
 }
 
 static void prvSetupHardware(void)
@@ -99,6 +116,16 @@ static void vLEDTask2(void *pvParameters) {
 	}
 }
 
+xTaskHandle setup_handle;
+
+static void vSetupSDCard(void* pvParameters) {
+	int result;
+	LOG_INFO("Attempting to startup SDCard");
+	result = SDCardStartup();
+	printf("SDCard startup result is %d\n\r", result);
+	vTaskSuspend(setup_handle);
+}
+
 /*****************************************************************************
  * Public functions
  ****************************************************************************/
@@ -111,12 +138,16 @@ static void vLEDTask2(void *pvParameters) {
 int main(void)
 {
 	prvSetupHardware();
+
+	debug_uart_init();
+	LOG_INFO("Initializing hardware");
 	hardware_init();
 
 	/* LED1 toggle thread */
 
-	printf("Hello World! from main!\n");
-	printf("main Test float %s\r\n", "abc");
+	LOG_INFO("Starting tasks");
+
+	xTaskCreate(vSetupSDCard, NULL, 256, NULL, (tskIDLE_PRIORITY + 2), &setup_handle);
 
 	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
 				256, NULL, (tskIDLE_PRIORITY + 1UL),
@@ -132,9 +163,11 @@ int main(void)
 				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
 
+	LOG_INFO("Tasks created; Starting scheduler");
 	/* Start the scheduler */
 	vTaskStartScheduler();
 
+	exit_error(ERROR_CODE_MAIN_SCHEDULER_FALL_THRU);
 	/* Should never arrive here */
 	return 1;
 }
