@@ -152,6 +152,8 @@ int SDCardStartup() {
 	int result = SDCARD_ERROR_GENERIC;
 	int i;
 	int counter;
+	int sd_version = 2;  // 0: MMC; 1: SD; 2: SDv2
+	bool is_sdhc = false;
 
 	// Generate 80 pulses on SCLK
 	LOG_DEBUG("Sending 80 pulses");
@@ -185,11 +187,49 @@ int SDCardStartup() {
 	{
 		uint8_t buffer[4];
 		int response;
-		if (((response = SDCardSendCommand(8, 0x000001AA, 0xff, &buffer, 4)) & SDCARD_R1_ERROR_MASK) != 0) {
+		response = SDCardSendCommand(8, 0x000001AA, 0xff, &buffer, 4);
+		if (response & SDCARD_R1_ILLEGAL_CMD) {
+			sd_version = 1;
+		} else {
+			if (!(buffer[2] == 0x01 && buffer[3] == 0xAA)) {
+				LOG_ERROR("SDCard does not support 2.7-3.6V voltage range based on CMD8");
+				result = SDCARD_ERROR_INVALID_SDCARD;
+				goto fail;
+			}
+		}
+	}
+
+	LOG_DEBUG("Waiting for SDCARD to start");
+	// Wait for start. Tested startup time for SDHC is 200ms
+	for (i = 0; i < 10000; i++) {
+		int response;
+		if (sd_version == 2) {
+			response = SDCardSendACommand(41, 1<<30, 0xff, NULL, 0);
+			if (response & SDCARD_R1_ILLEGAL_CMD) {
+				sd_version = 0;
+				LOG_DEBUG("CMD41 failed. Assuming MMC.");
+			}
+		} else if (sd_version == 1) {
+			response = SDCardSendACommand(41, 0, 0xff, NULL, 0);
+			if (response & SDCARD_R1_ILLEGAL_CMD) {
+				sd_version = 0;
+				LOG_DEBUG("CMD41 failed. Assuming MMC.");
+			}
+		} else {
+			response = SDCardSendCommand(1, 0, 0xff, NULL, 0);
+		}
+		if (response == 0) {
+			break;
+		}
+		if (response < 0) {
+			result = response;
 			goto fail;
 		}
-		LOG_DEBUG("CMD8 result = 0x%02x%02x%02x%02x", buffer[0], buffer[1], buffer[2], buffer[3]);
-		// printf("SDCard OCR = 0x%02x%02x%02x%02x (%d)\r\n", buffer[1], buffer[2], buffer[3], buffer[4], buffer[0]);
+	}
+
+	if (i >= 10000) {
+		result = SDCARD_ERROR_IDLE_WAIT_TIMEOUT;
+		goto fail;
 	}
 
 	LOG_DEBUG("Checking voltage range CMD58");
@@ -204,25 +244,16 @@ int SDCardStartup() {
 			result = SDCARD_ERROR_VOLTAGE_NOT_SUPPORTED;
 			goto fail;
 		}
-		// printf("SDCard OCR = 0x%02x%02x%02x%02x (%d)\r\n", buffer[1], buffer[2], buffer[3], buffer[4], buffer[0]);
-	}
 
-	LOG_DEBUG("Waiting for SDCARD to start");
-	// Wait for start. Tested startup time for SDHC is 200ms
-	for (i = 0; i < 10000; i++) {
-		int response = SDCardSendACommand(41, 1<<30, 0xff, NULL, 0);
-		if (response == 0) {
-			break;
+		if (sd_version >= 1) {
+			LOG_DEBUG("Checking SDHC support");
+			if (buffer[0] & 0x40) {
+				is_sdhc = true;
+				LOG_INFO("Detected SDHC card");
+			} else {
+				LOG_INFO("Detected regular card");
+			}
 		}
-		if (response < 0) {
-			result = response;
-			goto fail;
-		}
-	}
-
-	if (i >= 10000) {
-		result = SDCARD_ERROR_IDLE_WAIT_TIMEOUT;
-		goto fail;
 	}
 
 	// Set block size to 512
