@@ -77,17 +77,13 @@ void spi_transceive(spi_device_t* device, uint8_t* buffer, size_t size) {
 	device->xf_setup.tx_cnt = 0;
 
 	Chip_SSP_Int_FlushData(device->ssp_device);
-	LOG_DEBUG("Initiating SPI transfer");
 	Chip_SSP_Int_RWFrames8Bits(device->ssp_device, &device->xf_setup);
-	LOG_DEBUG("Enabling SPI device");
 	Chip_SSP_Int_Enable(device->ssp_device);
 
 	// Wait till done
 
-	LOG_DEBUG("Waiting for SPI transfer conclusion");
 	xSemaphoreTake(device->sem_ready, portMAX_DELAY);
 
-	LOG_DEBUG("SPI transfer done");
 	xSemaphoreGive(device->mutex);
 }
 

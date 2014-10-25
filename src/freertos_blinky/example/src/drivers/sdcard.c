@@ -135,6 +135,12 @@ int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer
 
 }
 
+int SDCardSendACommand(uint8_t acommand, uint32_t param, uint8_t crc, void* buffer, size_t recvSize) {
+	int first_result = SDCardSendCommand(55, 0, 0, NULL, 0);
+	if (first_result < 0 || (first_result & SDCARD_R1_ILLEGAL_CMD)) return first_result;
+	return SDCardSendCommand(acommand, param, crc, buffer, recvSize);
+}
+
 void SDCardInit() {
 	SDCardSlowMode();
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, SDCARD_SPI_SLAVE_PORT, SDCARD_SPI_SLAVE_PIN);
@@ -174,10 +180,37 @@ int SDCardStartup() {
 		}
 	}
 
+	LOG_DEBUG("Checking voltage range CMD8, and support for SDHC/SDCv2");
+	// Read ?
+	{
+		uint8_t buffer[4];
+		int response;
+		if (((response = SDCardSendCommand(8, 0x000001AA, 0xff, &buffer, 4)) & SDCARD_R1_ERROR_MASK) != 0) {
+			goto fail;
+		}
+		LOG_DEBUG("CMD8 result = 0x%02x%02x%02x%02x", buffer[0], buffer[1], buffer[2], buffer[3]);
+		// printf("SDCard OCR = 0x%02x%02x%02x%02x (%d)\r\n", buffer[1], buffer[2], buffer[3], buffer[4], buffer[0]);
+	}
+
+	LOG_DEBUG("Checking voltage range CMD58");
+	// Read OCR
+	{
+		uint8_t buffer[4];
+		int response;
+		if (((response = SDCardSendCommand(58, 0, 0xff, &buffer, 4)) & SDCARD_R1_ERROR_MASK) != 0) {
+			goto fail;
+		}
+		if ((buffer[1] & 0xC0) == 0) {
+			result = SDCARD_ERROR_VOLTAGE_NOT_SUPPORTED;
+			goto fail;
+		}
+		// printf("SDCard OCR = 0x%02x%02x%02x%02x (%d)\r\n", buffer[1], buffer[2], buffer[3], buffer[4], buffer[0]);
+	}
+
 	LOG_DEBUG("Waiting for SDCARD to start");
-	// Wait for start. Tested limit is ~251 cycles
+	// Wait for start. Tested startup time for SDHC is 200ms
 	for (i = 0; i < 10000; i++) {
-		int response = SDCardSendCommand(1, 0, 0xff, NULL, 0);
+		int response = SDCardSendACommand(41, 1<<30, 0xff, NULL, 0);
 		if (response == 0) {
 			break;
 		}
@@ -190,20 +223,6 @@ int SDCardStartup() {
 	if (i >= 10000) {
 		result = SDCARD_ERROR_IDLE_WAIT_TIMEOUT;
 		goto fail;
-	}
-
-	// Read OCR
-	{
-		uint8_t buffer[4];
-		int response;
-		if ((response = SDCardSendCommand(58, 0, 0xff, &buffer, 4)) != 0) {
-			goto fail;
-		}
-		if ((buffer[1] & 0xC0) == 0) {
-			result = SDCARD_ERROR_VOLTAGE_NOT_SUPPORTED;
-			goto fail;
-		}
-		// printf("SDCard OCR = 0x%02x%02x%02x%02x (%d)\r\n", buffer[1], buffer[2], buffer[3], buffer[4], buffer[0]);
 	}
 
 	// Set block size to 512
