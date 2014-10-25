@@ -1,20 +1,10 @@
 #include "LPS.h"
 
-uint8_t LPS::read_reg(uint8_t reg_addr) {
-	read_i2c_register(slave_address | 0x01, slave_address, reg_addr);
-	// uint8_t buf[1];
-	// int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
-	// return buf[0];
-}
-
-void LPS::write_reg(uint8_t reg_addr, uint8_t data) {
-	write_i2c_register(slave_address, reg_addr, data);
-	// uint8_t buf[2] = {reg_addr, data};
-	// return Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
-}
-
-bool LPS::init() {
-	return detect_device();
+bool LPS::init(I2C_ID_T id_in) {
+	i2c_id = id_in;
+	slave_address = LPS_SA0_HIGH_ADDRESS;
+	return true;
+	//return detect_device();
 }
 
 float LPS::read_data(uint8_t dimension) {
@@ -27,15 +17,6 @@ float LPS::read_data(uint8_t dimension) {
 		default:
 			return 0.0f;
 	}
-}
-
-// Unused so far
-void LPS::set_mode(void* mode) {
-}
-
-// Unused so far
-uint8_t LPS::get_status(uint8_t status) {
-	return 0;
 }
 
 // Device specific members
@@ -84,4 +65,36 @@ bool LPS::detect_device() {
 	}
 
 	return false;
+}
+
+uint8_t LPS::read_reg(uint8_t reg_addr) {
+	// Write the register we want to read
+	// - Make a transmit buffer
+	uint8_t tx_size = 1;
+	uint8_t tx_buf[tx_size];
+	// - Set the register address
+	tx_buf[0] = reg_addr;
+	// - Write the register value
+	Chip_I2C_MasterSend(i2c_id, slave_address >> 1, tx_buf, tx_size);
+
+	// Read the register value
+	// - Make a receive buffer
+	uint8_t rx_size = 1;
+	uint8_t rx_buf[rx_size];
+	// - Read the register value
+	Chip_I2C_MasterRead(i2c_id, (slave_address | 0x01) >> 1, rx_buf, rx_size);
+
+	return rx_buf[0];
+}
+
+void LPS::write_reg(uint8_t reg_addr, uint8_t data) {
+	// Write the register and then the data
+	// - Make a transmit buffer
+	uint8_t tx_size = 2;
+	uint8_t tx_buf[tx_size];
+	// - Set the register address
+	tx_buf[0] = reg_addr;
+	tx_buf[1] = data;
+	// - Write the data
+	Chip_I2C_MasterSend(i2c_id, slave_address >> 1, tx_buf, tx_size);
 }

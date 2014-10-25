@@ -4,10 +4,9 @@
 //#include "i2c_17xx_40xx.h"
 #include <cstdint>
 #include <math.h>
-#include "../i2c/i2c_com.h"
 
-#define LSM303_SA0_HIGH_ADDRESS		0b0011101 // D with SA0 high
-#define LSM303_SA0_LOW_ADDRESS		0b0011110 // D with SA0 low
+#define LSM303_SA0_LOW_ADDRESS		(0x3C >> 1) // D with SA0 low
+#define LSM303_SA0_HIGH_ADDRESS		(0x3A >> 1) // D with SA0 high
 #define LSM303D_WHO_ID				0x49
 
 // Registers
@@ -80,22 +79,13 @@
 
 class LSM303 {
 public:
-	bool init();
+	bool init(I2C_ID_T id_in);
 	// Dimensions are LSM303_ACCEL_X, LSM303_ACCEL_Y, LSM303_ACCEL_Z,
 	// LSM303_MAG_X, LSM303_MAG_Y, LSM303_MAG_Z, LSM303_MAG_HEADING
 	// and LSM303_TEMPERATURE for this sensor
 	float read_data(uint8_t dimension);
-	// Unused so far
-	void set_mode(void* mode);
-	// Unused so far
-	uint8_t get_status(uint8_t status);
 
-	// Device specific members
-	//template <typename T> struct vector{
-    //  T x, y, z;
-    //};
 	LSM303() {}
-	uint8_t get_address() {return slave_address;}
 	/*
 	Enables the LSM303's accelerometer and magnetometer. Also:
 	- Sets sensor full scales (gain) to default power-on values, which are
@@ -110,9 +100,6 @@ public:
 	the registers it writes to.
 	*/
 	void enable();
-	//void set_timeout(unsigned int timeout);
-	//unsigned int get_timeout();
-	//bool timeout_occured();
 	int16_t read_accel_raw(uint8_t dimension);
 	// May need calibration
 	float read_accel_g(uint8_t dimension);
@@ -121,32 +108,12 @@ public:
 	int16_t read_temperature_raw();
  	// Using same raw conversion as LPS sensor, probably needs calibration
 	float read_temperature_C();
-	/*
-	Returns the angular difference in the horizontal plane between a
-	default vector and north, in degrees.
 
-	The default vector here is chosen to point along the surface of the
-	PCB, in the direction of the top of the text on the silkscreen.
-	This is the +X axis on the Pololu LSM303D carrier and the -Y axis on
-	the Pololu LSM303DLHC, LSM303DLM, and LSM303DLH carriers.
-	*/
-	//float read_mag_heading();
-	/*
-	Returns the angular difference in the horizontal plane between the
-	"from" vector and north, in degrees.
-	*/
-	//template <typename T> float heading(vector<T> from);
-
-	// Vector functions
-    //template <typename Ta, typename Tb, typename To> static void vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out);
-    //template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a,const vector<Tb> *b);
-    //static void vector_normalize(vector<float> *a);
 private:
+	I2C_ID_T i2c_id;
 	uint8_t read_reg(uint8_t reg_addr);
 	void write_reg(uint8_t reg_addr, uint8_t data);
 	uint8_t slave_address;
-	//unsigned int io_timeout;
-	//bool did_timeout;
 	bool detect_device();
 };
 

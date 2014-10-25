@@ -1,11 +1,12 @@
 #include "H3L.h"
 
-H3L::H3L(uint8_t slave_addr) {
-	slave_address = slave_addr;
+H3L::H3L() {
 }
 
-bool H3L::init(accel_scale a_sc, accel_odr a_odr) {
-	// Set class variable
+bool H3L::init(I2C_ID_T id_in, accel_scale a_sc, accel_odr a_odr) {
+	// Set class variables
+	slave_address = H3L_SA0_HIGH_ADDRESS;
+	i2c_id = id_in;
 	a_scale = a_sc;
 
 	// Test if device responds, return false if not
@@ -109,14 +110,33 @@ void H3L::calc_a_res() {
 }
 
 int8_t H3L::read_reg(uint8_t reg_addr) {
-	read_i2c_register(slave_address | 0x01, slave_address, reg_addr);
-	// int8_t buf[1];
-	// int n = Chip_I2C_MasterCmdRead(i2c_id, slave_address, reg_addr, buf, 1);
-	// return buf[0];
+	// Write the register we want to read
+	// - Make a transmit buffer
+	uint8_t tx_size = 1;
+	uint8_t tx_buf[tx_size];
+	// - Set the register address
+	tx_buf[0] = reg_addr;
+	// - Write the register value
+	Chip_I2C_MasterSend(i2c_id, slave_address >> 1, tx_buf, tx_size);
+
+	// Read the register value
+	// - Make a receive buffer
+	uint8_t rx_size = 1;
+	uint8_t rx_buf[rx_size];
+	// - Read the register value
+	Chip_I2C_MasterRead(i2c_id, (slave_address | 0x01 >> 1), rx_buf, rx_size);
+
+	return rx_buf[0];
 }
 
 void H3L::write_reg(uint8_t reg_addr, uint8_t data) {
-	write_i2c_register(slave_address, reg_addr, data);
-	// uint8_t buf[2] = {reg_addr, data};
-	// int n = Chip_I2C_MasterSend(i2c_id, slave_address, buf, 2);
+	// Write the register and then the data
+	// - Make a transmit buffer
+	uint8_t tx_size = 2;
+	uint8_t tx_buf[tx_size];
+	// - Set the register address
+	tx_buf[0] = reg_addr;
+	tx_buf[1] = data;
+	// - Write the data
+	Chip_I2C_MasterSend(i2c_id, slave_address >> 1, tx_buf, tx_size);
 }

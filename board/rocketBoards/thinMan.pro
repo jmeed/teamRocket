@@ -1,25 +1,25 @@
 EAGLE AutoRouter Statistics:
 
-Job           : //engin-labs.m.storage.umich.edu/jmeed/windat.v2/Desktop/GitHub/teamRocket/board/rocketBoards/thinMan.brd
+Job           : /Users/jonny2112/ws/473/teamRocket/board/rocketBoards/thinMan.brd
 
-Start at      : 16:27:56 (10/5/2014)
-End at        : 16:38:41 (10/5/2014)
-Elapsed time  : 00:10:45
+Start at      : 20:13:40 (10/19/14)
+End at        : 20:24:42 (10/19/14)
+Elapsed time  : 00:11:02
 
-Signals       :    47   RoutingGrid: 0.984252 mil  Layers: 2
-Connections   :   175   predefined:  0 ( 0 Vias )
+Signals       :    50   RoutingGrid: 0.984252 mil  Layers: 2
+Connections   :   179   predefined:  0 ( 0 Vias )
 
 Router memory :   6082112
 
-Passname          :    Busses     Route Optimize1 Optimize2 Optimize3 Optimize4 Optimize5
+Passname          :     Route Optimize1 Optimize2 Optimize3 Optimize4 Optimize5
 
-Time per pass     :  00:00:02  00:09:41  00:00:11  00:00:14  00:00:12  00:00:12  00:00:13
-Number of Ripups  :         0       322         0         0         0         0         0
-max. Level        :         0         4         0         0         0         0         0
-max. Total        :         0       115         0         0         0         0         0
+Time per pass     :  00:09:13  00:00:21  00:00:22  00:00:22  00:00:22  00:00:22
+Number of Ripups  :       208         0         0         0         0         0
+max. Level        :         5         0         0         0         0         0
+max. Total        :       106         0         0         0         0         0
 
-Routed            :        27       172       172       172       172       172       172
-Vias              :         0       129       123        95        88        87        81
-Resolution        :    15.4 %    98.3 %    98.3 %    98.3 %    98.3 %    98.3 %    98.3 %
+Routed            :       177       177       177       177       178       178
+Vias              :        88        84        76        74        75        71
+Resolution        :    98.9 %    98.9 %    98.9 %    98.9 %    99.4 %    99.4 %
 
-Final             : 98.3% finished
+Final             : 99.4% finished

@@ -1,10 +1,14 @@
 #ifndef LSM9DS1_H
 #define LSM9DS1_H
 
-#include "../lcp11u6x/i2c_11u6x.h"
+//#include "../lcp11u6x/i2c_11u6x.h"
 #include <cstdint>
 
 // Identification codes
+#define LSM9DS1_XLG_SA0_LOW_ADDRESS		(0xD4 >> 1)
+#define LSM9DS1_XLG_SA0_HIGH_ADDRESS	(0xD6 >> 1)
+#define LSM9DS1_MAG_SA0_LOW_ADDRESS		(0x38 >> 1)
+#define LSM9DS1_MAG_SA0_HIGH_ADDRESS	(0x3C >> 1)
 #define LSM9DS1_XLG_WHO_ID	0x68
 #define LSM9DS1_M_WHO_ID	0x3D
 
@@ -157,17 +161,18 @@ public:
 	};
 
 	// Store the bias offsets for calibration
-	float a_bias[3];
-	float g_bias[3];
+	//float a_bias[3];
+	//float g_bias[3];
 
-	// Constructor - call with I2C slave addresses for accel/gyro and mag
-	LSM9DS1(uint8_t xg_addr, uint8_t mag_addr);
+	// Constructor
+	LSM9DS1();
 	
 	// Initialize the gyro, accelerometer, and magnetometer.
 	// This will set up the scale and output rate of each sensor. It'll also
 	// "turn on" every sensor and every axis of every sensor. Returns true
 	// if communication was successful with both devices.
-	bool init(gyro_scale g_sc,
+	bool init(	I2C_ID_T id_in,
+				gyro_scale g_sc,
 				accel_scale a_sc,
 				mag_scale m_sc,
 				gyro_odr g_odr,
@@ -266,6 +271,9 @@ public:
 	// void calibrate(float gbias[3], float abias[3]);
 
 private:
+	// The I2C identifier
+	I2C_ID_T i2c_id;
+
 	// The I2C slave addresses for both devices
 	uint8_t xlg_address;
 	uint8_t mag_address;
