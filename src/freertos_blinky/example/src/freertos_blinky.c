@@ -117,12 +117,26 @@ static void vLEDTask2(void *pvParameters) {
 }
 
 xTaskHandle setup_handle;
-
 static void vSetupSDCard(void* pvParameters) {
 	int result;
 	LOG_INFO("Attempting to startup SDCard");
 	result = SDCardStartup();
-	printf("SDCard startup result is %d\n\r", result);
+	LOG_DEBUG("SDCard startup result is %d\n\r", result);
+	if (result == 0) {
+		static uint8_t read_buffer[512];
+		LOG_INFO("Trying to read sector 0");
+		result = SDCardSendCommand(17, 0, 0xff, read_buffer, 512);
+		LOG_DEBUG("SDCARD read result is %d", result);
+
+		LOG_DEBUG("Printing result");
+		{
+			int i;
+			for (i = 0; i < 512; i++) {
+				printf("%02x ", read_buffer[i]);
+			}
+			printf("\n\r");
+		}
+	}
 	vTaskSuspend(setup_handle);
 }
 
