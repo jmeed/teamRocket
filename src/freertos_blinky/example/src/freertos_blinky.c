@@ -36,6 +36,7 @@
 #include "task.h"
 #include "logging.h"
 #include "error_codes.h"
+#include "ff.h"
 #include "drivers/uart0.h"
 #include "drivers/spi.h"
 #include "drivers/sdcard.h"
@@ -117,26 +118,40 @@ static void vLEDTask2(void *pvParameters) {
 }
 
 xTaskHandle setup_handle;
+static FATFS fs;
+static DIR dir;
+static FILINFO fno;
 static void vSetupSDCard(void* pvParameters) {
 	int result;
-	LOG_INFO("Attempting to startup SDCard");
-	result = SDCardStartup();
-	LOG_DEBUG("SDCard startup result is %d\n\r", result);
+	LOG_INFO("Attempting to mount FAT on SDCARD");
+	result = f_mount(&fs, "A", 1);
+	LOG_INFO("Mount result is %d", result);
 	if (result == 0) {
-		static uint8_t read_buffer[512];
-		LOG_INFO("Trying to read sector 0");
-		result = SDCardSendCommand(17, 0, 0xff, read_buffer, 512);
-		LOG_DEBUG("SDCARD read result is %d", result);
-
-		LOG_DEBUG("Printing result");
-		{
-			int i;
-			for (i = 0; i < 512; i++) {
-				printf("%02x ", read_buffer[i]);
-			}
-			printf("\n\r");
+		result = f_opendir(&dir, "/");
+		LOG_INFO("Readdir result is %d", result);
+		for(;;) {
+			result = f_readdir(&dir, &fno);
+			if (result != 0 || fno.fname[0] == 0) break;
+			LOG_INFO("File name is %s", fno.fname);
 		}
 	}
+//	result = SDCardStartup();
+//	LOG_DEBUG("SDCard startup result is %d\n\r", result);
+//	if (result == 0) {
+//		static uint8_t read_buffer[512];
+//		LOG_INFO("Trying to read sector 0");
+//		result = SDCardSendCommand(17, 0, 0xff, read_buffer, 512);
+//		LOG_DEBUG("SDCARD read result is %d", result);
+//
+//		LOG_DEBUG("Printing result");
+//		{
+//			int i;
+//			for (i = 0; i < 512; i++) {
+//				printf("%02x ", read_buffer[i]);
+//			}
+//			printf("\n\r");
+//		}
+//	}
 	vTaskSuspend(setup_handle);
 }
 

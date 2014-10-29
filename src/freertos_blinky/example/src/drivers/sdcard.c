@@ -26,6 +26,10 @@ static inline void SDCardClearSS() {
 
 static uint8_t CommandBuffer[20];
 
+static bool sdcard_initialized = false;
+static bool sdcard_is_hc = false;
+static int sdcard_version = -1;
+
 void SDCardWaitIdle() {
 	int i;
 	retry:
@@ -268,11 +272,45 @@ int SDCardStartup() {
 
 	SDCardFastMode();
 	result = SDCARD_ERROR_OK;
+	sdcard_initialized = true;
+	sdcard_is_hc = is_sdhc;
+	sdcard_version = sd_version;
 	goto finish;
  fail:
 	if (result == 0) {
 		result = SDCARD_ERROR_GENERIC;
 	}
  finish:
+	return result;
+}
+
+bool SDCardInitialized() {
+	return sdcard_initialized;
+}
+
+static inline uint32_t sector_address_to_sd_address(uint32_t sector) {
+	if (sdcard_is_hc) {
+		return sector;
+	} else {
+		return sector * 512;
+	}
+}
+
+int SDCardReadSector(uint8_t* buffer, uint32_t sector) {
+	int result;
+	result = SDCardSendCommand(17, sector_address_to_sd_address(sector), 0, buffer, 512);
+	return result;
+}
+
+int SDCardDiskRead(uint8_t* buffer, uint32_t sector, size_t count) {
+	// Do single sector reads
+	int result = 0;
+	while (count > 0) {
+		result = SDCardReadSector(buffer, sector);
+		if (result != 0) return result;
+		buffer += 512;
+		sector ++;
+		count --;
+	}
 	return result;
 }

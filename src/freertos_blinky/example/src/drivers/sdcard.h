@@ -39,5 +39,9 @@ int SDCardSendACommand(uint8_t acommand, uint32_t param, uint8_t crc, void* buff
 void SDCardInit();
 int SDCardStartup();
 void SDCardWaitIdle();
+bool SDCardInitialized();
+
+int SDCardReadSector(uint8_t* buffer, uint32_t sector);
+int SDCardDiskRead(uint8_t* buffer, uint32_t sector, size_t count);
 
 #endif /* SDCARD_H_ */
