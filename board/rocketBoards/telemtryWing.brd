@@ -1379,6 +1379,13 @@ design rules under a new name.</description>
 <wire x1="10.075" y1="5.725" x2="10.1" y2="5.715" width="0.254" layer="1"/>
 <wire x1="6.4" y1="8.775" x2="6.185" y2="8.89" width="0.254" layer="1"/>
 <via x="12.475" y="21.45" extent="1-16" drill="0.6096"/>
+<contactref element="U$2" pad="9"/>
+<contactref element="U$2" pad="11"/>
+<contactref element="U$2" pad="10"/>
+<wire x1="13.583" y1="22.225" x2="13.589" y2="22.225" width="0.2286" layer="1"/>
+<wire x1="13.589" y1="22.225" x2="13.589" y2="21.5646" width="0.2286" layer="1"/>
+<wire x1="13.589" y1="21.5646" x2="13.589" y2="20.9042" width="0.2286" layer="1"/>
+<wire x1="13.589" y1="20.9042" x2="13.589" y2="20.2438" width="0.2286" layer="1"/>
 </signal>
 <signal name="I2C_SDA">
 <contactref element="U$1" pad="3"/>

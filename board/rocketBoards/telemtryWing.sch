@@ -3264,6 +3264,7 @@ Standard schematic elements and footprints for 5mm, 3mm, 1206, and 0603 sized LE
 <part name="C10" library="ELL-i-Passives" deviceset="C" device="0603" value="0.1uF"/>
 <part name="SUPPLY2" library="SparkFun-Aesthetics" deviceset="VCC" device="" value="3.3VA"/>
 <part name="GND10" library="SparkFun" deviceset="GND" device=""/>
+<part name="SUPPLY10" library="SparkFun-Aesthetics" deviceset="3.3V" device="" value="3.3VB"/>
 </parts>
 <sheets>
 <sheet>
@@ -3322,6 +3323,7 @@ Standard schematic elements and footprints for 5mm, 3mm, 1206, and 0603 sized LE
 <instance part="C10" gate="G$1" x="30.48" y="91.44"/>
 <instance part="SUPPLY2" gate="G$1" x="17.78" y="96.52"/>
 <instance part="GND10" gate="1" x="17.78" y="78.74"/>
+<instance part="SUPPLY10" gate="G$1" x="40.64" y="96.52"/>
 </instances>
 <busses>
 </busses>
@@ -3638,6 +3640,21 @@ Standard schematic elements and footprints for 5mm, 3mm, 1206, and 0603 sized LE
 <wire x1="0" y1="111.76" x2="0" y2="116.84" width="0.1524" layer="91"/>
 <junction x="7.62" y="111.76"/>
 <pinref part="SUPPLY1" gate="G$1" pin="3.3V"/>
+</segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="I2C-/SPI"/>
+<wire x1="55.88" y1="93.98" x2="45.72" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="93.98" x2="40.64" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="93.98" x2="40.64" y2="96.52" width="0.1524" layer="91"/>
+<pinref part="SUPPLY10" gate="G$1" pin="3.3V"/>
+<pinref part="U$2" gate="G$1" pin="A1-SI"/>
+<wire x1="55.88" y1="96.52" x2="45.72" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="96.52" x2="45.72" y2="93.98" width="0.1524" layer="91"/>
+<junction x="45.72" y="93.98"/>
+<pinref part="U$2" gate="G$1" pin="A0-/CS"/>
+<wire x1="55.88" y1="99.06" x2="45.72" y2="99.06" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="99.06" x2="45.72" y2="96.52" width="0.1524" layer="91"/>
+<junction x="45.72" y="96.52"/>
 </segment>
 </net>
 <net name="I2C_SDA" class="0">
