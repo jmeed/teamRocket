@@ -2,7 +2,7 @@
 
 int LPS_init(I2C_ID_T id_in) {
 	LPS_i2c_id = id_in;
-	LPS_slave_address = LPS_SA0_HIGH_ADDRESS;
+	LPS_slave_address = LPS_SA0_LOW_ADDRESS;
 	return 1;
 	//return detect_device();
 }
@@ -48,6 +48,8 @@ int16_t LPS_read_temperature_raw() {
 }
 
 float LPS_read_temperature_C() {
+	// (t_max - temp(0)) / 2^15 = 0.00190734863f.....
+	// 42.5 = specified by data sheet
 	return 42.5f + (float)LPS_read_temperature_raw() / 480.0f;
 }
 

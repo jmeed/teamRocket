@@ -32,11 +32,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "board.h"
-#include "L3G.h"
+//#include "L3G.h"
 #include "LPS.h"
-#include "LSM303.h"
+//#include "LSM303.h"
 
-#include "H3L.h"
+//#include "H3L.h"
 #include "LSM.h"
 // FIXME - nneds check
 /*****************************************************************************
@@ -141,19 +141,31 @@ int main(void) {
 	volatile float mag_x = 0.0f, mag_y = 0.0f, mag_z = 0.0f;
 	volatile float gyro_x = 0.0f, gyro_y = 0.0f, gyro_z = 0.0f;
 	LPS_init(I2C0);
-	L3G_init(I2C0);
-	LSM303_init(I2C0);
+	//L3G_init(I2C0);
+	//LSM303_init(I2C0);
+	LSM_init(I2C0, G_SCALE_2000DPS, A_SCALE_8G, M_SCALE_4GS, G_ODR_14_9, A_ODR_10, M_ODR_0_625);
+
 	LPS_enable();
-	L3G_enable();
-	LSM303_enable();
+	//L3G_enable();
+	//LSM303_enable();
 	while (1) {
-		baro_alt = LPS_read_data(LPS_ALTITUDE);
-		gyro_T = L3G_read_data(L3G_TEMPERATURE);
+//		baro_alt = LPS_read_data(LPS_ALTITUDE);
+//		gyro_T = L3G_read_data(L3G_TEMPERATURE);
 //		gyro_x = L3G_read_data(L3G_SPIN_RATE_X);
 //		gyro_y = L3G_read_data(L3G_SPIN_RATE_Y);
 //		gyro_z = L3G_read_data(L3G_SPIN_RATE_Z);
-		imu_T = LSM303_read_data(LSM303_TEMPERATURE);
-		baro_T = LPS_read_data(LPS_TEMPERATURE);
+//		imu_T = LSM303_read_data(LSM303_TEMPERATURE);
+//		baro_T = LPS_read_data(LPS_TEMPERATURE);
+		gyro_T = 0.0f;
+		gyro_x = LSM_read_gyro_dps(LSM_GYRO_X);
+		gyro_y = LSM_read_gyro_dps(LSM_GYRO_Y);
+		gyro_z = LSM_read_gyro_dps(LSM_GYRO_Z);
+		acc_x = LSM_read_accel_g(LSM_ACCEL_X);
+		acc_y = LSM_read_accel_g(LSM_ACCEL_Y);
+		acc_z = LSM_read_accel_g(LSM_ACCEL_Z);
+		mag_x = LSM_read_mag_gs(LSM_MAG_X);
+		mag_y = LSM_read_mag_gs(LSM_MAG_Y);
+		mag_z = LSM_read_mag_gs(LSM_MAG_Z);
 //		acc_x = LSM303_read_data(LSM303_ACCEL_X);
 //		acc_y = LSM303_read_data(LSM303_ACCEL_Y);
 //		acc_z = LSM303_read_data(LSM303_ACCEL_Z);
@@ -162,8 +174,8 @@ int main(void) {
 //		mag_z = LSM303_read_data(LSM303_MAG_Z);
 
 		//DEBUGOUT("Temps: baro = %.2f, gyro = %.2f, imu = %.2f\n", baro_T, gyro_T, imu_T);
-		DEBUGOUT("Baro: alt = %.2f, temp = %.2f\n", baro_alt, baro_T);
-		//DEBUGOUT("Gyro: x = %.2f, y = %.2f, z = %.2f, temp = %.2f\n", gyro_x, gyro_y, gyro_z, gyro_T);
+		//DEBUGOUT("Baro: alt = %.2f, temp = %.2f\n", baro_alt, baro_T);
+		DEBUGOUT("Gyro: x = %.2f, y = %.2f, z = %.2f, temp = %.2f\n", gyro_x, gyro_y, gyro_z, gyro_T);
 		//DEBUGOUT("MAG/XL: ax = %.2f, ay = %.2f, az = %.2f, mx = %.2f, my = %.2f, mz = %.2f, temp = %.2f\n", acc_x, acc_y, acc_z, mag_x, mag_y, mag_z, imu_T);
 		for (i = 0; i < 500000; ++i);
 	}
