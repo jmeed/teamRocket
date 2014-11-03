@@ -152,6 +152,10 @@
 <wire x1="0" y1="18" x2="0" y2="0" width="0" layer="20"/>
 <hole x="43.625" y="1" drill="1.5"/>
 <hole x="1.8" y="16.325" drill="1.5"/>
+<text x="2.075" y="4.55" size="1.4224" layer="21" rot="R90">thinManV2</text>
+<text x="3.3" y="7.775" size="0.6096" layer="21" rot="R90">teamRocket</text>
+<text x="4.775" y="5.925" size="0.8128" layer="21" rot="R90">This Side Up</text>
+<wire x1="4.425" y1="16.525" x2="4.425" y2="15.275" width="0.25" layer="21"/>
 </plain>
 <libraries>
 <library name="Sensors">
