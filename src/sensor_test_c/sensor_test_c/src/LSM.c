@@ -359,7 +359,7 @@ void LSM_init_gyro() {
 
 void LSM_init_accel() {
 	// See header file for command descriptions
-	LSM_write_reg_xlg(LSM_CTRL_REG5_XL, 0x38);
+	LSM_write_reg_xlg(LSM_CTRL_REG5_XL, 0xF8);
 	LSM_write_reg_xlg(LSM_CTRL_REG6_XL, 0xD8);
 	LSM_write_reg_xlg(LSM_CTRL_REG7_XL, 0x00);
 }
