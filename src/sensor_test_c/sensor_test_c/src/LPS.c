@@ -3,7 +3,11 @@
 int LPS_init(I2C_ID_T id_in) {
 	LPS_i2c_id = id_in;
 	LPS_slave_address = LPS_SA0_LOW_ADDRESS;
-	return 1;
+	uint8_t LPStest = LPS_read_reg(LPS_WHO_AM_I);
+	if (LPStest == LPS331AP_WHO_ID)
+		return 1;
+	else
+		return 0;
 	//return detect_device();
 }
 
