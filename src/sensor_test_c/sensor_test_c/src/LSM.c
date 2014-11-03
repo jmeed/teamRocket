@@ -359,7 +359,7 @@ void LSM_init_gyro() {
 
 void LSM_init_accel() {
 	// See header file for command descriptions
-	LSM_write_reg_xlg(LSM_CTRL_REG5_XL, 0x38);
+	LSM_write_reg_xlg(LSM_CTRL_REG5_XL, 0xF8);
 	LSM_write_reg_xlg(LSM_CTRL_REG6_XL, 0xD8);
 	LSM_write_reg_xlg(LSM_CTRL_REG7_XL, 0x00);
 }
@@ -439,7 +439,7 @@ int8_t LSM_read_reg_xlg(uint8_t reg_addr) {
 	uint8_t rx_size = 1;
 	uint8_t rx_buf[rx_size];
 	// - Read the register value
-	Chip_I2C_MasterRead(LSM_i2c_id, LSM_xlg_address | 0x01, rx_buf, rx_size);
+	Chip_I2C_MasterRead(LSM_i2c_id, LSM_xlg_address, rx_buf, rx_size);
 
 	return rx_buf[0];
 }
@@ -453,7 +453,7 @@ void LSM_write_reg_xlg(uint8_t reg_addr, uint8_t data) {
 	tx_buf[0] = reg_addr;
 	tx_buf[1] = data;
 	// - Write the data
-	Chip_I2C_MasterSend(LSM_i2c_id, LSM_xlg_address >> 1, tx_buf, tx_size);
+	Chip_I2C_MasterSend(LSM_i2c_id, LSM_xlg_address, tx_buf, tx_size);
 }
 
 int8_t LSM_read_reg_mag(uint8_t reg_addr) {
@@ -471,7 +471,7 @@ int8_t LSM_read_reg_mag(uint8_t reg_addr) {
 	uint8_t rx_size = 1;
 	uint8_t rx_buf[rx_size];
 	// - Read the register value
-	Chip_I2C_MasterRead(LSM_i2c_id, (LSM_mag_address | 0x01) >> 1, rx_buf, rx_size);
+	Chip_I2C_MasterRead(LSM_i2c_id, LSM_mag_address, rx_buf, rx_size);
 
 	return rx_buf[0];
 }
@@ -485,5 +485,5 @@ void LSM_write_reg_mag(uint8_t reg_addr, uint8_t data) {
 	tx_buf[0] = reg_addr;
 	tx_buf[1] = data;
 	// - Write the data
-	Chip_I2C_MasterSend(LSM_i2c_id, LSM_mag_address >> 1, tx_buf, tx_size);
+	Chip_I2C_MasterSend(LSM_i2c_id, LSM_mag_address, tx_buf, tx_size);
 }
