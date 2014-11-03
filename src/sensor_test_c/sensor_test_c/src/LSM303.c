@@ -112,7 +112,7 @@ int16_t LSM303_read_accel_raw(uint8_t dimension) {
 }
 
 float LSM303_read_accel_g(uint8_t dimension) {
-	return 0.0f + (float)LSM303_read_accel_raw(dimension) * (16.0f / 32768.0f);
+	return 0.0f + (float)LSM303_read_accel_raw(dimension) * (16.0f / 20000.0f);
 }
 
 int16_t LSM303_read_mag_raw(uint8_t dimension) {
@@ -149,7 +149,8 @@ int16_t LSM303_read_temperature_raw() {
 }
 
 float LSM303_read_temperature_C() {
-	return 22.5f + (float)LSM303_read_temperature_raw() / 750.0f;
+	// 25.5 = not specified by data sheet, calculated to be same ratio as LPS spec
+	return 25.5f + (float)LSM303_read_temperature_raw() * 0.03039550781;
 }
 
 // bool LSM303_detect_device() {
