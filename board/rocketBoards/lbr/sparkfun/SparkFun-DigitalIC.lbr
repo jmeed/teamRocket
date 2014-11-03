@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="yes" active="yes"/>
@@ -15329,6 +15329,41 @@ TO GND</text>
 <pin name="RST#" x="25.4" y="10.16" visible="pin" length="middle" rot="R180"/>
 <pin name="VCC" x="25.4" y="12.7" visible="pin" length="middle" rot="R180"/>
 </symbol>
+<symbol name="SC16IS752">
+<wire x1="-17.78" y1="-22.86" x2="15.24" y2="-22.86" width="0.254" layer="94"/>
+<wire x1="15.24" y1="-22.86" x2="15.24" y2="27.94" width="0.254" layer="94"/>
+<wire x1="15.24" y1="27.94" x2="-17.78" y2="27.94" width="0.254" layer="94"/>
+<wire x1="-17.78" y1="27.94" x2="-17.78" y2="-22.86" width="0.254" layer="94"/>
+<text x="-17.526" y="28.956" size="1.778" layer="95">&gt;NAME</text>
+<text x="7.366" y="28.956" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="/RESET" x="-22.86" y="2.54" length="middle"/>
+<pin name="XTAL1" x="-22.86" y="-12.7" length="middle"/>
+<pin name="XTAL2" x="-22.86" y="-15.24" length="middle"/>
+<pin name="VDD" x="-2.54" y="33.02" length="middle" rot="R270"/>
+<pin name="I2C-/SPI" x="-22.86" y="10.16" length="middle"/>
+<pin name="A0-/CS" x="-22.86" y="15.24" length="middle"/>
+<pin name="A1-SI" x="-22.86" y="12.7" length="middle"/>
+<pin name="SCL-SCLK" x="-22.86" y="17.78" length="middle"/>
+<pin name="SDA-VSS" x="-22.86" y="20.32" length="middle"/>
+<pin name="/IRQ" x="-22.86" y="5.08" length="middle"/>
+<pin name="GPIO0-/DSRB" x="20.32" y="-20.32" length="middle" rot="R180"/>
+<pin name="GPIO1-/DTRB" x="20.32" y="-17.78" length="middle" rot="R180"/>
+<pin name="GPIO2-/CDB" x="20.32" y="-15.24" length="middle" rot="R180"/>
+<pin name="GPIO3-/RIB" x="20.32" y="-12.7" length="middle" rot="R180"/>
+<pin name="VSS" x="2.54" y="33.02" length="middle" rot="R270"/>
+<pin name="GPIO4-/DSRA" x="20.32" y="-10.16" length="middle" rot="R180"/>
+<pin name="GPIO5-/DTRA" x="20.32" y="-7.62" length="middle" rot="R180"/>
+<pin name="GPIO6-/CDA" x="20.32" y="-5.08" length="middle" rot="R180"/>
+<pin name="GPIO7-/RIA" x="20.32" y="-2.54" length="middle" rot="R180"/>
+<pin name="/RTSA" x="20.32" y="15.24" length="middle" rot="R180"/>
+<pin name="/CTSA" x="20.32" y="17.78" length="middle" rot="R180"/>
+<pin name="TXA" x="20.32" y="22.86" length="middle" rot="R180"/>
+<pin name="RXA" x="20.32" y="20.32" length="middle" rot="R180"/>
+<pin name="TXB" x="20.32" y="10.16" length="middle" rot="R180"/>
+<pin name="RXB" x="20.32" y="7.62" length="middle" rot="R180"/>
+<pin name="/CTSB" x="20.32" y="5.08" length="middle" rot="R180"/>
+<pin name="/RTSB" x="20.32" y="2.54" length="middle" rot="R180"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="AT25FS010">
@@ -22419,6 +22454,47 @@ Can be totem pole or open collector&lt;br&gt;
 <connect gate="G$1" pin="SO" pad="2"/>
 <connect gate="G$1" pin="VCC" pad="8"/>
 <connect gate="G$1" pin="WP#" pad="3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="SC16IS752">
+<gates>
+<gate name="G$1" symbol="SC16IS752" x="5.08" y="-2.54"/>
+</gates>
+<devices>
+<device name="" package="TSSOP28">
+<connects>
+<connect gate="G$1" pin="/CTSA" pad="2"/>
+<connect gate="G$1" pin="/CTSB" pad="16"/>
+<connect gate="G$1" pin="/IRQ" pad="15"/>
+<connect gate="G$1" pin="/RESET" pad="5"/>
+<connect gate="G$1" pin="/RTSA" pad="1"/>
+<connect gate="G$1" pin="/RTSB" pad="17"/>
+<connect gate="G$1" pin="A0-/CS" pad="10"/>
+<connect gate="G$1" pin="A1-SI" pad="11"/>
+<connect gate="G$1" pin="GPIO0-/DSRB" pad="18"/>
+<connect gate="G$1" pin="GPIO1-/DTRB" pad="19"/>
+<connect gate="G$1" pin="GPIO2-/CDB" pad="20"/>
+<connect gate="G$1" pin="GPIO3-/RIB" pad="21"/>
+<connect gate="G$1" pin="GPIO4-/DSRA" pad="25"/>
+<connect gate="G$1" pin="GPIO5-/DTRA" pad="26"/>
+<connect gate="G$1" pin="GPIO6-/CDA" pad="27"/>
+<connect gate="G$1" pin="GPIO7-/RIA" pad="28"/>
+<connect gate="G$1" pin="I2C-/SPI" pad="9"/>
+<connect gate="G$1" pin="RXA" pad="4"/>
+<connect gate="G$1" pin="RXB" pad="24"/>
+<connect gate="G$1" pin="SCL-SCLK" pad="13"/>
+<connect gate="G$1" pin="SDA-VSS" pad="14"/>
+<connect gate="G$1" pin="TXA" pad="3"/>
+<connect gate="G$1" pin="TXB" pad="23"/>
+<connect gate="G$1" pin="VDD" pad="8"/>
+<connect gate="G$1" pin="VSS" pad="22"/>
+<connect gate="G$1" pin="XTAL1" pad="6"/>
+<connect gate="G$1" pin="XTAL2" pad="7"/>
 </connects>
 <technologies>
 <technology name=""/>
