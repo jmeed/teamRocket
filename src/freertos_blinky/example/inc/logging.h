@@ -23,3 +23,7 @@
 #define LOG_INFO(msg, ...) { LOG_NORMAL("INFO  ", msg, ##__VA_ARGS__); }
 #define LOG_DEBUG(msg, ...) { LOG_NORMAL("DEBUG ", msg, ##__VA_ARGS__); }
 void exit_error(int error_code);
+
+int logging_init_persistent(void);
+void logging_log_persistent(const char* s, size_t size);
+void logging_flush_persistent(void);

@@ -104,7 +104,7 @@ static void vLEDTask1(void *pvParameters) {
 	while (1) {
 		Board_LED_Set(1, LedState);
 		LedState = (bool) !LedState;
-		printf("Test float %.4f\r\n", 1.2424125);
+		LOG_INFO("Test float %.4f\r\n", 1.2424125);
 		vTaskDelay(configTICK_RATE_HZ * 2);
 	}
 }
@@ -115,75 +115,55 @@ static void vLEDTask2(void *pvParameters) {
 	while (1) {
 		Board_LED_Set(2, LedState);
 		LedState = (bool) !LedState;
-		printf("Hello World that works!\r\n");
+		LOG_INFO("Hello World that works!\r\n");
 
 		vTaskDelay(configTICK_RATE_HZ);
 	}
 }
 
-xTaskHandle setup_handle;
-static FATFS fs;
-static DIR dir;
-static FILINFO fno;
-static FIL f;
-static void vSetupSDCard(void* pvParameters) {
+static void vFlushLogs(void* pvParameters) {
+	while (1) {
+		vTaskDelay(1000);
+		logging_flush_persistent();
+	}
+}
+
+xTaskHandle boot_handle;
+static FATFS root_fs;
+static void vBootSystem(void* pvParameters) {
 	int result;
+	LOG_INFO("Wait for voltage stabilization");
 	vTaskDelay(1000);
 	LOG_INFO("Attempting to mount FAT on SDCARD");
-//	 exit_error(SDCardStartup());
-	result = f_mount(&fs, "0:", 1);
-//	exit_error(result);
-	LOG_INFO("Mount result is %d", result);
-	if (result == 0) {
-		result = f_open(&f, "0:test.txt", FA_WRITE | FA_OPEN_ALWAYS);
-		if (result != FR_OK) {
-			exit_error(result);
-		}
-		result = f_lseek(&f, f_size(&f)); // Seek to append
-		if (result != FR_OK) {
-			exit_error(result);
-		}
-		UINT stuff;
-		result = f_write(&f, "TEST ABC\r\n", 10, &stuff);
-//		exit_error(stuff);
-		if (result != FR_OK) {
-			exit_error(result);
-		}
-		result = f_sync(&f);
-		if (result != FR_OK) {
-			exit_error(result+40);
-		}
-		f_close(&f);
-		exit_error(31);
-//		result = f_opendir(&dir, "/");
-//		LOG_INFO("Readdir result is %d", result);
-//		for(;;) {
-//			result = f_readdir(&dir, &fno);
-//			if (result != 0 || fno.fname[0] == 0) break;
-//			LOG_INFO("File name is %s", fno.fname);
-//			if (!(fno.fattrib & AM_DIR)) {
-//				morsePlay(fno.fname);
-//			}
-//		}
+	result = f_mount(&root_fs, "0:", 1);
+	if (result != FR_OK) {
+		exit_error(ERROR_CODE_SDCARD_MOUNT_FAILED);
 	}
-//	result = SDCardStartup();
-//	LOG_DEBUG("SDCard startup result is %d\n\r", result);
-//	if (result == 0) {
-//		static uint8_t read_buffer[512];
-//		LOG_INFO("Trying to read sector 0");
-//		result = SDCardSendCommand(17, 0, 0xff, read_buffer, 512);
-//		LOG_DEBUG("SDCARD read result is %d", result);
-//
-//		LOG_DEBUG("Printing result");
-//		{
-//			int i;
-//			for (i = 0; i < 512; i++) {
-//				printf("%02x ", read_buffer[i]);
-//			}
-//			printf("\n\r");
-//		}
-//	}
-	vTaskSuspend(setup_handle);
+
+	result = logging_init_persistent();
+	if (result != 0) {
+		exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
+	}
+
+	LOG_INFO("Starting real tasks");
+
+	xTaskCreate(vFlushLogs, (signed char *) "vFlushLogs",
+				256, NULL, (tskIDLE_PRIORITY), NULL);
+
+	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
+				256, NULL, (tskIDLE_PRIORITY + 1UL),
+				(xTaskHandle *) NULL);
+
+	/* LED2 toggle thread */
+	xTaskCreate(vLEDTask2, (signed char *) "vTaskLed2",
+				256, NULL, (tskIDLE_PRIORITY + 1UL),
+				(xTaskHandle *) NULL);
+
+	/* LED0 toggle thread */
+	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
+				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+				(xTaskHandle *) NULL);
+	vTaskSuspend(boot_handle);
 }
 
 /*****************************************************************************
@@ -207,21 +187,7 @@ int main(void)
 
 	LOG_INFO("Starting tasks");
 
-	xTaskCreate(vSetupSDCard, NULL, 256, NULL, (tskIDLE_PRIORITY + 2), &setup_handle);
-
-	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
-				256, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
-
-	/* LED2 toggle thread */
-	xTaskCreate(vLEDTask2, (signed char *) "vTaskLed2",
-				256, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
-
-	/* LED0 toggle thread */
-	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
+	xTaskCreate(vBootSystem, NULL, 256, NULL, (tskIDLE_PRIORITY + 2), &boot_handle);
 
 	LOG_INFO("Tasks created; Starting scheduler");
 	/* Start the scheduler */
