@@ -57,9 +57,13 @@
 
 static void setup_pinmux() {
 	// SPI0 SDCard
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 12, (IOCON_FUNC1 | IOCON_MODE_INACT)); // MOSI
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 29, (IOCON_FUNC1 | IOCON_MODE_INACT)); // SCK
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 8, (IOCON_FUNC1 | IOCON_MODE_INACT)); // MISO
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 21, (IOCON_FUNC2 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // MOSI
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 20, (IOCON_FUNC2 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // SCK
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 22, (IOCON_FUNC3 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // MISO
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 23, (IOCON_FUNC4 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 16, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // SSEL
+
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 20);
 }
 
 static void debug_uart_init(void) {
@@ -73,7 +77,7 @@ static void hardware_init(void) {
 
 	setup_pinmux();
 	spi_init();
-	spi_setup_device(SPI_DEVICE_0, SSP_BITS_8, SSP_FRAMEFORMAT_SPI, SSP_CLOCK_MODE0, true);
+	spi_setup_device(SPI_DEVICE_1, SSP_BITS_8, SSP_FRAMEFORMAT_SPI, SSP_CLOCK_MODE0, true);
 	SDCardInit();
 }
 
@@ -121,19 +125,46 @@ xTaskHandle setup_handle;
 static FATFS fs;
 static DIR dir;
 static FILINFO fno;
+static FIL f;
 static void vSetupSDCard(void* pvParameters) {
 	int result;
+	vTaskDelay(1000);
 	LOG_INFO("Attempting to mount FAT on SDCARD");
-	result = f_mount(&fs, "A", 1);
+//	 exit_error(SDCardStartup());
+	result = f_mount(&fs, "0:", 1);
+//	exit_error(result);
 	LOG_INFO("Mount result is %d", result);
 	if (result == 0) {
-		result = f_opendir(&dir, "/");
-		LOG_INFO("Readdir result is %d", result);
-		for(;;) {
-			result = f_readdir(&dir, &fno);
-			if (result != 0 || fno.fname[0] == 0) break;
-			LOG_INFO("File name is %s", fno.fname);
+		result = f_open(&f, "0:test.txt", FA_WRITE | FA_OPEN_ALWAYS);
+		if (result != FR_OK) {
+			exit_error(result);
 		}
+		result = f_lseek(&f, f_size(&f)); // Seek to append
+		if (result != FR_OK) {
+			exit_error(result);
+		}
+		UINT stuff;
+		result = f_write(&f, "TEST ABC\r\n", 10, &stuff);
+//		exit_error(stuff);
+		if (result != FR_OK) {
+			exit_error(result);
+		}
+		result = f_sync(&f);
+		if (result != FR_OK) {
+			exit_error(result+40);
+		}
+		f_close(&f);
+		exit_error(31);
+//		result = f_opendir(&dir, "/");
+//		LOG_INFO("Readdir result is %d", result);
+//		for(;;) {
+//			result = f_readdir(&dir, &fno);
+//			if (result != 0 || fno.fname[0] == 0) break;
+//			LOG_INFO("File name is %s", fno.fname);
+//			if (!(fno.fattrib & AM_DIR)) {
+//				morsePlay(fno.fname);
+//			}
+//		}
 	}
 //	result = SDCardStartup();
 //	LOG_DEBUG("SDCard startup result is %d\n\r", result);

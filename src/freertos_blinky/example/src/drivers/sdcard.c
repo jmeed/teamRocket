@@ -87,7 +87,7 @@ int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer
 	}
 
 	// Read block instructions
-	if (command == 0x40 + 17 || command == 0x40 + 18 || command == 0x40 + 24) {
+	if (command == 0x40 + 17 || command == 0x40 + 18) {
 		if (read != 0) {
 			goto fail;
 		}
@@ -114,7 +114,7 @@ int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer
 		spi_transceive(SDCARD_SPI_DEVICE, data, recvSize);
 	}
 
-	if (command == 0x40 + 17 || command == 0x40 + 18 || command == 0x40 + 24) {
+	if (command == 0x40 + 17 || command == 0x40 + 18) {
 		uint16_t crc = 0;
 		// Skip crc = 2 bytes
 		crc = spi_transceive_byte(SDCARD_SPI_DEVICE, 0xff) << 8;
@@ -159,6 +159,7 @@ int SDCardStartup() {
 	int sd_version = 2;  // 0: MMC; 1: SD; 2: SDv2
 	bool is_sdhc = false;
 
+	SDCardClearSS();
 	// Generate 80 pulses on SCLK
 	LOG_DEBUG("Sending 80 pulses");
 	for (i = 0; i < 10; i++) {
@@ -307,6 +308,39 @@ int SDCardDiskRead(uint8_t* buffer, uint32_t sector, size_t count) {
 	int result = 0;
 	while (count > 0) {
 		result = SDCardReadSector(buffer, sector);
+		if (result != 0) return result;
+		buffer += 512;
+		sector ++;
+		count --;
+	}
+	return result;
+}
+
+int SDCardWriteSector(const uint8_t* buffer, uint32_t sector) {
+	int result;
+	result = SDCardSendCommand(24, sector_address_to_sd_address(sector), 0, NULL, 0);
+	if (result != 0) return result;
+
+	uint16_t sendCRC = crc_crc16(buffer, 512);
+	// Send actual data blocks now
+	SDCardSetSS();
+
+	spi_transceive_byte(SDCARD_SPI_DEVICE, 0xfe);
+	spi_send(SDCARD_SPI_DEVICE, buffer, 512);
+	spi_transceive_byte(SDCARD_SPI_DEVICE, sendCRC >> 8);
+	spi_transceive_byte(SDCARD_SPI_DEVICE, sendCRC & 0xff);
+
+	result = spi_transceive_byte(SDCARD_SPI_DEVICE, 0xff) & 0x1f;
+
+	while (spi_transceive_byte(SDCARD_SPI_DEVICE, 0xff) == 0);
+
+	if (result == 5) return 0;
+	return result;
+}
+int SDCardDiskWrite(const uint8_t* buffer, uint32_t sector, size_t count) {
+	int result = 0;
+	while (count > 0) {
+		result = SDCardWriteSector(buffer, sector);
 		if (result != 0) return result;
 		buffer += 512;
 		sector ++;

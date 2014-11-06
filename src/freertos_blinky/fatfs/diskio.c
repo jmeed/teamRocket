@@ -124,6 +124,10 @@ DRESULT disk_write (
 		// translate the arguments here
 
 		result = SDCardDiskWrite(buff, sector, count);
+		if (result != 0) {
+			exit_error(result + 40);
+		}
+		res = result;
 
 		// translate the reslut code here
 
@@ -133,6 +137,10 @@ DRESULT disk_write (
 	return RES_PARERR;
 }
 #endif
+
+DWORD get_fattime(void) {
+	return 0;
+}
 
 
 /*-----------------------------------------------------------------------*/
@@ -146,7 +154,7 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-	DRESULT res;
+	DRESULT res = RES_PARERR;
 	int result;
 	(void) result;
 
@@ -154,7 +162,9 @@ DRESULT disk_ioctl (
 	case MMC :
 
 		// Process of the command for the MMC/SD card
-
+		if (cmd == CTRL_SYNC) {
+			res = 0;
+		}
 		return res;
 	}
 

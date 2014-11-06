@@ -14,8 +14,8 @@
 // Playing Morse Code on an LED
 // Numbers (0-9) morse code handling implemented by Yichen Zhao 2014-4-17
 
-#define LED_ON() Board_LED_Set(0, true);
-#define LED_OFF() Board_LED_Set(0, false);
+#define LED_ON() Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, true);
+#define LED_OFF() Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 
 static void DELAY_MS(uint16_t ms) {
 	volatile int i;
@@ -111,10 +111,12 @@ void morsePlay( const char * psz ) {
 void morseInt(unsigned int num) {
 	char result[10];
 	int length = 0;
+	bool first_loop = true;
     int i, j;
-	while (num > 0) {
+	while (num > 0 || first_loop) {
 		result[length++] = (num % 10) + '0';
 		num /= 10;
+		first_loop = false;
 	}
 
 	for (i = 0, j = length - 1; i < j; i++, j--) {

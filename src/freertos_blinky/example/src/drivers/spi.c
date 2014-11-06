@@ -68,10 +68,10 @@ void SSP1_IRQHandler(void) {
 	 spi_interrupt_transceive(&spi_devices[1]);
 }
 
-void spi_transceive(spi_device_t* device, uint8_t* buffer, size_t size) {
+static void spi_transceive_internal(spi_device_t* device, uint8_t* read_buffer, const uint8_t* write_buffer, size_t size) {
 	xSemaphoreTake(device->mutex, portMAX_DELAY);
-	device->xf_setup.rx_data = buffer;
-	device->xf_setup.tx_data = buffer;
+	device->xf_setup.rx_data = read_buffer;
+	device->xf_setup.tx_data = (void*) write_buffer;
 	device->xf_setup.length = size;
 	device->xf_setup.rx_cnt = 0;
 	device->xf_setup.tx_cnt = 0;
@@ -87,6 +87,14 @@ void spi_transceive(spi_device_t* device, uint8_t* buffer, size_t size) {
 	xSemaphoreGive(device->mutex);
 }
 
+void spi_transceive(spi_device_t* device, uint8_t* buffer, size_t size) {
+	spi_transceive_internal(device, buffer, buffer, size);
+}
+
+void spi_send(spi_device_t* device, const uint8_t* buffer, size_t size) {
+	spi_transceive_internal(device, NULL, buffer, size);
+}
+
 uint8_t spi_transceive_byte(spi_device_t* device, uint8_t b) {
 	uint8_t buffer[1];
 	buffer[0] = b;
@@ -95,17 +103,5 @@ uint8_t spi_transceive_byte(spi_device_t* device, uint8_t b) {
 }
 
 void spi_receive(spi_device_t* device, uint8_t* buffer, size_t size) {
-	xSemaphoreTake(device->mutex, portMAX_DELAY);
-	device->xf_setup.rx_data = buffer;
-	device->xf_setup.tx_data = NULL;
-	device->xf_setup.length = size;
-	device->xf_setup.rx_cnt = 0;
-	device->xf_setup.tx_cnt = 0;
-	Chip_SSP_Int_Enable(device->ssp_device);
-	Chip_SSP_Int_RWFrames8Bits(device->ssp_device, &device->xf_setup);
-
-	// Wait till done
-
-	xSemaphoreTake(device->sem_ready, portMAX_DELAY);
-	xSemaphoreGive(device->mutex);
+	spi_transceive_internal(device, buffer, NULL, size);
 }

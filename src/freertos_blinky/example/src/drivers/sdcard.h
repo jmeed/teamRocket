@@ -13,9 +13,9 @@
 #include "spi.h"
 
 /* Configuration */
-#define SDCARD_SPI_DEVICE SPI_DEVICE_0
-#define SDCARD_SPI_SLAVE_PORT 1
-#define SDCARD_SPI_SLAVE_PIN 15
+#define SDCARD_SPI_DEVICE SPI_DEVICE_1
+#define SDCARD_SPI_SLAVE_PORT 0
+#define SDCARD_SPI_SLAVE_PIN 16
 
 #define SDCARD_SPI_FRAME_BITS 8
 #define SDCARD_SPI_MAX_WAIT 16
@@ -43,5 +43,7 @@ bool SDCardInitialized();
 
 int SDCardReadSector(uint8_t* buffer, uint32_t sector);
 int SDCardDiskRead(uint8_t* buffer, uint32_t sector, size_t count);
+int SDCardWriteSector(const uint8_t* buffer, uint32_t sector);
+int SDCardDiskWrite(const uint8_t* buffer, uint32_t sector, size_t count);
 
 #endif /* SDCARD_H_ */
