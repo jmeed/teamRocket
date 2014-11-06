@@ -40,6 +40,7 @@
 #include "drivers/uart0.h"
 #include "drivers/spi.h"
 #include "drivers/sdcard.h"
+#include "sensors/LPS.h"
 
 /*****************************************************************************
  * Private types/enumerations/variables
@@ -63,13 +64,41 @@ static void setup_pinmux() {
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 23, (IOCON_FUNC4 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN);
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 16, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // SSEL
 
+
+	// I2C on-board
+	Chip_SYSCTL_PeriphReset(RESET_I2C0);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 4,
+		(IOCON_FUNC1 | IOCON_FASTI2C_EN) | IOCON_DIGMODE_EN);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 5,
+		(IOCON_FUNC1 | IOCON_FASTI2C_EN) | IOCON_DIGMODE_EN);
+
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 20);
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
 }
 
 static void debug_uart_init(void) {
 	Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
 	uart0_init();
 	uart0_setup(115200, 1);
+}
+
+#define ONBOARD_I2C I2C0
+static void i2c_onboard_init(void) {
+	Chip_I2C_Init(ONBOARD_I2C);
+	Chip_I2C_SetClockRate(ONBOARD_I2C, 100000);
+//	mode_poll &= ~(1 << id);
+	Chip_I2C_SetMasterEventHandler(ONBOARD_I2C, Chip_I2C_EventHandler);
+	NVIC_EnableIRQ(I2C0_IRQn);
+}
+
+void I2C0_IRQHandler(void)
+{
+	if (Chip_I2C_IsMasterActive(ONBOARD_I2C)) {
+		Chip_I2C_MasterStateHandler(ONBOARD_I2C);
+	}
+	else {
+		Chip_I2C_SlaveStateHandler(ONBOARD_I2C);
+	}
 }
 
 static void hardware_init(void) {
@@ -79,6 +108,7 @@ static void hardware_init(void) {
 	spi_init();
 	spi_setup_device(SPI_DEVICE_1, SSP_BITS_8, SSP_FRAMEFORMAT_SPI, SSP_CLOCK_MODE0, true);
 	SDCardInit();
+	i2c_onboard_init();
 }
 
 static void prvSetupHardware(void)
@@ -103,6 +133,7 @@ static void vLEDTask1(void *pvParameters) {
 	bool LedState = false;
 	while (1) {
 		Board_LED_Set(1, LedState);
+		Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, LedState);
 		LedState = (bool) !LedState;
 		LOG_INFO("Test float %.4f\r\n", 1.2424125);
 		vTaskDelay(configTICK_RATE_HZ * 2);
@@ -125,6 +156,16 @@ static void vFlushLogs(void* pvParameters) {
 	while (1) {
 		vTaskDelay(1000);
 		logging_flush_persistent();
+	}
+}
+
+static void vBaro(void* pvParameters) {
+	LPS_init(I2C0);
+	LPS_enable();
+	while (true) {
+		LOG_INFO("LPS Temp = %f", LPS_read_data(LPS_TEMPERATURE));
+		LOG_INFO("LPS Alti = %f", LPS_read_data(LPS_ALTITUDE));
+		vTaskDelay(500);
 	}
 }
 
@@ -163,6 +204,8 @@ static void vBootSystem(void* pvParameters) {
 	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
 				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
+
+	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 	vTaskSuspend(boot_handle);
 }
 

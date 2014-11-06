@@ -124,9 +124,9 @@ DRESULT disk_write (
 		// translate the arguments here
 
 		result = SDCardDiskWrite(buff, sector, count);
-		if (result != 0) {
-			exit_error(result + 40);
-		}
+//		if (result != 0) {
+//			exit_error(result + 40);
+//		}
 		res = result;
 
 		// translate the reslut code here

@@ -13,10 +13,10 @@
 	uart0_write_string_critical(buffer); \
 }
 #define LOG_NORMAL(type, msg, ...) {\
-	uart0_write_string(type); \
+	printf("%s", type); \
 	printf("%05d ", xTaskGetTickCount()); \
 	printf(msg, ##__VA_ARGS__); \
-	uart0_write_string("\n\r"); \
+	logging_log_persistent("\n\r", 2); \
 }
 #define LOG_ERROR(msg, ...) { LOG_NORMAL("ERROR ", msg, ##__VA_ARGS__); }
 #define LOG_WARN(msg, ...) { LOG_NORMAL("WARN  ", msg, ##__VA_ARGS__); }
