@@ -30,6 +30,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "chip.h"
 #include "board.h"
 #include "FreeRTOS.h"
@@ -77,6 +78,7 @@ static void setup_pinmux() {
 }
 
 static void debug_uart_init(void) {
+	logging_init();
 	Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
 	uart0_init();
 	uart0_setup(115200, 1);
@@ -155,17 +157,46 @@ static void vLEDTask2(void *pvParameters) {
 static void vFlushLogs(void* pvParameters) {
 	while (1) {
 		vTaskDelay(1000);
+		SDCardDumpLogs();
 		logging_flush_persistent();
 	}
 }
 
+static FIL f_baro_log;
+static char baro_str_buf[0x20];
 static void vBaro(void* pvParameters) {
+	int result;
+	int counter = 0;
 	LPS_init(I2C0);
 	LPS_enable();
+	strcpy(baro_str_buf, "0:BARO.TAB");
+	{
+		int rename_number = 1;
+		while(true) {
+			if (f_stat(baro_str_buf, NULL) == FR_OK) {
+				sprintf(baro_str_buf, "0:BARO%d.TAB", rename_number);
+				rename_number ++;
+				continue;
+			}
+			break;
+		}
+	}
+	LOG_INFO("Baro output is %s", baro_str_buf);
+	result = f_open(&f_baro_log, baro_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
 	while (true) {
-		LOG_INFO("LPS Temp = %f", LPS_read_data(LPS_TEMPERATURE));
-		LOG_INFO("LPS Alti = %f", LPS_read_data(LPS_ALTITUDE));
-		vTaskDelay(500);
+		float temp, alt;
+		temp = LPS_read_data(LPS_TEMPERATURE);
+		alt = LPS_read_data(LPS_ALTITUDE);
+		LOG_INFO("LPS Temp = %f, LPS Alti = %f", temp, alt);
+		if (result == FR_OK) {
+			sprintf(baro_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), temp, alt);
+			f_puts(baro_str_buf, &f_baro_log);
+			if ((counter % 50) == 0) {
+				f_sync(&f_baro_log);
+			}
+		}
+		vTaskDelay(50);
+		counter ++;
 	}
 }
 
@@ -206,6 +237,8 @@ static void vBootSystem(void* pvParameters) {
 				(xTaskHandle *) NULL);
 
 	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+
+	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 	vTaskSuspend(boot_handle);
 }
 

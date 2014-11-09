@@ -6,6 +6,7 @@
  */
 
 #include <FreeRTOS.h>
+#include <semphr.h>
 #include <stdlib.h>
 #include "board.h"
 #include <task.h>
@@ -15,6 +16,9 @@
 
 static FIL log_file;
 static bool persistent_initialized = false;
+static xSemaphoreHandle logging_mutex;
+
+uint32_t logging_counter = 0;
 void exit_error(int error_code) {
 	taskDISABLE_INTERRUPTS();
 	Board_LED_Set(0, false);
@@ -22,6 +26,10 @@ void exit_error(int error_code) {
 	Board_LED_Set(2, false);
 	blink_error_code(error_code);
 	exit(error_code);
+}
+
+void logging_init(void) {
+	logging_mutex = xSemaphoreCreateMutex();
 }
 
 int logging_init_persistent() {
@@ -49,6 +57,15 @@ void logging_log_persistent(const char* s, size_t size) {
 
 void logging_flush_persistent() {
 	if (!persistent_initialized) return;
-	int result;
-	result = f_sync(&log_file);
+	logging_enter();
+	f_sync(&log_file);
+	logging_exit();
+}
+
+void logging_enter(void) {
+	xSemaphoreTake(logging_mutex, portMAX_DELAY);
+}
+
+void logging_exit(void) {
+	xSemaphoreGive(logging_mutex);
 }
