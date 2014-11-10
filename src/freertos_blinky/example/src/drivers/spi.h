@@ -34,6 +34,7 @@ void spi_set_bit_rate(spi_device_t* device, uint32_t bit_rate);
 void spi_transceive(spi_device_t* device, uint8_t* buffer, size_t size);
 uint8_t spi_transceive_byte(spi_device_t* device, uint8_t b);
 void spi_receive(spi_device_t* device, uint8_t* buffer, size_t size);
+void spi_send(spi_device_t* device, const uint8_t* buffer, size_t size);
 
 
 #endif /* SPI_H_ */

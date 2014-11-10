@@ -6,14 +6,51 @@
 #include "logging.h"
 #include "./sdcard.h"
 
+#include "chip.h"
+
 static xSemaphoreHandle xMutexSDCard;
+
+#ifdef SDCARD_ERROR_LOGGING
+
+typedef struct {
+	int command; int response; int argument; int crc1; int crc2;
+} SDCardError;
+
+static SDCardError sdcard_errors[SDCARD_ERROR_LOG_SIZE] = {0};
+static size_t sdcard_error_count = 0;
+static void SDCardLogError(int command, int response, int argument, int crc1, int crc2) {
+	if (sdcard_error_count < SDCARD_ERROR_LOG_SIZE) {
+		sdcard_errors[sdcard_error_count].command = command;
+		sdcard_errors[sdcard_error_count].response = response;
+		sdcard_errors[sdcard_error_count].argument = argument;
+		sdcard_errors[sdcard_error_count].crc1 = crc1;
+		sdcard_errors[sdcard_error_count].crc2 = crc2;
+	}
+	sdcard_error_count += 1;
+}
+void SDCardDumpLogs(void) {
+	if (sdcard_error_count > 0) {
+		int i;
+		LOG_ERROR("SDCARD: %d sdcard errors", sdcard_error_count);
+		if (sdcard_error_count > SDCARD_ERROR_LOG_SIZE) {
+			LOG_ERROR("SDCARD: overflowed by %d", sdcard_error_count - SDCARD_ERROR_LOG_SIZE);
+		}
+
+		for (i = 0; i < sdcard_error_count && i < SDCARD_ERROR_LOG_SIZE; i++) {
+			LOG_ERROR("SDCARD: cmd %d -> %d (%d); crc %d vs %d", sdcard_errors[i].command, sdcard_errors[i].response, sdcard_errors[i].argument, sdcard_errors[i].crc1, sdcard_errors[i].crc2);
+		}
+		sdcard_error_count = 0;
+	}
+}
+
+#endif
 
 static void SDCardSlowMode() {
 	spi_set_bit_rate(SDCARD_SPI_DEVICE, 100000);
 }
 
 static void SDCardFastMode() {
-	spi_set_bit_rate(SDCARD_SPI_DEVICE, 1000000);
+	spi_set_bit_rate(SDCARD_SPI_DEVICE, 10000000);
 }
 
 static inline void SDCardSetSS() {
@@ -44,6 +81,7 @@ void SDCardWaitIdle() {
 }
 
 int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer, size_t recvSize) {
+	Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
 	xSemaphoreTake(xMutexSDCard, portMAX_DELAY);
 	int result = SDCARD_ERROR_GENERIC;
 	int wait = SDCARD_SPI_MAX_WAIT;
@@ -87,7 +125,7 @@ int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer
 	}
 
 	// Read block instructions
-	if (command == 0x40 + 17 || command == 0x40 + 18 || command == 0x40 + 24) {
+	if (command == 0x40 + 17 || command == 0x40 + 18) {
 		if (read != 0) {
 			goto fail;
 		}
@@ -114,7 +152,7 @@ int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer
 		spi_transceive(SDCARD_SPI_DEVICE, data, recvSize);
 	}
 
-	if (command == 0x40 + 17 || command == 0x40 + 18 || command == 0x40 + 24) {
+	if (command == 0x40 + 17 || command == 0x40 + 18) {
 		uint16_t crc = 0;
 		// Skip crc = 2 bytes
 		crc = spi_transceive_byte(SDCARD_SPI_DEVICE, 0xff) << 8;
@@ -159,6 +197,7 @@ int SDCardStartup() {
 	int sd_version = 2;  // 0: MMC; 1: SD; 2: SDv2
 	bool is_sdhc = false;
 
+	SDCardClearSS();
 	// Generate 80 pulses on SCLK
 	LOG_DEBUG("Sending 80 pulses");
 	for (i = 0; i < 10; i++) {
@@ -299,6 +338,9 @@ static inline uint32_t sector_address_to_sd_address(uint32_t sector) {
 int SDCardReadSector(uint8_t* buffer, uint32_t sector) {
 	int result;
 	result = SDCardSendCommand(17, sector_address_to_sd_address(sector), 0, buffer, 512);
+	if (result != 0) {
+		SDCardLogError(17, result, sector, 0, 0);
+	}
 	return result;
 }
 
@@ -307,6 +349,59 @@ int SDCardDiskRead(uint8_t* buffer, uint32_t sector, size_t count) {
 	int result = 0;
 	while (count > 0) {
 		result = SDCardReadSector(buffer, sector);
+		if (result != 0) return result;
+		buffer += 512;
+		sector ++;
+		count --;
+	}
+	return result;
+}
+
+static int SDCardWriteSectorInternal(const uint8_t* buffer, uint32_t sector) {
+	int result;
+	result = SDCardSendCommand(24, sector_address_to_sd_address(sector), 0, NULL, 0);
+	if (result != 0) {
+		SDCardLogError(24, result, sector, 0, 0);
+		return result;
+	}
+
+	uint16_t sendCRC = crc_crc16(buffer, 512);
+	// Send actual data blocks now
+	SDCardSetSS();
+
+	spi_transceive_byte(SDCARD_SPI_DEVICE, 0xfe);
+	spi_send(SDCARD_SPI_DEVICE, buffer, 512);
+	spi_transceive_byte(SDCARD_SPI_DEVICE, sendCRC >> 8);
+	spi_transceive_byte(SDCARD_SPI_DEVICE, sendCRC & 0xff);
+
+	result = spi_transceive_byte(SDCARD_SPI_DEVICE, 0xff) & 0x1f;
+
+	while (spi_transceive_byte(SDCARD_SPI_DEVICE, 0xff) == 0);
+
+	if (result == 5) return 0;
+
+	SDCardLogError(240, result, sector, sendCRC, 0);
+	return result;
+}
+
+int SDCardWriteSector(const uint8_t* buffer, uint32_t sector) {
+	int retry_limit = SDCARD_WRITE_CRC_FAIL_RETRY;
+	int result;
+	while (retry_limit > 0) {
+		result = SDCardWriteSectorInternal(buffer, sector);
+		if (result == 11) { // CRC error
+			continue;
+		}
+		retry_limit --;
+		return result;
+	}
+	return result;
+}
+
+int SDCardDiskWrite(const uint8_t* buffer, uint32_t sector, size_t count) {
+	int result = 0;
+	while (count > 0) {
+		result = SDCardWriteSector(buffer, sector);
 		if (result != 0) return result;
 		buffer += 512;
 		sector ++;
