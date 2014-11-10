@@ -42,6 +42,9 @@
 #include "drivers/spi.h"
 #include "drivers/sdcard.h"
 #include "sensors/LPS.h"
+#include "sensors/LSM.h"
+
+#define SDCARD_START_RETRY_LIMIT 10
 
 /*****************************************************************************
  * Private types/enumerations/variables
@@ -162,9 +165,12 @@ static void vFlushLogs(void* pvParameters) {
 	}
 }
 
-static FIL f_baro_log;
-static char baro_str_buf[0x20];
+static xSemaphoreHandle mutex_i2c;
+static void vIMU(void* pvParameters);
+
 static void vBaro(void* pvParameters) {
+	static FIL f_baro_log;
+	static char baro_str_buf[0x20];
 	int result;
 	int counter = 0;
 	LPS_init(I2C0);
@@ -183,11 +189,16 @@ static void vBaro(void* pvParameters) {
 	}
 	LOG_INFO("Baro output is %s", baro_str_buf);
 	result = f_open(&f_baro_log, baro_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+
+	// DEBUG
+	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	// ENDBEBUG
 	while (true) {
 		float temp, alt;
+		xSemaphoreTake(mutex_i2c, portMAX_DELAY);
 		temp = LPS_read_data(LPS_TEMPERATURE);
 		alt = LPS_read_data(LPS_ALTITUDE);
-//		LOG_INFO("LPS Temp = %f, LPS Alti = %f", temp, alt);
+		xSemaphoreGive(mutex_i2c);
 		if (result == FR_OK) {
 			sprintf(baro_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), temp, alt);
 			f_puts(baro_str_buf, &f_baro_log);
@@ -200,16 +211,85 @@ static void vBaro(void* pvParameters) {
 	}
 }
 
+static void vIMU(void* pvParameters) {
+	static FIL f_imu_log;
+	static char imu_str_buf[0x40];
+	LOG_INFO("Initializing IMU");
+	xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+	LSM_init(I2C0, G_SCALE_245DPS, A_SCALE_4G, M_SCALE_4GS, G_ODR_952, A_ODR_952, M_ODR_80);
+	xSemaphoreGive(mutex_i2c);
+	LOG_INFO("IMU initialized");
+
+	int result;
+	int counter = 0;
+	strcpy(imu_str_buf, "IMU.TAB");
+	{
+		int rename_number = 1;
+		while(true) {
+			if (f_stat(imu_str_buf, NULL) == FR_OK) {
+				sprintf(imu_str_buf, "IMU%d.TAB", rename_number);
+				rename_number ++;
+				continue;
+			}
+			break;
+		}
+	}
+	LOG_INFO("Imu output is %s", imu_str_buf);
+	result = f_open(&f_imu_log, imu_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+	for (;;) {
+		float ax, ay, az, gx, gy, gz, mx, my, mz;
+		xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+		ax = LSM_read_accel_g(LSM_ACCEL_X);
+		ay = LSM_read_accel_g(LSM_ACCEL_Y);
+		az = LSM_read_accel_g(LSM_ACCEL_Z);
+//		gx = LSM_read_accel_g(LSM_GYRO_X);
+//		gy = LSM_read_accel_g(LSM_GYRO_Y);
+//		gz = LSM_read_accel_g(LSM_GYRO_Z);
+//		mx = LSM_read_accel_g(LSM_MAG_X);
+//		my = LSM_read_accel_g(LSM_MAG_Y);
+//		mz = LSM_read_accel_g(LSM_MAG_Z);
+		xSemaphoreGive(mutex_i2c);
+
+		if (result == FR_OK) {
+			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx, gy);
+			f_puts(imu_str_buf, &f_imu_log);
+			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", gz, mx, my, mz);
+			f_puts(imu_str_buf, &f_imu_log);
+			if ((counter % 50) == 0) {
+				f_sync(&f_imu_log);
+			}
+		}
+
+		vTaskDelay(50);
+		counter += 1;
+	}
+}
+
 xTaskHandle boot_handle;
 static FATFS root_fs;
 static void vBootSystem(void* pvParameters) {
 	int result;
 	LOG_INFO("Wait for voltage stabilization");
 	vTaskDelay(1000);
-	LOG_INFO("Attempting to mount FAT on SDCARD");
-	result = f_mount(&root_fs, "0:", 1);
-	if (result != FR_OK) {
-		exit_error(ERROR_CODE_SDCARD_MOUNT_FAILED);
+
+	{
+		int sdcard_retry_limit = SDCARD_START_RETRY_LIMIT;
+		while (sdcard_retry_limit > 0) {
+			LOG_INFO("Attempting to mount FAT on SDCARD");
+			result = f_mount(&root_fs, "0:", 1);
+			if (result == FR_OK) {
+				break;
+			}
+			Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 20));
+			vTaskDelay(200);
+			sdcard_retry_limit --;
+		}
+		if (sdcard_retry_limit == 0) {
+			LOG_ERROR("SDCard Mount failed");
+			exit_error(ERROR_CODE_SDCARD_MOUNT_FAILED);
+		}
+
+		Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 	}
 
 	result = logging_init_persistent();
@@ -220,7 +300,7 @@ static void vBootSystem(void* pvParameters) {
 	LOG_INFO("Starting real tasks");
 
 	xTaskCreate(vFlushLogs, (signed char *) "vFlushLogs",
-				256, NULL, (tskIDLE_PRIORITY), NULL);
+				256, NULL, (tskIDLE_PRIORITY + 2), NULL);
 
 	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
 				256, NULL, (tskIDLE_PRIORITY + 1UL),
@@ -235,6 +315,8 @@ static void vBootSystem(void* pvParameters) {
 	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
 				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
+
+	mutex_i2c = xSemaphoreCreateMutex();
 
 	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
