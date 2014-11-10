@@ -10,15 +10,11 @@
 #include "drivers/spi.h"
 #include "drivers/sdcard.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include "L3G.h"
-#include "LPS.h"
-#include "LSM303.h"
-
 #include "H3L.h"
 #include "LSM.h"
 
+#include <stdlib.h>
+#include <string.h>
 #include "Drivers/interrupts.h"
 #include "Drivers/gpio.h"
 
@@ -27,9 +23,6 @@
 // #define LONG_TIME 0xffff
 // #define TICKS_TO_WAIT    10
 
-/*****************************************************************************
- * Private types/enumerations/variables
- ****************************************************************************/
 #define DEFAULT_I2C          I2C0
 
 #define I2C_EEPROM_BUS       DEFAULT_I2C
@@ -50,46 +43,50 @@ static I2C_ID_T i2cDev = DEFAULT_I2C;   /* Currently active I2C device */
 
 static volatile uint32_t tick_cnt;
 
-static void Init_I2C_PinMux(void) {
-    Chip_SYSCTL_PeriphReset(RESET_I2C0);
-#if defined(BOARD_MANLEY_11U68)
-    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 4, IOCON_FUNC1 | I2C_FASTPLUS_BIT);
-    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 5, IOCON_FUNC1 | I2C_FASTPLUS_BIT);
-
-#elif defined(BOARD_NXP_LPCXPRESSO_11U68)
-    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 4,
-        (IOCON_FUNC1 | I2C_FASTPLUS_BIT) | IOCON_DIGMODE_EN);
-    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 5,
-        (IOCON_FUNC1 | I2C_FASTPLUS_BIT) | IOCON_DIGMODE_EN);
-
-#else
-#warning "No I2C Pin Muxing defined for this example"
-#endif
-}
-
-
-/*****************************************************************************
- * Public types/enumerations/variables
- ****************************************************************************/
-
-/*****************************************************************************
- * Private functions
- ****************************************************************************/
-
-/* Sets up system hardware */
-
-
-/*static void setup_pinmux() {
+static void setup_pinmux() {
     // SPI0 SDCard
-    Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 12, (IOCON_FUNC1 | IOCON_MODE_INACT)); // MOSI
-    Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 29, (IOCON_FUNC1 | IOCON_MODE_INACT)); // SCK
-    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 8, (IOCON_FUNC1 | IOCON_MODE_INACT)); // MISO
+    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 21, (IOCON_FUNC2 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // MOSI
+    Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 20, (IOCON_FUNC2 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // SCK
+    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 22, (IOCON_FUNC3 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // MISO
+    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 23, (IOCON_FUNC4 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN);
+    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 16, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // SSEL
+
+
+    // I2C on-board
+    Chip_SYSCTL_PeriphReset(RESET_I2C0);
+    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 4,
+        (IOCON_FUNC1 | IOCON_FASTI2C_EN) | IOCON_DIGMODE_EN);
+    Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 5,
+        (IOCON_FUNC1 | IOCON_FASTI2C_EN) | IOCON_DIGMODE_EN);
+
+    Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 20);
+    Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
 }
+
 
 static void debug_uart_init(void) {
     Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
     uart0_init();
     uart0_setup(115200, 1);
+}
+
+#define ONBOARD_I2C I2C0
+static void i2c_onboard_init(void) {
+    Chip_I2C_Init(ONBOARD_I2C);
+    Chip_I2C_SetClockRate(ONBOARD_I2C, 100000);
+//  mode_poll &= ~(1 << id);
+    Chip_I2C_SetMasterEventHandler(ONBOARD_I2C, Chip_I2C_EventHandler);
+    NVIC_EnableIRQ(I2C0_IRQn);
+}
+
+void I2C0_IRQHandler(void)
+{
+    if (Chip_I2C_IsMasterActive(ONBOARD_I2C)) {
+        Chip_I2C_MasterStateHandler(ONBOARD_I2C);
+    }
+    else {
+        Chip_I2C_SlaveStateHandler(ONBOARD_I2C);
+    }
 }
 
 static void hardware_init(void) {
@@ -105,12 +102,7 @@ static void prvSetupHardware(void)
 {
     SystemCoreClockUpdate();
     Board_Init();
-}*/
-
-
-L3G gyro;
-LPS baro;
-LSM303 magXL;
+}
 
 SemaphoreHandle_t i2c_bus1_Semaphore; // gyro, xl, baro
 SemaphoreHandle_t i2c_bus2_Semaphore; // oled, gps, radio
@@ -119,33 +111,7 @@ SemaphoreHandle_t timer_Semaphore;
 bool OLED_present = FALSE;
 bool GPS_present = FALSE;
 bool RADIO_present = FALSE;
-
-// /* Timer ISR */
-// void vTimerISR( void * pvParameters ){
-//     static unsigned char ucLocalTickCount = 0;
-//     static signed BaseType_t xHigherPriorityTaskWoken; 
- 
-//     /* A timer tick has occurred. */
-    
-//     // ... Do other time functions.
-    
-//     /* Is it time for vATask() to run? */
-//     xHigherPriorityTaskWoken = pdFALSE;
-//     ucLocalTickCount++;
-//     if( ucLocalTickCount >= TICKS_TO_WAIT )
-//     {
-//         /* Unblock the task by releasing the semaphore. */
-//         xSemaphoreGiveFromISR( timer_Semaphore, &xHigherPriorityTaskWoken );
-        
-//         /* Reset the count so we release the semaphore again in 10 ticks time. */
-//         ucLocalTickCount = 0;
-//     }
-    
-//     /* If xHigherPriorityTaskWoken was set to true you
-//     we should yield.  The actual macro used here is 
-//     port specific. */
-//     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
-// }
+float baro_baseline = 0.0f;
 
 void read_setup(){
     // read setup.txt
@@ -154,53 +120,100 @@ void read_setup(){
     // RADIO_present =
 }
 
-void vtask_init(void *pParam){
+xTaskHandle boot_handle;
+static FATFS root_fs;
+void vtask_init(void *pvParameters){
     LOG_INFO("Start: vtask_init");
-    if(i2c_Semaphore = xSemaphoreCreateBinary()){
-        // no error
-    }else{
-        LOG_INFO("ERROR: I2C semaphore failure");
+
+    int result;
+    LOG_INFO("Wait for voltage stabilization");
+    vTaskDelay(1000);
+    LOG_INFO("Attempting to mount FAT on SDCARD");
+    result = f_mount(&root_fs, "0:", 1);
+    if (result != FR_OK) {
+        exit_error(ERROR_CODE_SDCARD_MOUNT_FAILED);
     }
 
-    if(L3G_init(I2C0)){
-        L3G_enable();
+    result = logging_init_persistent();
+    if (result != 0) {
+        exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
+    }
+
+    LOG_INFO("Starting real tasks");
+
+    // initialize IMU
+    xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+    LOG_INFO("Initializing IMU");
+    if(LSM_init(I2C0, G_SCALE_2000DPS, A_SCALE_8G, M_SCALE_12GS, G_ODR_952, A_ODR_952, M_ODR_80)){
         // blink LED
         // send bluetooth update
     }else{
         LOG_INFO("ERROR: L3G initization failure");
     }
+    LOG_INFO("IMU initialized");
+    xSemaphoreGive(mutex_i2c);
 
-    if(LSM303_init(I2C0)){
-        LSM303_enable();
-        // xl reg 0x30 - 0x33
+    // need this for H3L
+    // initialize high G XL
+    xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+    LOG_INFO("Initializing HGXL");
+    if(H3L_init(I2C0, H3L_SCALE_100G, H3L_ODR_1000)){
+        H3L_enable();
+
         // setup launch interrupt
+        // uint8_t int1_cfg, uint8_t int1_cfg, uint8_t duration)
+        H3L_configure_int_1(int1_cfg, int1_ths, duration); // ?? g's detected for ?? sec on y-axis - flight
+        // int1_cfg
+        // AOI //  0  // ZHIE // ZLIE // YHIE // YLIE // XHIE // XLIE //
+        //  - 0x88: interrupt detected on Y high event 
+        
+        // int1_ths
+        //  0  // THS6 // THS5 // THS4 // THS3 // THS2 // THS1 // THS0 //
+        //  - 000 0000 
+        
+        // duration//  0  // D6 // D5 // D4 // D3 // D2 // D1 // D0 //
+        //  - 000 0000
+
         // blink LED
         // send bluetooth update
     }else{
-        LOG_INFO("ERROR: LMS303 initization failure");
+        LOG_INFO("ERROR: H3L initization failure");
     }
+    xSemaphoreGive(mutex_i2c);
 
+    // initialize baro sensor
+    xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+    LOG_INFO("Initializing BARO");
     if(LPS_init(I2C0)){
         LPS_enable();
+        // find baseline altitude altitude
+        // maybe use GPS to find baseline altitude
+        baro_baseline = LPS_read_data(LPS_ALTITUDE);
         // blink LED
         // send bluetooth update
     }else{
         LOG_INFO("ERROR: LPS initization failure");
     }
+    xSemaphoreGive(mutex_i2c);
+
+    // create setup task
+    // xTaskCreate(vtask_setup, "setup", configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+    // xTaskCreate(vBootSystem, NULL, 256, NULL, (tskIDLE_PRIORITY + 2), &boot_handle);
+    xTaskCreate(vtask_setup, "setup", 256, NULL, (tskIDLE_PRIORITY + 2), &boot_handle);
 
     LOG_INFO("Finish: vtask_init has been suspended");
-    vTaskSuspend(vtask_init);
+    vTaskSuspend(boot_handle);
 }
     
 
-void vtask_setup(void *pParam){
+void vtask_setup(void *pvParameters){
     LOG_INFO("Start: vtask_setup");
 
     read_setup();
 
     xTaskCreate(vtask_read_gyro, "gyro" configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
     xTaskCreate(vtask_read_XL, "accel" configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
-    // xTaskCreate(vtask_read_HiG_XL, "hig_accel" configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+    xTaskCreate(vtask_read_HiG_XL, "hig_accel" configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
     xTaskCreate(vtask_read_mag, "mag" configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
     xTaskCreate(vtask_read_baro, "baro" configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
     xTaskCreate(vtask_read_temp, "temp" configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
@@ -214,146 +227,304 @@ void vtask_setup(void *pParam){
     // }
 
     LOG_INFO("Finish: vtask_setup has been suspended");
-    vTaskSuspend(vtask_setup);
+    vTaskSuspend(boot_handle);
 }
 
-//DEBUGOUT("Temps: baro = %.2f, gyro = %.2f, imu = %.2f\n", baro_T, gyro_T, imu_T);
-        
-        //DEBUGOUT("MAG/XL: ax = %.2f, ay = %.2f, az = %.2f, mx = %.2f, my = %.2f, mz = %.2f, temp = %.2f\n", acc_x, acc_y, acc_z, mag_x, mag_y, mag_z, imu_T);
-        
+// 25-50hz
+void vtask_read_gyro(void *pvParameters){
+    static FIL f_gyro_log;
+    static char gyro_str_buf[0x40];
 
-void vtask_read_gyro(void *pParam){
-
-    static volatile float gyro_x = 0.0f; 
-    static volatile float gyro_y = 0.0f; 
-    static volatile float gyro_z = 0.0f; 
-    static volatile float gyro_T = 0.0f;
-    if(xSemaphoreTake(i2c_bus1_Semaphore, (TickType_t) 10) == pdTRUE){
-        gyro_x = L3G_read_data(L3G_SPIN_RATE_X);
-        gyro_y = L3G_read_data(L3G_SPIN_RATE_Y);
-        gyro_z = L3G_read_data(L3G_SPIN_RATE_Z);
-        gyro_T = L3G_read_data(TEMPERATURE);
-        DEBUGOUT("Gyro: x = %.2f, y = %.2f, z = %.2f, temp = %.2f\n", gyro_x, gyro_y, gyro_z, gyro_T);
-        xSemaphoreGive(i2c_bus1_Semaphore);
-    }else{
-        // could not get semaphore
+    int result;
+    int counter = 0;
+    strcpy(gyro_str_buf, "GYRO.TAB");
+    {
+        int rename_number = 1;
+        while(true) {
+            if (f_stat(gyro_str_buf, NULL) == FR_OK) {
+                sprintf(gyro_str_buf, "GYRO%d.TAB", rename_number);
+                rename_number ++;
+                continue;
+            }
+            break;
+        }
     }
-    
-}
+    LOG_INFO("GYRO output is %s", gyro_str_buf);
+    result = f_open(&f_gyro_log, gyro_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+    for (;;) {
+        float gx, gy, gz;
+        xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+        gx = LSM_read_accel_g(LSM_GYRO_X);
+        gy = LSM_read_accel_g(LSM_GYRO_Y);
+        gz = LSM_read_accel_g(LSM_GYRO_Z);
+        xSemaphoreGive(mutex_i2c);
 
-void vtask_read_XL(void *pParam){
+        if (result == FR_OK) {
+            sprintf(gyro_str_buf, "%d\t%f\t%f\t%f\n", xTaskGetTickCount(), gx, gy, gz);
+            f_puts(gyro_str_buf, &f_gyro_log);
+            if ((counter % 50) == 0) {
+                f_sync(&f_gyro_log);
+            }
+        }
 
-    static volatile float acc_x = 0.0f; 
-    static volatile float acc_y = 0.0f; 
-    static volatile float acc_z = 0.0f; 
-    static volatile float imu_T = 0.0f;
-    if(xSemaphoreTake(i2c_bus1_Semaphore, (TickType_t) 10) == pdTRUE){
-        acc_x = magXL.read_data(ACCEL_X);
-        acc_y = magXL.read_data(ACCEL_Y);
-        acc_z = magXL.read_data(ACCEL_Z);
-        imu_T = magXL.read_data(TEMPERATURE);
-        DEBUGOUT("XL: ax = %.2f, ay = %.2f, az = %.2f, temp = %.2f\n", acc_x, acc_y, acc_z, imu_T);
-        xSemaphoreGive(i2c_bus1_Semaphore);
-    }else{
-        // could not get semaphore
+        if(apogee_detect){
+            vTaskDelay(100);
+        }else{
+            vTaskDelay(50);
+        }
+        counter += 1;
     }
-    
 }
 
-void vtask_read_HiG_XL(void *pParam){
+// start at apogee, 25-50hz
+void vtask_read_XL(void *pParpvParametersam){
+    static FIL f_xl_log;
+    static char xl_str_buf[0x40];
 
-    static volatile float hig_acc_x = 0.0f; 
-    static volatile float hig_acc_y = 0.0f; 
-    static volatile float hig_acc_z = 0.0f; 
-    static volatile float hig_imu_T = 0.0f;
-    if(xSemaphoreTake(i2c_bus1_Semaphore, (TickType_t) 10) == pdTRUE){
-        hig_acc_x = LSM303_read_data(ACCEL_X);
-        hig_acc_y = LSM303_read_data(ACCEL_Y);
-        hig_acc_z = LSM303_read_data(ACCEL_Z);
-        hig_imu_T = LSM303_read_data(TEMPERATURE);
-        DEBUGOUT("XL: ax = %.2f, ay = %.2f, az = %.2f, temp = %.2f\n", hig_acc_x, hig_acc_y, hig_acc_z, hig_imu_T);
-        xSemaphoreGive(i2c_bus1_Semaphore);
-    }else{
-        // could not get semaphore
+    int result;
+    int counter = 0;
+    strcpy(xl_str_buf, "XL.TAB");
+    {
+        int rename_number = 1;
+        while(true) {
+            if (f_stat(xl_str_buf, NULL) == FR_OK) {
+                sprintf(xl_str_buf, "XL%d.TAB", rename_number);
+                rename_number ++;
+                continue;
+            }
+            break;
+        }
     }
-    
-}
+    LOG_INFO("XL output is %s", xl_str_buf);
+    result = f_open(&f_xl_log, xl_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+    for (;;) {
+        float ax, ay, az;
+        xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+        ax = LSM_read_accel_g(LSM_ACCEL_X);
+        ay = LSM_read_accel_g(LSM_ACCEL_Y);
+        az = LSM_read_accel_g(LSM_ACCEL_Z);
+        xSemaphoreGive(mutex_i2c);
 
-void vtask_read_mag(void *pParam){
+        if (result == FR_OK) {
+            sprintf(xl_str_buf, "%d\t%f\t%f\t%f\n", xTaskGetTickCount(), ax, ay, az);
+            f_puts(xl_str_buf, &f_xl_log);
+            if ((counter % 50) == 0) {
+                f_sync(&f_xl_log);
+            }
+        }
 
-    static volatile float mag_x = 0.0f; 
-    static volatile float mag_y = 0.0f, 
-    static volatile float mag_z = 0.0f;
-    // static volatile float magH = 0.0f;
-    if(xSemaphoreTake(i2c_bus1_Semaphore, (TickType_t) 10) == pdTRUE){
-        mag_x = LSM303_read_data(MAG_X);
-        mag_y = LSM303_read_data(MAG_Y);
-        mag_y = LSM303_read_data(MAG_Z);
-        // magH = LSM303_read_data(MAG_HEADING);
-        DEBUGOUT("MAG: mx = %.2f, my = %.2f, mz = %.2f\n", mag_x, mag_y, mag_z);
-        xSemaphoreGive(i2c_bus1_Semaphore);
-    }else{
-        // could not get semaphore
+        if(apogee_detect){
+            vTaskDelay(50);
+        }else{
+            // no readings before apogee
+        }
+        counter += 1;
     }
-    
 }
 
-void vtask_read_baro(void *pParam){
+// 25-50hz
+void vtask_read_mag(void *pvParameters){
+    static FIL f_mag_log;
+    static char mag_str_buf[0x40];
 
-    static volatile float baro_alt = 0.0f;
-    static volatile float baro_T = 0.0f;
-    if(xSemaphoreTake(i2c_bus1_Semaphore, (TickType_t) 10) == pdTRUE){
-        baro_alt = LPS_read_data(LPS_ALTITUDE);
-        baro_alt = LPS_read_data(TEMPERATURE);
-        DEBUGOUT("Baro: alt = %.2f, temp = %.2f\n", baro_alt, baro_T);
-        xSemaphoreGive(i2c_bus1_Semaphore);
-    }else{
-        // could not get semaphore
+    int result;
+    int counter = 0;
+    strcpy(mag_str_buf, "MAG.TAB");
+    {
+        int rename_number = 1;
+        while(true) {
+            if (f_stat(mag_str_buf, NULL) == FR_OK) {
+                sprintf(mag_str_buf, "MAG%d.TAB", rename_number);
+                rename_number ++;
+                continue;
+            }
+            break;
+        }
     }
-    
+    LOG_INFO("MAG output is %s", mag_str_buf);
+    result = f_open(&f_mag_log, mag_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+    for (;;) {
+        float mx, my, mz;
+        xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+        mx = LSM_read_accel_g(LSM_MAG_X);
+        my = LSM_read_accel_g(LSM_MAG_Y);
+        mz = LSM_read_accel_g(LSM_MAG_Z);
+        xSemaphoreGive(mutex_i2c);
+            sprintf(mag_str_buf, "%d\t%f\t%f\t%f\n", mx, my, mz);
+            f_puts(mag_str_buf, &f_mag_log);
+            if ((counter % 50) == 0) {
+                f_sync(&f_mag_log);
+            }
+        }
+
+        if(apogee_detect){
+            vTaskDelay(100);
+        }else{
+            vTaskDelay(50);
+        }
+        counter += 1;
+    }    
 }
 
-void vtask_read_temp(void *pParm){
-    static volatile float baro_T = 0.0f;
-    static volatile float imu_T = 0.0f; 
-    static volatile float gyro_T = 0.0f;
-    if(xSemaphoreTake(i2c_bus1_Semaphore, (TickType_t) 10) == pdTRUE){
+// start at 400Hz, shut down at apogee, let LoG XL take over
+void vtask_read_HiG_XL(void *pvParameters){
+    static FIL f_hgxl_log;
+    static char hgxl_str_buf[0x40];
+
+    int result;
+    int counter = 0;
+    strcpy(hgxl_str_buf, "HGXL.TAB");
+    {
+        int rename_number = 1;
+        while(true) {
+            if (f_stat(hgxl_str_buf, NULL) == FR_OK) {
+                sprintf(hgxl_str_buf, "HGXL%d.TAB", rename_number);
+                rename_number ++;
+                continue;
+            }
+            break;
+        }
+    }
+    LOG_INFO("HGXL output is %s", hgxl_str_buf);
+    result = f_open(&f_hgxl_log, hgxl_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+    for (;;) {
+        float ax, ay, az;
+        xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+        hgax = H3L_read_accel_g(H3L_X);
+        hgay = H3L_read_accel_g(H3L_Y);
+        hgaz = H3L_read_accel_g(H3L_Z);
+        xSemaphoreGive(mutex_i2c);
+
+        if (result == FR_OK) {
+            sprintf(hgxl_str_buf, "%d\t%f\t%f\t%f\n", xTaskGetTickCount(), hgax, hgay, hgaz);
+            f_puts(hgxl_str_buf, &f_hgxl_log);
+            if ((counter % 50) == 0) {
+                f_sync(&f_hgxl_log);
+            }
+        }
+
+        if(apogee_detect){
+            LOG_INFO("Finish: vtask_read_HiG_XL has been suspended");
+            vTaskSuspend(vtask_read_HiG_XL);
+        }else{
+            vTaskDelay(50);
+        }
+        counter += 1;
+    }
+
+}
+
+// 25-50hz
+void vtask_read_baro(void *pvParameters){
+    static FIL f_baro_log;
+    static char baro_str_buf[0x20];
+    int result;
+    int counter = 0;
+
+    strcpy(baro_str_buf, "0:BARO.TAB");
+    {
+        int rename_number = 1;
+        while(true) {
+            if (f_stat(baro_str_buf, NULL) == FR_OK) {
+                sprintf(baro_str_buf, "0:BARO%d.TAB", rename_number);
+                rename_number ++;
+                continue;
+            }
+            break;
+        }
+    }
+    LOG_INFO("Baro output is %s", baro_str_buf);
+    result = f_open(&f_baro_log, baro_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+    
+    while (true) {
+        float baro_alt;
+        xSemaphoreTake(mutex_i2c, portMAX_DELAY);
+        baro_alt = LPS_read_data(LPS_ALTITUDE) - baro_baseline;
+        xSemaphoreGive(mutex_i2c);
+        if (result == FR_OK) {
+            sprintf(baro_str_buf, "%d\t%f\n", xTaskGetTickCount(), baro_alt);
+            f_puts(baro_str_buf, &f_baro_log);
+            if ((counter % 50) == 0) {
+                f_sync(&f_baro_log);
+            }
+        }
+
+        if(apogee_detect){
+            vTaskDelay(100);
+        }else
+            vTaskDelay(50);
+        }
+        counter ++;
+    }
+}
+
+// 25-50hz
+void vtask_read_temp(void *pvParameters){
+    static FIL f_temp_log;
+    static char temp_str_buf[0x20];
+    int result;
+    int counter = 0;
+
+    strcpy(temp_str_buf, "0:TEMP.TAB");
+    {
+        int rename_number = 1;
+        while(true) {
+            if (f_stat(temp_str_buf, NULL) == FR_OK) {
+                sprintf(temp_str_buf, "0:TEMP%d.TAB", rename_number);
+                rename_number ++;
+                continue;
+            }
+            break;
+        }
+    }
+    LOG_INFO("TEMP output is %s", temp_str_buf);
+    result = f_open(&f_temp_log, temp_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+    
+    while (true) {
+        float baro_T, imu_T;
+        xSemaphoreTake(mutex_i2c, portMAX_DELAY);
         baro_T = LPS_read_data(TEMPERATURE);
-        imu_T = LSM303_read_data(TEMPERATURE);
-        gyro_T = L3G_read_data(TEMPERATURE);
-        DEBUGOUT("Baro: baro_temp = %.2f, imu_temp = %.2f, gyro_temp = %.2f\n", baro_T, imu_t, gyro_T);
-    xSemaphoreGive(i2c_bus1_Semaphore);
-    }else{
-        // could not get semaphore
+        imu_T = LSM_read_temperature_C(TEMPERATURE);
+        xSemaphoreGive(mutex_i2c);
+        if (result == FR_OK) {
+            sprintf(temp_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), baro_T, imu_T);
+            f_puts(temp_str_buf, &f_temp_log);
+            if ((counter % 50) == 0) {
+                f_sync(&f_temp_log);
+            }
+        }
+
+        if(apogee_detect){
+            vTaskDelay(100);
+        }else
+            vTaskDelay(50);
+        }
+        counter ++;
     }
 }
 
-void vtask_read_GPS(void *pParam){
-    if(xSemaphoreTake(i2c_bus2_Semaphore, (TickType_t) 10) == pdTRUE){
-        // empty
-    }else{
-        // could not get semaphore
-    }
+// 25-50hz
+void vtask_GPS(void *pvParameters){
+    // empty
 }
 
-void vtask_write_radio(void *pParam){
-    if(xSemaphoreTake(i2c_bus2_Semaphore, (TickType_t) 10) == pdTRUE){
-        // empty
-    }else{
-        // could not get semaphore
-    }
+void vtask_radio(void *pvParameters){
+    // empty
 }
 
 
+// set off by HiG Xl interrupt
+void vtask_interrupt_launch(void *pvParameters){
+    // empty
+}
 
-// GPIO18 pin 45 
-void vtask_interrupt_launch(void *pParam){
-    if(xSemaphoreTake(i2c_bus1_Semaphore, (TickType_t) 10) == pdTRUE){
-        // empty
-    }else{
-        // could not get semaphore
-    }
+void vtask_interrupt_apogee(void *pvParameters){
+    // empty
+}
 
+// set off by combination of LoG XL and Baro
+void vtask_interrupt_landing(void *pvParameters){
+    // empty
 }
 
 void main(void) {
@@ -364,13 +535,9 @@ void main(void) {
     hardware_init();
 
     LOG_INFO("Starting tasks");
-    // DisableInterrupts();
-    // InitInterruptController();
 
-
-    xTaskCreate(vtask_init, "init", configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
-    xTaskCreate(vtask_setup, "init", configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
-    
+    // xTaskCreate(vBootSystem, NULL, 256, NULL, (tskIDLE_PRIORITY + 2), &boot_handle);
+    xTaskCreate(vtask_init, "init", 256, NULL, (tskIDLE_PRIORITY + 2), &boot_handle);  
 
     LOG_INFO("Tasks created; Starting scheduler");
     /* Start the scheduler */
@@ -378,11 +545,6 @@ void main(void) {
 
 
     exit_error(ERROR_CODE_MAIN_SCHEDULER_FALL_THRU);
-    /*
-    *   We should never get here, but just in case something goes wrong,
-    *   we'll place the CPU into a safe loop.
-    */
-    while(1) {
-        ;
-    }
+    /* Should never arrive here */
+    return 1;
 }

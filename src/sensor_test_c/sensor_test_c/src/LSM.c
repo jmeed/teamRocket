@@ -270,6 +270,8 @@ void LSM_configure_mag_int(uint8_t int1_cfg, uint16_t int1_ths) {
 	LSM_write_reg_mag(LSM_INT_THS_L_M, (int1_ths & 0xFF));
 }
 
+
+/////////////////////  CALIBRATION  /////////////////////
 /*void LSM_calibrate(float g_bias[3], float a_bias[3]) {
   uint8_t data[6] = {0, 0, 0, 0, 0, 0};
   int32_t gyro_bias[3] = {0, 0, 0}, accel_bias[3] = {0, 0, 0};
@@ -348,6 +350,7 @@ void LSM_configure_mag_int(uint8_t int1_cfg, uint16_t int1_ths) {
   delay(20);
   xmWriteByte(FIFO_CTRL_REG, 0x00);       // Enable accelerometer bypass mode
 }*/
+/////////////////////  END CALIBRATION  /////////////////////
 
 void LSM_init_gyro() {
 	// See header file for command descriptions
