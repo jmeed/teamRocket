@@ -6,6 +6,8 @@
 #include "logging.h"
 #include "./sdcard.h"
 
+#include "chip.h"
+
 static xSemaphoreHandle xMutexSDCard;
 
 #ifdef SDCARD_ERROR_LOGGING
@@ -79,6 +81,7 @@ void SDCardWaitIdle() {
 }
 
 int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer, size_t recvSize) {
+	Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
 	xSemaphoreTake(xMutexSDCard, portMAX_DELAY);
 	int result = SDCARD_ERROR_GENERIC;
 	int wait = SDCARD_SPI_MAX_WAIT;

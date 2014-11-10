@@ -135,8 +135,8 @@ static void vLEDTask1(void *pvParameters) {
 	bool LedState = false;
 	while (1) {
 		Board_LED_Set(1, LedState);
-		Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, LedState);
 		LedState = (bool) !LedState;
+		Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
 		LOG_INFO("Test float %.4f\r\n", 1.2424125);
 		vTaskDelay(configTICK_RATE_HZ * 2);
 	}
@@ -187,7 +187,7 @@ static void vBaro(void* pvParameters) {
 		float temp, alt;
 		temp = LPS_read_data(LPS_TEMPERATURE);
 		alt = LPS_read_data(LPS_ALTITUDE);
-		LOG_INFO("LPS Temp = %f, LPS Alti = %f", temp, alt);
+//		LOG_INFO("LPS Temp = %f, LPS Alti = %f", temp, alt);
 		if (result == FR_OK) {
 			sprintf(baro_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), temp, alt);
 			f_puts(baro_str_buf, &f_baro_log);

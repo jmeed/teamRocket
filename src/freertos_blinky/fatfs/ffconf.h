@@ -189,9 +189,11 @@
 /  with file lock control. This feature uses bss _FS_LOCK * 12 bytes. */
 
 
-#define _FS_REENTRANT	0		/* 0:Disable or 1:Enable */
+#define _FS_REENTRANT	1		/* 0:Disable or 1:Enable */
 #define _FS_TIMEOUT		1000	/* Timeout period in unit of time tick */
-#define	_SYNC_t			HANDLE	/* O/S dependent sync object type. e.g. HANDLE, OS_EVENT*, ID, SemaphoreHandle_t and etc.. */
+#include <FreeRTOS.h>
+#include <semphr.h>
+#define	_SYNC_t			xSemaphoreHandle	/* O/S dependent sync object type. e.g. HANDLE, OS_EVENT*, ID, SemaphoreHandle_t and etc.. */
 /* The _FS_REENTRANT option switches the re-entrancy (thread safe) of the FatFs module.
 /
 /   0: Disable re-entrancy. _FS_TIMEOUT and _SYNC_t have no effect.
