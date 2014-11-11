@@ -12,6 +12,7 @@
 
 #include "H3L.h"
 #include "LSM.h"
+#include "LPS.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -32,6 +33,8 @@
 #define SPEED_400KHZ         400000
 #define I2C_DEFAULT_SPEED    SPEED_100KHZ
 #define I2C_FASTPLUS_BIT     0
+
+#define SDCARD_START_RETRY_LIMIT 10
 
 #if (I2C_DEFAULT_SPEED > SPEED_400KHZ)
 #undef  I2C_FASTPLUS_BIT
@@ -128,10 +131,25 @@ void vtask_init(void *pvParameters){
     int result;
     LOG_INFO("Wait for voltage stabilization");
     vTaskDelay(1000);
-    LOG_INFO("Attempting to mount FAT on SDCARD");
-    result = f_mount(&root_fs, "0:", 1);
-    if (result != FR_OK) {
-        exit_error(ERROR_CODE_SDCARD_MOUNT_FAILED);
+
+    {
+        int sdcard_retry_limit = SDCARD_START_RETRY_LIMIT;
+        while (sdcard_retry_limit > 0) {
+            LOG_INFO("Attempting to mount FAT on SDCARD");
+            result = f_mount(&root_fs, "0:", 1);
+            if (result == FR_OK) {
+                break;
+            }
+            Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 20));
+            vTaskDelay(200);
+            sdcard_retry_limit --;
+        }
+        if (sdcard_retry_limit == 0) {
+            LOG_ERROR("SDCard Mount failed");
+            exit_error(ERROR_CODE_SDCARD_MOUNT_FAILED);
+        }
+
+        Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
     }
 
     result = logging_init_persistent();
