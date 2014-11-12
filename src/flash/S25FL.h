@@ -118,7 +118,7 @@ void S25FL_set_page_size(enum Page_Size page_size);
 // Set block erase size to either 64 kB or 256 kB
 void S25FL_set_erase_size(enum Erase_Size erase_size);
 
-// Restores device to initial power up state, except for folatile FREEZE
+// Restores device to initial power up state, except for volatile FREEZE
 // bit and the PPB Lock bit
 void S25FL_reset();
 

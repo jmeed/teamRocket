@@ -1,5 +1,5 @@
-#ifndef spi_h
-#define spi_h
+#ifndef spi_H
+#define spi_H
 
 #include <stdint.h>
 #include "chip.h"
@@ -23,7 +23,7 @@ SSP_ConfigFormat ssp_format;
 Chip_SSP_DATA_SETUP_T xf_setup;
 
 // Set up board pins
-// Called by init
+// Called by spi_init
 void spi_pin_mux();
 
 // Calls pin mux and chip library functions to initialize SPI
