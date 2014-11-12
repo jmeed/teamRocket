@@ -25,6 +25,7 @@ void S25FL_init(LPC_SSP_T* id_in, enum Page_Size p_sz_in, enum Erase_Size e_sz_i
 
 void S25FL_write_registers(uint8_t status_1, uint8_t config, uint8_t status_2) {
 	// Setup params
+	S25FL_write_enable();
 	S25FL_tx_len = 4; // 1 command byte and 3 registers
 	S25FL_rx_len = 0;
 
@@ -35,7 +36,6 @@ void S25FL_write_registers(uint8_t status_1, uint8_t config, uint8_t status_2) {
 	S25FL_tx_buf[3] = status_2;
 
 	// Send
-	S25FL_write_enable();
 	S25FL_ss_set();
 	spi_transceive(S25FL_tx_len, S25FL_rx_len);
 	S25FL_ss_clear();
@@ -101,6 +101,7 @@ void S25FL_ss_clear() {
 
 void S25FL_write(uint32_t address, uint8_t* buffer, uint32_t length) {
 	// Setup params
+	S25FL_write_enable();
 	S25FL_tx_len = length + 4; // add 1 command byte and 3 address bytes
 	S25FL_rx_len = 0;
 
@@ -118,7 +119,6 @@ void S25FL_write(uint32_t address, uint8_t* buffer, uint32_t length) {
 		S25FL_tx_buf[i + 4] = buffer[i];
 
 	// Send
-	S25FL_write_enable();
 	S25FL_ss_set();
 	spi_transceive(S25FL_tx_len, S25FL_rx_len);
 	S25FL_ss_clear();
@@ -127,9 +127,7 @@ void S25FL_write(uint32_t address, uint8_t* buffer, uint32_t length) {
 }
 
 void S25FL_write_wait() {
-//	while (S25FL_read_register(S25FL_RDSR1) & 0x01) {}
-	volatile int i;
-	for (i = 0; i < S25FL_DUMMY_CYCLES; i++) {}
+	while (S25FL_read_register(S25FL_RDSR1) & 0x01) {}
 }
 
 void S25FL_write_enable() {
@@ -146,8 +144,7 @@ void S25FL_write_enable() {
 	S25FL_ss_clear();
 
 	// Wait for Write Enable Latch to be set
-//	while (!(S25FL_read_register(S25FL_RDSR1) & 0x02)) {}
-	S25FL_write_wait();
+	while (!(S25FL_read_register(S25FL_RDSR1) & 0x02)) {}
 }
 
 void S25FL_write_disable() {
@@ -198,6 +195,7 @@ void S25FL_erase_4k(uint32_t address) {
 	}
 
 	// Setup params
+	S25FL_write_enable();
 	S25FL_tx_len = 4; // 1 command byte and 3 address bytes
 	S25FL_rx_len = 0;
 
@@ -208,7 +206,6 @@ void S25FL_erase_4k(uint32_t address) {
 	S25FL_tx_buf[3] = address & 0xFF;
 
 	// Send
-	S25FL_write_enable();
 	S25FL_ss_set();
 	spi_transceive(S25FL_tx_len, S25FL_rx_len);
 	S25FL_ss_clear();
@@ -218,6 +215,7 @@ void S25FL_erase_4k(uint32_t address) {
 
 void S25FL_erase_sector(uint32_t address) {
 	// Setup params
+	S25FL_write_enable();
 	S25FL_tx_len = 4; // 1 command byte and 3 address bytes
 	S25FL_rx_len = 0;
 
@@ -228,7 +226,6 @@ void S25FL_erase_sector(uint32_t address) {
 	S25FL_tx_buf[3] = address & 0xFF;
 
 	// Send
-	S25FL_write_enable();
 	S25FL_ss_set();
 	spi_transceive(S25FL_tx_len, S25FL_rx_len);
 	S25FL_ss_clear();
@@ -238,6 +235,7 @@ void S25FL_erase_sector(uint32_t address) {
 
 void S25FL_erase_bulk() {
 	// Setup params
+	S25FL_write_enable();
 	S25FL_tx_len = 1; // 1 command byte
 	S25FL_rx_len = 0;
 
@@ -245,7 +243,6 @@ void S25FL_erase_bulk() {
 	S25FL_tx_buf[0] = S25FL_BE;
 
 	// Send
-	S25FL_write_enable();
 	S25FL_ss_set();
 	spi_transceive(S25FL_tx_len, S25FL_rx_len);
 	S25FL_ss_clear();

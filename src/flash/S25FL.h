@@ -76,7 +76,7 @@
 #define S25FL_RESET			0xF0
 #define S25FL_MBR			0xFF
 
-#define S25FL_DUMMY_CYCLES	10000	// mentioned, but # not defined by spec
+#define S25FL_DUMMY_CYCLES	5000	// mentioned, but # not defined by spec
 
 // === SPI
 #define S25FL_SS_PORT	0

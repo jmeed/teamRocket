@@ -14,7 +14,6 @@
 #define SPI_SPEED_LOW	1000000
 #define SPI_SPEED_HIGH	10000000
 
-#define SPI_WAIT			1000
 #define SPI_BUFFER_SIZE		1024	// how much will we read/write at once?
 uint8_t spi_rx_buf[SPI_BUFFER_SIZE];
 uint8_t spi_tx_buf[SPI_BUFFER_SIZE];
