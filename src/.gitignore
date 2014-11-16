@@ -18,7 +18,6 @@ local.properties
 *.launch
 
 # CDT-specific
-.cproject
 
 # PDT-specific
 .buildpath
