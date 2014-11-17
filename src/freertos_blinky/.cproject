@@ -42,6 +42,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/freertos/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/freertos_blinky/example/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/freertos_blinky/fatfs}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lpc_chip_11u6x/inc/usbd}&quot;"/>
 								</option>
 								<inputType id="com.crt.advproject.compiler.input.756127691" superClass="com.crt.advproject.compiler.input"/>
 							</tool>

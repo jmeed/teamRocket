@@ -41,6 +41,7 @@
 #include "drivers/uart0.h"
 #include "drivers/spi.h"
 #include "drivers/sdcard.h"
+#include "drivers/usb.h"
 #include "sensors/LPS.h"
 #include "sensors/LSM.h"
 
@@ -85,6 +86,19 @@ static void debug_uart_init(void) {
 	Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
 	uart0_init();
 	uart0_setup(115200, 1);
+
+	usb_init_freertos();
+	vcom_init_freertos();
+	if (usb_init()) {
+		if (usb_initialize_cdc_vcom()) {
+			usb_connect();
+		} else {
+			LOG_ERROR("USB CDC initialization failed");
+		}
+
+	} else {
+		LOG_ERROR("USB initialization failed");
+	}
 }
 
 #define ONBOARD_I2C I2C0
