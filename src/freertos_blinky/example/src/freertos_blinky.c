@@ -216,7 +216,7 @@ static void vIMU(void* pvParameters) {
 	static char imu_str_buf[0x40];
 	LOG_INFO("Initializing IMU");
 	xSemaphoreTake(mutex_i2c, portMAX_DELAY);
-	LSM_init(I2C0, G_SCALE_245DPS, A_SCALE_4G, M_SCALE_4GS, G_ODR_952, A_ODR_952, M_ODR_80);
+	LSM_init(I2C0, G_SCALE_245DPS, A_SCALE_8G, M_SCALE_4GS, G_ODR_952, A_ODR_952, M_ODR_80);
 	xSemaphoreGive(mutex_i2c);
 	LOG_INFO("IMU initialized");
 
@@ -245,9 +245,9 @@ static void vIMU(void* pvParameters) {
 //		gx = LSM_read_accel_g(LSM_GYRO_X);
 //		gy = LSM_read_accel_g(LSM_GYRO_Y);
 //		gz = LSM_read_accel_g(LSM_GYRO_Z);
-//		mx = LSM_read_accel_g(LSM_MAG_X);
-//		my = LSM_read_accel_g(LSM_MAG_Y);
-//		mz = LSM_read_accel_g(LSM_MAG_Z);
+		mx = LSM_read_accel_g(LSM_MAG_X);
+		my = LSM_read_accel_g(LSM_MAG_Y);
+		mz = LSM_read_accel_g(LSM_MAG_Z);
 		xSemaphoreGive(mutex_i2c);
 
 		if (result == FR_OK) {
