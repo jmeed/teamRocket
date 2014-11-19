@@ -17,6 +17,7 @@ int __sys_write(int iFileHandle, char *pcBuffer, int iLength) {
 		// stderr totally doesn't work
 		uart0_write((const uint8_t*) pcBuffer, iLength);
 		logging_log_persistent(pcBuffer, iLength);
+		vcom_write((uint8_t*) pcBuffer, iLength);
 	} else if (iFileHandle == 2) {
 		vcom_write((uint8_t*) pcBuffer, iLength);
 	}
@@ -33,10 +34,6 @@ int __sys_readc(void) {
 	}
 
 	return read_buffer[buf_index++];
-
-	char c;
-	vcom_bread(&c, 1);
-	return c;
 }
 
 void __sys_appexit() {

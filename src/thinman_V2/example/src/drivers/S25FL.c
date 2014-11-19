@@ -5,7 +5,7 @@
 #include "error_codes.h"
 #include "chip.h"
 
-static spi_device_t* S25FL_spi_device;
+static spi_device_t* S25FL_spi_device = NULL;
 static enum Page_Size S25FL_p_size;
 static enum Erase_Size S25FL_e_size;
 static xSemaphoreHandle mutex_flash;
@@ -276,6 +276,15 @@ void S25FL_read_sector(uint8_t* buffer, uint32_t sector) {
 	S25FL_read(address, buffer, 512);
 }
 
+void S25FL_read_sectors(uint8_t* buffer, uint32_t sector, size_t count) {
+	while (count > 0) {
+		S25FL_read_sector(buffer, sector);
+		sector += 1;
+		count -= 1;
+		buffer += 512;
+	}
+}
+
 static void S25FL_write_sector_direct(const uint8_t* buffer, uint32_t sector) {
 	S25FL_write_sector_count ++;
 	S25FL_write(sector * 512, (uint8_t*) buffer, 512);
@@ -324,4 +333,18 @@ void S25FL_write_sector(const uint8_t* buffer, uint32_t sector) {
 
 	S25FL_write_sector_direct((uint8_t*) buffer, sector);
 	xSemaphoreGive(mutex_write_flash_sector);
+}
+
+void S25FL_write_sectors(const uint8_t* data, uint32_t sector, size_t count) {
+	// XXX: optimize
+	while (count > 0) {
+		S25FL_write_sector(data, sector);
+		sector ++;
+		count --;
+		data += 512;
+	}
+}
+
+bool S25FL_initialized(void) {
+	return S25FL_spi_device != NULL;
 }

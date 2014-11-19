@@ -173,7 +173,7 @@ static void vLEDTask1(void *pvParameters) {
 		neopixel_set_color(0, num | num << 8 | num << 16);
 		neopixel_set_color(1, ~(num | num << 8 | num << 16));
 		neopixel_refresh();
-		LOG_INFO("Test float %.4f\r\n", 1.2424125);
+//		LOG_INFO("Test float %.4f\r\n", 1.2424125);
 		vTaskDelay(configTICK_RATE_HZ * 2);
 	}
 }
@@ -184,7 +184,7 @@ static void vLEDTask2(void *pvParameters) {
 	while (1) {
 		Board_LED_Set(2, LedState);
 		LedState = (bool) !LedState;
-		LOG_INFO("Hello World that works!\r\n");
+//		LOG_INFO("Hello World that works!\r\n");
 
 		vTaskDelay(configTICK_RATE_HZ);
 	}
@@ -208,12 +208,12 @@ static void vBaro(void* pvParameters) {
 	int counter = 0;
 	LPS_init(I2C0);
 	LPS_enable();
-	strcpy(baro_str_buf, "0:BARO.TAB");
+	strcpy(baro_str_buf, "BARO.TAB");
 	{
 		int rename_number = 1;
 		while(true) {
 			if (f_stat(baro_str_buf, NULL) == FR_OK) {
-				sprintf(baro_str_buf, "0:BARO%d.TAB", rename_number);
+				sprintf(baro_str_buf, "BARO%d.TAB", rename_number);
 				rename_number ++;
 				continue;
 			}
@@ -309,8 +309,11 @@ static void vIMU(void* pvParameters) {
 
 static void load_and_parse_command() {
 	static char command[6] = {0};
-	static char buff[10] = {0};
+	static char buff[20] = {0};
 	static uint8_t block[512];
+	static FIL t_file;
+	FRESULT res;
+
 	if (scanf("%5s", command) == 0) return;
 
 	if (strcmp(command, "read") == 0) {
@@ -361,6 +364,9 @@ static void load_and_parse_command() {
 
 		S25FL_erase_4k(addr);
 		fprintf(stderr, "Erasure complete\n");
+	} else if (strcmp(command, "erasa") == 0) {
+		S25FL_erase_bulk();
+		fprintf(stderr, "Everything erased\n");
 	} else if (strcmp(command, "writs") == 0) {
 			uint32_t addr;
 			if (scanf("%u", &addr) == 0) {
@@ -408,6 +414,96 @@ static void load_and_parse_command() {
 		for (i = 0; i < sizeof(stat_registers) / sizeof(stat_registers[0]); i++) {
 			fprintf(stderr, "Stat %s = %d\n", stat_names[i], *stat_registers[i]);
 		}
+	} else if (strcmp(command, "ls") == 0) {
+		static FILINFO fno;
+	    static DIR dir;
+
+	    res = f_opendir(&dir, "/");
+	    if (res != FR_OK) {
+	    	fprintf(stderr, "root dir open failed with erro %d\n", res);
+	    	return;
+	    }
+
+	    for(;;) {
+	    	res = f_readdir(&dir, &fno);
+	    	if (res != FR_OK || fno.fname[0] == 0) break;
+	    	if (fno.fname[0] == '.') continue;
+	    	if (fno.fattrib & AM_DIR) {
+	    		fprintf(stderr, "D %d %s\n", fno.fsize, fno.fname);
+	    	} else {
+	    		fprintf(stderr, "F %d %s\n", fno.fsize, fno.fname);
+	    	}
+	    }
+	    fprintf(stderr, "END\n");
+	    if (res != FR_OK) {
+	    	fprintf(stderr, "readdir failed with error %d\n", res);
+	    }
+	} else if (strcmp(command, "cat") == 0) {
+		if (scanf("%19s", buff) == 0) {
+			fprintf(stderr, "Need <filename>\n");
+			return;
+		}
+		res = f_open(&t_file, buff, FA_OPEN_EXISTING | FA_READ);
+		if (res != FR_OK) {
+			fprintf(stderr, "open file %s failed with error %d\n", buff, res);
+			return;
+		}
+
+		for(;;) {
+			UINT read = 0;
+			res = f_read(&t_file, block, 512, &read);
+			if (res != FR_OK) {
+				break;
+			}
+			if (read == 0) break;
+			vcom_write(block, read);
+
+		}
+
+		fprintf(stderr, "END\n");
+		if (res != FR_OK) {
+			fprintf(stderr, "f_read failed with error %d\n", res);
+		}
+
+		f_close(&t_file);
+	} else if (strcmp(command, "rm") == 0) {
+		if (scanf("%19s", buff) == 0) {
+			fprintf(stderr, "Need <filename>\n");
+			return;
+		}
+		res = f_unlink(buff);
+		if (res != FR_OK) {
+			fprintf(stderr, "Failed to unlik file %s with error %d\n", buff, res);
+		}
+	} else if (strcmp(command, "appd") == 0) {
+		if (scanf("%19s", buff) == 0) {
+			fprintf(stderr, "Need <filename>\n");
+			return;
+		}
+		res = f_open(&t_file, buff, FA_OPEN_ALWAYS | FA_WRITE);
+		if (res != FR_OK) {
+			fprintf(stderr, "Failed to open file %s with error %d\n", buff, res);
+			return;
+		}
+
+		res = f_lseek(&t_file, f_size(&t_file));
+		if (res != FR_OK) {
+			fprintf(stderr, "Failed to seek to end with error %d\n", res);
+			goto fail;
+		}
+
+		if (scanf("%19s", buff) == 0) {
+			fprintf(stderr, "Need <string>\n");
+			goto fail;
+		}
+		res = f_write(&t_file, buff, strlen(buff), NULL);
+		if (res != FR_OK) {
+			fprintf(stderr, "Failed to write with error %d\n", res);
+			goto fail;
+		}
+
+		fail:
+		f_close(&t_file);
 	} else {
 		fprintf(stderr, "Invalid command %s\n", command);
 	}
@@ -440,30 +536,39 @@ static void vBootSystem(void* pvParameters) {
 		S25FL_init(SPI_DEVICE_1, S25FL_P_512, S25FL_E_64);
 	}
 
-//	{
-//		int sdcard_retry_limit = SDCARD_START_RETRY_LIMIT;
-//		while (sdcard_retry_limit > 0) {
-//			LOG_INFO("Attempting to mount FAT on SDCARD");
-//			result = f_mount(&root_fs, "0:", 1);
-//			if (result == FR_OK) {
-//				break;
-//			}
-//			Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 20));
-//			vTaskDelay(200);
-//			sdcard_retry_limit --;
-//		}
-//		if (sdcard_retry_limit == 0) {
-//			LOG_ERROR("SDCard Mount failed");
-//			exit_error(ERROR_CODE_SDCARD_MOUNT_FAILED);
-//		}
-//
-//		Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
-//	}
-//
-//	result = logging_init_persistent();
-//	if (result != 0) {
-//		exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
-//	}
+	{
+		int sdcard_retry_limit = SDCARD_START_RETRY_LIMIT;
+		while (sdcard_retry_limit > 0) {
+			LOG_INFO("Attempting to mount FAT on SDCARD");
+			result = f_mount(&root_fs, "0:", 1);
+			if (result == FR_OK) {
+				break;
+			}
+			LOG_WARN("SDCard Mount error code %d", result);
+			if (result == FR_NO_FILESYSTEM) {
+				LOG_WARN("No file system. Making new.");
+				result = f_mkfs("0:", 1, 0);
+				if (result != FR_OK) {
+					LOG_ERROR("File system creation failure %d", result);
+					exit_error(ERROR_CODE_SDCARD_MKFS_FAILED);
+				}
+			}
+			Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 20));
+			vTaskDelay(200);
+			sdcard_retry_limit --;
+		}
+		if (sdcard_retry_limit == 0) {
+			LOG_ERROR("SDCard Mount failed");
+			exit_error(ERROR_CODE_SDCARD_MOUNT_FAILED);
+		}
+
+		Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
+	}
+
+	result = logging_init_persistent();
+	if (result != 0) {
+		exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
+	}
 
 	LOG_INFO("Starting real tasks");
 

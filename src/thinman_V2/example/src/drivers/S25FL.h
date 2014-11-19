@@ -86,6 +86,10 @@ extern size_t S25FL_erase_sector_count;
 #define S25FL_SS_PORT	1
 #define S25FL_SS_PIN	23
 
+#define S25FL_SECTOR_SIZE 512
+#define S25FL_SECTOR_COUNT (16000000 / S25FL_SECTOR_SIZE)
+#define S25FL_BLOCK_SIZE 4096
+
 // === Configuration types
 enum Page_Size {
 	S25FL_P_256,	// 0x00
@@ -179,9 +183,12 @@ void S25FL_erase_sector(uint32_t address);
 void S25FL_erase_bulk();
 
 void S25FL_read_sector(uint8_t* buffer, uint32_t sector);
+void S25FL_read_sectors(uint8_t* buffer, uint32_t sector, size_t count);
 
 void S25FL_write_sector(const uint8_t* data, uint32_t sector);
+void S25FL_write_sectors(const uint8_t* data, uint32_t sector, size_t count);
 
+bool S25FL_initialized(void);
 // Suspend any current erase operations
 // While suspended, commands RDSR1 and RDSR2 are allowed
 // void S25FL_erase_suspend();

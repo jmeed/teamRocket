@@ -9,11 +9,14 @@
 
 #include "diskio.h"		/* FatFs lower layer API */
 #include "drivers/sdcard.h"		/* Example: MMC/SDC control */
+#include "drivers/S25FL.h"
 #include "logging.h"
 
 /* Definitions of physical drive number for each drive */
-#define MMC 0
-#define SPIFLASH 1
+
+// Revert to default to SDCard
+#define MMC 1
+#define SPIFLASH 0
 
 
 
@@ -37,7 +40,10 @@ DSTATUS disk_status (
 		return STA_NOINIT;
 
 	case SPIFLASH :
-		return STA_NOINIT | STA_NODISK;
+		if (S25FL_initialized()) {
+			return 0;
+		}
+		return STA_NOINIT;
 	}
 	return STA_NOINIT;
 }
@@ -68,6 +74,11 @@ DSTATUS disk_initialize (
 		// translate the reslut code here
 
 		return stat;
+	case SPIFLASH:
+		if (S25FL_initialized()) {
+			return 0;
+		}
+		return STA_NOINIT;
 	}
 	return STA_NOINIT;
 }
@@ -97,8 +108,13 @@ DRESULT disk_read (
 		// translate the reslut code here
 
 		return res;
+	case SPIFLASH:
+		S25FL_read_sectors(buff, sector, count);
+//		LOG_DEBUG("read sect %d + %d", sector, count);
+		return 0;
 	}
 
+	LOG_ERROR("Read fall through for pdrv %d", pdrv);
 	return RES_PARERR;
 }
 
@@ -132,7 +148,13 @@ DRESULT disk_write (
 		// translate the reslut code here
 
 		return res;
+	case SPIFLASH:
+		S25FL_write_sectors(buff, sector, count);
+//		LOG_DEBUG("wrote sect %d + %d", sector, count);
+		return 0;
 	}
+
+	LOG_ERROR("Write fall through with pdrv %d", pdrv);
 
 	return RES_PARERR;
 }
@@ -165,6 +187,24 @@ DRESULT disk_ioctl (
 		if (cmd == CTRL_SYNC) {
 			res = 0;
 		}
+		return res;
+
+	case SPIFLASH :
+
+		// Process of the command for the MMC/SD card
+		if (cmd == CTRL_SYNC) {
+			res = 0;
+		} else if (cmd == GET_SECTOR_COUNT) {
+			*((DWORD*)buff) = S25FL_SECTOR_COUNT;
+			res = 0;
+		} else if (cmd == GET_SECTOR_SIZE) {
+			*((DWORD*)buff) = S25FL_SECTOR_SIZE;
+			res = 0;
+		} else if (cmd == GET_BLOCK_SIZE) {
+			*((DWORD*) buff) = S25FL_BLOCK_SIZE / S25FL_SECTOR_SIZE;
+			res = 0;
+		}
+
 		return res;
 	}
 

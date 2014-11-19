@@ -204,9 +204,12 @@ uint32_t vcom_bread(uint8_t *pBuf, uint32_t buf_len)
 	vcom_enter();
 	while (!pVcom->rx_count) {
 		if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
-			 xSemaphoreTake(sem_read_complete, portMAX_DELAY);
+			vcom_exit();
+			xSemaphoreTake(sem_read_complete, portMAX_DELAY);
+			vcom_enter();
 		}
 	}
+
 	if (pVcom->rx_count) {
 		cnt = (pVcom->rx_count < buf_len) ? pVcom->rx_count : buf_len;
 		memcpy(pBuf, pVcom->rx_buff, cnt);
@@ -286,7 +289,9 @@ uint32_t vcom_write(uint8_t *pBuf, uint32_t len)
 		usb_exit();
 
 		if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
+			vcom_exit();
 			xSemaphoreTake(sem_write_complete, portMAX_DELAY);
+			vcom_enter();
 		} else {
 			while (pVcom->tx_flags & VCOM_TX_BUSY);
 		}

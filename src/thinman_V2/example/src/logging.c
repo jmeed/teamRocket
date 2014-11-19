@@ -34,7 +34,7 @@ void logging_init(void) {
 
 int logging_init_persistent() {
 	int result;
-	result = f_open(&log_file, "0:evrythng.log", FA_WRITE | FA_OPEN_ALWAYS);
+	result = f_open(&log_file, "evrythng.log", FA_WRITE | FA_OPEN_ALWAYS);
 	if (result != FR_OK) return result;
 
 	result = f_lseek(&log_file, f_size(&log_file));
