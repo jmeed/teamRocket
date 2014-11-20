@@ -251,29 +251,10 @@ void S25FL_erase_bulk() {
 	flash_exit();
 }
 
-
-uint8_t erase_buffer[512 * 7];
-
-static bool check_erase_necessary(const uint8_t* data, uint32_t sector) {
-	// @lock necessary
-	int i;
-	S25FL_read_sector(erase_buffer, sector);
-	for (i = 0; i < 512; i++) {
-		uint8_t datab = data[i];
-		uint8_t currentb = erase_buffer[i];
-
-		// all bits that should be set to 1 should be 1 in the current data
-		if ((datab & currentb) != datab) {
-			return true;
-		}
-	}
-	return false;
-}
-
 void S25FL_read_sector(uint8_t* buffer, uint32_t sector) {
-	uint32_t address = sector * 512;
+	uint32_t address = sector * S25FL_SECTOR_SIZE;
 	S25FL_read_sector_count ++;
-	S25FL_read(address, buffer, 512);
+	S25FL_read(address, buffer, S25FL_SECTOR_SIZE);
 }
 
 void S25FL_read_sectors(uint8_t* buffer, uint32_t sector, size_t count) {
@@ -281,56 +262,22 @@ void S25FL_read_sectors(uint8_t* buffer, uint32_t sector, size_t count) {
 		S25FL_read_sector(buffer, sector);
 		sector += 1;
 		count -= 1;
-		buffer += 512;
+		buffer += S25FL_SECTOR_SIZE;
 	}
 }
 
 static void S25FL_write_sector_direct(const uint8_t* buffer, uint32_t sector) {
 	S25FL_write_sector_count ++;
-	S25FL_write(sector * 512, (uint8_t*) buffer, 512);
+
+	int i;
+	for (i = 0; i < S25FL_SECTOR_SIZE / 512; i++) {
+		S25FL_write(sector * S25FL_SECTOR_SIZE + 512 * i, (uint8_t*) buffer + 512 * i, 512);
+	}
 }
 
 void S25FL_write_sector(const uint8_t* buffer, uint32_t sector) {
 	xSemaphoreTake(mutex_write_flash_sector, portMAX_DELAY);
-	if (check_erase_necessary(buffer, sector)) {
-		const uint32_t erase_sector = sector & (~3); // Clear lower 2 bits
-		// Backup sectors
-		{
-			uint32_t backup_sector_i = 0;
-			int i;
-			for (i = 0; i < 8; i++) {
-				uint32_t current_sector = erase_sector + i;
-				if (current_sector == sector) continue;
-				S25FL_read_sector(&erase_buffer[backup_sector_i * 512], current_sector);
-				backup_sector_i ++;
-			}
-
-			if (backup_sector_i != 7) {
-				exit_error(ERROR_CODE_FLASH_SECTOR_BACKUP_INCORRECT);
-			}
-		}
-
-		// Erase sectors
-		S25FL_erase_4k(erase_sector * 512);
-
-		// Restore sectors
-		{
-			uint32_t restore_sector_i = 0;
-			int i;
-			for (i = 0; i < 8; i++) {
-				uint32_t current_sector = erase_sector + i;
-				if (current_sector == sector) continue;
-				S25FL_write_sector_direct(&erase_buffer[restore_sector_i * 512], current_sector);
-				restore_sector_i ++;
-			}
-
-			if (restore_sector_i != 7) {
-				exit_error(ERROR_CODE_FLASH_SECTOR_RESTORE_INCORRECT);
-			}
-		}
-	}
-	// Write sector
-
+	S25FL_erase_4k(sector * S25FL_SECTOR_SIZE);
 	S25FL_write_sector_direct((uint8_t*) buffer, sector);
 	xSemaphoreGive(mutex_write_flash_sector);
 }
@@ -341,7 +288,7 @@ void S25FL_write_sectors(const uint8_t* data, uint32_t sector, size_t count) {
 		S25FL_write_sector(data, sector);
 		sector ++;
 		count --;
-		data += 512;
+		data += S25FL_SECTOR_SIZE;
 	}
 }
 

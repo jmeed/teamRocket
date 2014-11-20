@@ -11,7 +11,9 @@ static uint8_t uartHandleMEM[0x40];
 static UART_HANDLE_T* uartHandle = NULL;
 static bool uart_ready = false;
 static xSemaphoreHandle sem_uart_ready;
+static xSemaphoreHandle sem_uart_read_ready;
 static xSemaphoreHandle mutex_uart_in_use;
+static xSemaphoreHandle mutex_uart_read_in_use;
 
 static void uart0_hard_fault() {
 	LOG_ERROR("Failed to initialize UART0!");
@@ -39,10 +41,13 @@ static void Init_UART0_PinMux(void)
 void uart0_init() {
 	Init_UART0_PinMux();
 	vSemaphoreCreateBinary(sem_uart_ready);
+	vSemaphoreCreateBinary(sem_uart_read_ready);
 	mutex_uart_in_use = xSemaphoreCreateMutex();
+	mutex_uart_read_in_use = xSemaphoreCreateMutex();
 
 	// FreeRTOS craziness!!!
 	xSemaphoreTake(sem_uart_ready, 0);
+	xSemaphoreTake(sem_uart_read_ready, 0);
 	uart_ready = false;
 	NVIC_EnableIRQ(USART0_IRQn);
 }
@@ -122,6 +127,7 @@ static void uart0_write_internal(const uint8_t* data, size_t size, bool in_rtos)
 	   return */
 	uart_ready = false;
 	int error_code = LPC_UART0D_API->uart_put_line(uartHandle, &param);
+
 	if (error_code) {
 		if (in_rtos) {
 			LOG_CRITICAL("CRITICAL: UART0 failed to send string with length %d", size);
@@ -132,13 +138,48 @@ static void uart0_write_internal(const uint8_t* data, size_t size, bool in_rtos)
 	}
 }
 
+
+static void uart0_read_callback(uint32_t err_code, uint32_t n) {
+	portBASE_TYPE woken = pdFALSE;
+	if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
+		xSemaphoreGiveFromISR(sem_uart_read_ready, &woken);
+	}
+	// portYIELD_FROM_ISR(woken);
+}
+
+void uart0_read_all(char* buf, size_t size) {
+	UART_PARAM_T param;
+	xSemaphoreTake(mutex_uart_read_in_use, portMAX_DELAY);
+
+	param.buffer = (uint8_t *) buf;
+	param.size = size;
+
+	/* Interrupt mode, do not append CR/LF to sent data */
+	param.transfer_mode = RX_MODE_BUF_FULL;
+	param.driver_mode = DRIVER_MODE_INTERRUPT;
+
+	/* Setup the transmit callback, this will get called when the
+	   transfer is complete */
+	param.callback_func_pt = (UART_CALLBK_T) uart0_read_callback;
+
+	LPC_UART0D_API->uart_get_line(uartHandle, &param);
+
+	xSemaphoreTake(sem_uart_read_ready, portMAX_DELAY);
+	xSemaphoreGive(mutex_uart_read_in_use);
+}
+
+int uart0_readchar() {
+	char b;
+	uart0_read_all(&b, 1);
+	return b;
+}
+
 void uart0_write(const uint8_t* data, size_t size) {
 	if (uartHandle) {
 		if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
 			uart0_write_internal(data, size, false);
 		} else {
 			xSemaphoreTake(mutex_uart_in_use, portMAX_DELAY);
-
 			// locked
 			uart0_write_internal(data, size, true);
 			xSemaphoreTake(sem_uart_ready, portMAX_DELAY);

@@ -86,7 +86,7 @@ extern size_t S25FL_erase_sector_count;
 #define S25FL_SS_PORT	1
 #define S25FL_SS_PIN	23
 
-#define S25FL_SECTOR_SIZE 512
+#define S25FL_SECTOR_SIZE 4096
 #define S25FL_SECTOR_COUNT (16000000 / S25FL_SECTOR_SIZE)
 #define S25FL_BLOCK_SIZE 4096
 

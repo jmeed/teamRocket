@@ -89,7 +89,7 @@ static void setup_pinmux() {
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 2, 2);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 17);
-	Chip_GPIO_SetPinOutHigh(LPC_GPIO, 0, 17);
+	Chip_GPIO_SetPinOutLow(LPC_GPIO, 0, 17);
 }
 
 static void debug_uart_init(void) {
@@ -98,17 +98,19 @@ static void debug_uart_init(void) {
 	uart0_init();
 	uart0_setup(115200, 1);
 
-	usb_init_freertos();
-	vcom_init_freertos();
-	if (usb_init()) {
-		if (usb_initialize_cdc_vcom()) {
-			usb_connect();
-		} else {
-			LOG_ERROR("USB CDC initialization failed");
-		}
+	if (0) {
+		usb_init_freertos();
+		vcom_init_freertos();
+		if (usb_init()) {
+			if (usb_initialize_cdc_vcom()) {
+				usb_connect();
+			} else {
+				LOG_ERROR("USB CDC initialization failed");
+			}
 
-	} else {
-		LOG_ERROR("USB initialization failed");
+		} else {
+			LOG_ERROR("USB initialization failed");
+		}
 	}
 }
 
@@ -137,7 +139,7 @@ static void hardware_init(void) {
 	setup_pinmux();
 	spi_init();
 	spi_setup_device(SPI_DEVICE_1, SSP_BITS_8, SSP_FRAMEFORMAT_SPI, SSP_CLOCK_MODE0, true);
-	spi_set_bit_rate(SPI_DEVICE_1, 10000000);
+	spi_set_bit_rate(SPI_DEVICE_1, 48000000);
 	SDCardInit();
 	i2c_onboard_init();
 	neopixel_init();
@@ -170,9 +172,9 @@ static void vLEDTask1(void *pvParameters) {
 		Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
 		num += 0x0a;
 		num &= 0xff;
-//		neopixel_set_color(0, num | num << 8 | num << 16);
-//		neopixel_set_color(1, ~(num | num << 8 | num << 16));
-//		neopixel_refresh();
+		neopixel_set_color(0, num | num << 8 | num << 16);
+		neopixel_set_color(1, ~(num | num << 8 | num << 16));
+		neopixel_refresh();
 //		LOG_INFO("Test float %.4f\r\n", 1.2424125);
 		vTaskDelay(configTICK_RATE_HZ * 2);
 	}
@@ -231,6 +233,7 @@ static void vBaro(void* pvParameters) {
 	// DEBUG
 //	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 	// ENDBEBUG
+	int out;
 	while (true) {
 		float temp, alt;
 		xSemaphoreTake(mutex_i2c, portMAX_DELAY);
@@ -239,9 +242,16 @@ static void vBaro(void* pvParameters) {
 		xSemaphoreGive(mutex_i2c);
 		if (result == FR_OK) {
 			sprintf(baro_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), temp, alt);
-			f_puts(baro_str_buf, &f_baro_log);
+			if ((out = f_puts(baro_str_buf, &f_baro_log)) != strlen(baro_str_buf)) {
+				LOG_ERROR("Baro log failed %d", out);
+			}
 			if ((counter % 50) == 0) {
-				f_sync(&f_baro_log);
+				LOG_INFO("Syncing Baro");
+				out = f_sync(&f_baro_log);
+				LOG_INFO("Sync Done");
+				if (result != FR_OK) {
+					LOG_ERROR("Baro sync failed %d", out);
+				}
 			}
 		}
 		vTaskDelay(50);
@@ -310,7 +320,7 @@ static void vIMU(void* pvParameters) {
 static void load_and_parse_command() {
 	static char command[6] = {0};
 	static char buff[20] = {0};
-	static uint8_t block[512];
+	static uint8_t block[S25FL_SECTOR_SIZE];
 	static FIL t_file;
 	FRESULT res;
 
@@ -353,6 +363,12 @@ static void load_and_parse_command() {
 			}
 		}
 
+		fprintf(stderr, "printing back\n");
+		for (i = 0; i < 512; i++) {
+			fprintf(stderr, "%02x ", block[i]);
+		}
+		fprintf(stderr, "\n");
+
 		fprintf(stderr, "writing to block\n");
 		S25FL_write(addr, block, 512);
 	} else if (strcmp(command, "erase") == 0) {
@@ -377,7 +393,7 @@ static void load_and_parse_command() {
 			fprintf(stderr, "Please enter data in hex octets, ending with anything none\n");
 
 			int i = 0;
-			memset(block, 0xff, 512);
+			memset(block, 0xff, S25FL_SECTOR_SIZE);
 			for (;;) {
 				uint32_t byte;
 				scanf("%9s", buff);
@@ -385,7 +401,7 @@ static void load_and_parse_command() {
 					break;
 				}
 				block[i++] = byte;
-				if (i >= 512) {
+				if (i >= S25FL_SECTOR_SIZE) {
 					break;
 				}
 			}
@@ -402,7 +418,7 @@ static void load_and_parse_command() {
 		S25FL_read_sector(block, addr);
 
 		int i;
-		for (i = 0; i < 512; i++) {
+		for (i = 0; i < S25FL_SECTOR_SIZE; i++) {
 			fprintf(stderr, "%02x ", block[i]);
 		}
 		fprintf(stderr, "\n");
@@ -473,7 +489,7 @@ static void load_and_parse_command() {
 		}
 		res = f_unlink(buff);
 		if (res != FR_OK) {
-			fprintf(stderr, "Failed to unlik file %s with error %d\n", buff, res);
+			fprintf(stderr, "Failed to unlink file %s with error %d\n", buff, res);
 		}
 	} else if (strcmp(command, "appd") == 0) {
 		if (scanf("%19s", buff) == 0) {
@@ -536,7 +552,7 @@ static void vBootSystem(void* pvParameters) {
 		S25FL_init(SPI_DEVICE_1, S25FL_P_512, S25FL_E_64);
 	}
 
-	{
+	if (1){
 		int sdcard_retry_limit = SDCARD_START_RETRY_LIMIT;
 		while (sdcard_retry_limit > 0) {
 			LOG_INFO("Attempting to mount FAT on SDCARD");
@@ -563,11 +579,11 @@ static void vBootSystem(void* pvParameters) {
 		}
 
 		Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
-	}
 
-	result = logging_init_persistent();
-	if (result != 0) {
-		exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
+//		result = logging_init_persistent();
+//		if (result != 0) {
+//			exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
+//		}
 	}
 
 	LOG_INFO("Starting real tasks");
