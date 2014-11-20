@@ -137,7 +137,7 @@ static void hardware_init(void) {
 	setup_pinmux();
 	spi_init();
 	spi_setup_device(SPI_DEVICE_1, SSP_BITS_8, SSP_FRAMEFORMAT_SPI, SSP_CLOCK_MODE0, true);
-	spi_set_bit_rate(SPI_DEVICE_1, 48000000);
+	spi_set_bit_rate(SPI_DEVICE_1, 10000000);
 	SDCardInit();
 	i2c_onboard_init();
 	neopixel_init();
@@ -170,9 +170,9 @@ static void vLEDTask1(void *pvParameters) {
 		Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
 		num += 0x0a;
 		num &= 0xff;
-		neopixel_set_color(0, num | num << 8 | num << 16);
-		neopixel_set_color(1, ~(num | num << 8 | num << 16));
-		neopixel_refresh();
+//		neopixel_set_color(0, num | num << 8 | num << 16);
+//		neopixel_set_color(1, ~(num | num << 8 | num << 16));
+//		neopixel_refresh();
 //		LOG_INFO("Test float %.4f\r\n", 1.2424125);
 		vTaskDelay(configTICK_RATE_HZ * 2);
 	}
@@ -221,15 +221,15 @@ static void vBaro(void* pvParameters) {
 		}
 	}
 	LOG_INFO("Baro output is %s", baro_str_buf);
-	result = f_open(&f_baro_log, baro_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+	result = f_open(&f_baro_log, baro_str_buf, FA_WRITE 	| FA_CREATE_ALWAYS);
 
 	if (result != FR_OK) {
-		LOG_ERROR("Failed to open Baro log file");
+		LOG_ERROR("Failed to open Baro log file %s with error code %d", baro_str_buf, result);
 		vTaskSuspend(NULL);
 	}
 
 	// DEBUG
-	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+//	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 	// ENDBEBUG
 	while (true) {
 		float temp, alt;
@@ -451,7 +451,7 @@ static void load_and_parse_command() {
 
 		for(;;) {
 			UINT read = 0;
-			res = f_read(&t_file, block, 512, &read);
+			res = f_read(&t_file, block, 40, &read);
 			if (res != FR_OK) {
 				break;
 			}

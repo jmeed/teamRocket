@@ -252,7 +252,7 @@ void S25FL_erase_bulk() {
 }
 
 
-uint8_t erase_buffer[512 * 3];
+uint8_t erase_buffer[512 * 7];
 
 static bool check_erase_necessary(const uint8_t* data, uint32_t sector) {
 	// @lock necessary
@@ -298,14 +298,14 @@ void S25FL_write_sector(const uint8_t* buffer, uint32_t sector) {
 		{
 			uint32_t backup_sector_i = 0;
 			int i;
-			for (i = 0; i < 4; i++) {
+			for (i = 0; i < 8; i++) {
 				uint32_t current_sector = erase_sector + i;
 				if (current_sector == sector) continue;
 				S25FL_read_sector(&erase_buffer[backup_sector_i * 512], current_sector);
 				backup_sector_i ++;
 			}
 
-			if (backup_sector_i != 3) {
+			if (backup_sector_i != 7) {
 				exit_error(ERROR_CODE_FLASH_SECTOR_BACKUP_INCORRECT);
 			}
 		}
@@ -317,14 +317,14 @@ void S25FL_write_sector(const uint8_t* buffer, uint32_t sector) {
 		{
 			uint32_t restore_sector_i = 0;
 			int i;
-			for (i = 0; i < 4; i++) {
+			for (i = 0; i < 8; i++) {
 				uint32_t current_sector = erase_sector + i;
 				if (current_sector == sector) continue;
 				S25FL_write_sector_direct(&erase_buffer[restore_sector_i * 512], current_sector);
 				restore_sector_i ++;
 			}
 
-			if (restore_sector_i != 3) {
+			if (restore_sector_i != 7) {
 				exit_error(ERROR_CODE_FLASH_SECTOR_RESTORE_INCORRECT);
 			}
 		}
