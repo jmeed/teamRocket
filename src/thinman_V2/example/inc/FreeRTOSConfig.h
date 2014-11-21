@@ -51,9 +51,9 @@
     licensing and training services.
 */
 
-
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
+#include "error_codes.h"
 
 #ifndef __IASMARM__
 /* For SystemCoreClock */
@@ -145,7 +145,9 @@ to all Cortex-M ports, and do not rely on any particular library functions. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
-#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); for( ;; ); }
+void logging_config_assert_failed(const char* file, uint32_t line);
+void exit_error(int);
+#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); logging_config_assert_failed(__FILE__, __LINE__); exit_error(ERROR_CODE_CONFIG_ASSERT_FAILED); for( ;; ); }
 
 #define configUSE_CUSTOM_TICK 0
 

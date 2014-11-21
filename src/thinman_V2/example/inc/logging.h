@@ -1,4 +1,5 @@
 #pragma once
+#include <stdint.h>
 #include <FreeRTOS.h>
 #include "task.h"
 #include <stdlib.h>

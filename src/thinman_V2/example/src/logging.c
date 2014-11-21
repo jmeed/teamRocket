@@ -69,3 +69,7 @@ void logging_enter(void) {
 void logging_exit(void) {
 	xSemaphoreGive(logging_mutex);
 }
+
+void logging_config_assert_failed(const char* file, uint32_t line) {
+	LOG_CRITICAL("configASSERT failed at %s:%d", file, line);
+}

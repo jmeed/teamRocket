@@ -96,7 +96,7 @@ static void debug_uart_init(void) {
 	logging_init();
 	Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
 	uart0_init();
-	uart0_setup(115200, 1);
+	uart0_setup(9600, 1);
 
 	if (0) {
 		usb_init_freertos();
@@ -472,7 +472,8 @@ static void load_and_parse_command() {
 				break;
 			}
 			if (read == 0) break;
-			vcom_write(block, read);
+			uart0_write(block, read);
+			// vcom_write(block, read);
 
 		}
 
@@ -590,10 +591,10 @@ static void vBootSystem(void* pvParameters) {
 
 	xTaskCreate(vFlushLogs, (signed char *) "vFlushLogs",
 				256, NULL, (tskIDLE_PRIORITY + 2), NULL);
-
-	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
-				256, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
+//
+//	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
+//				256, NULL, (tskIDLE_PRIORITY + 1UL),
+//				(xTaskHandle *) NULL);
 
 	/* LED2 toggle thread */
 	xTaskCreate(vLEDTask2, (signed char *) "vTaskLed2",
@@ -601,15 +602,15 @@ static void vBootSystem(void* pvParameters) {
 				(xTaskHandle *) NULL);
 
 	/* LED0 toggle thread */
-	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
+//	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
+//				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+//				(xTaskHandle *) NULL);
 
-	xTaskCreate(vUSBUARTController, (signed char*) "USBUART", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	xTaskCreate(vUSBUARTController, (signed char*) "USBUART", 512, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
 	mutex_i2c = xSemaphoreCreateMutex();
 
-	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+//	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);

@@ -85,8 +85,10 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.crt.advproject.config.exe.debug.1459795002.1465271912" name="usb.h" rcbsApplicability="disable" resourcePath="example/src/drivers/usb.h" toolsToInvoke=""/>
+					<fileInfo id="com.crt.advproject.config.exe.debug.1459795002.1048366490" name="cdc_vcom.h" rcbsApplicability="disable" resourcePath="example/src/drivers/cdc_vcom.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="example"/>
+						<entry excluding="src/drivers/usb.h|src/drivers/usb.c|src/drivers/cdc_vcom.h|src/drivers/cdc_desc.c|src/drivers/cdc_vcom.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="example"/>
 						<entry excluding="option" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="fatfs"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="freertos"/>
 					</sourceEntries>
