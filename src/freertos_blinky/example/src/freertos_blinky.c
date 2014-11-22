@@ -242,9 +242,9 @@ static void vIMU(void* pvParameters) {
 		ax = LSM_read_accel_g(LSM_ACCEL_X);
 		ay = LSM_read_accel_g(LSM_ACCEL_Y);
 		az = LSM_read_accel_g(LSM_ACCEL_Z);
-//		gx = LSM_read_accel_g(LSM_GYRO_X);
-//		gy = LSM_read_accel_g(LSM_GYRO_Y);
-//		gz = LSM_read_accel_g(LSM_GYRO_Z);
+		gx = LSM_read_accel_g(LSM_GYRO_X);
+		gy = LSM_read_accel_g(LSM_GYRO_Y);
+		gz = LSM_read_accel_g(LSM_GYRO_Z);
 		mx = LSM_read_accel_g(LSM_MAG_X);
 		my = LSM_read_accel_g(LSM_MAG_Y);
 		mz = LSM_read_accel_g(LSM_MAG_Z);
