@@ -319,6 +319,7 @@ static void vBootSystem(void* pvParameters) {
 	mutex_i2c = xSemaphoreCreateMutex();
 
 	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+//	xTaskCreate(xRadio, (signed char*) "Radio", 256, NULL, (taskIDLE_PRIORITY + 1UL), NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 	vTaskSuspend(boot_handle);

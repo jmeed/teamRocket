@@ -1,7 +1,9 @@
-function xbee_setup(com_port, baud_rate)
+function xbee_setup_visualizer(com_port, baud_rate)
 % Returns a serial port handle that the XBee is configured on, and sets up
 % callback parsing functions to read data from the rockets accelerometer,
 % barometer, and GPS module
+%
+% This client is for logging data only
 
 % Initialize serial port
 x_port = serial(com_port);
@@ -29,15 +31,20 @@ disp('Received acknowledgement')
 disp('XBee communication ready')
 
 % Setup callbacks
-x_port.BytesAvailableFcnCount = 4*6 + 1*1;  % 6 floats, 1 char
+x_port.BytesAvailableFcnCount = 4*11 + 1*1; % 11 floats, 1 char == 45 B = 360 b
                                             % altitude
                                             % temp
                                             % x-axis acceleration
+                                            % y-axis acceleration
+                                            % z-axis acceleration
+                                            % x-axis rotation
+                                            % y-axis rotation
+                                            % z-axis rotation
                                             % GPS x-coordinate
                                             % GPS y-coordinate
                                             % GPS z-coordinate
                                             % start character 'S'
 x_port.BytesAvailableFcnMode = 'byte';
-x_port.BytesAvailableFcn = @xbee_station;
+x_port.BytesAvailableFcn = @xbee_station_visualizer;
 
 end
