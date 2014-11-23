@@ -139,7 +139,7 @@ static void hardware_init(void) {
 	setup_pinmux();
 	spi_init();
 	spi_setup_device(SPI_DEVICE_1, SSP_BITS_8, SSP_FRAMEFORMAT_SPI, SSP_CLOCK_MODE0, true);
-	spi_set_bit_rate(SPI_DEVICE_1, 48000000);
+//	spi_set_bit_rate(SPI_DEVICE_1, 48000000);
 	SDCardInit();
 	i2c_onboard_init();
 	neopixel_init();
@@ -546,13 +546,6 @@ static void vBootSystem(void* pvParameters) {
 	LOG_INFO("Wait for voltage stabilization");
 	vTaskDelay(1000);
 
-	{
-		Chip_GPIO_SetPinState(LPC_GPIO, 2, 2, false);
-		Chip_GPIO_SetPinState(LPC_GPIO, 2, 2, true);
-		LOG_INFO("Initializing SPI Flash")
-		S25FL_init(SPI_DEVICE_1, S25FL_P_512, S25FL_E_64);
-	}
-
 	if (1){
 		int sdcard_retry_limit = SDCARD_START_RETRY_LIMIT;
 		while (sdcard_retry_limit > 0) {
@@ -581,10 +574,10 @@ static void vBootSystem(void* pvParameters) {
 
 		Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 
-//		result = logging_init_persistent();
-//		if (result != 0) {
-//			exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
-//		}
+		result = logging_init_persistent();
+		if (result != 0) {
+			exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
+		}
 	}
 
 	LOG_INFO("Starting real tasks");
@@ -610,7 +603,7 @@ static void vBootSystem(void* pvParameters) {
 
 	mutex_i2c = xSemaphoreCreateMutex();
 
-//	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);

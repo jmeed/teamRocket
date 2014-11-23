@@ -15,8 +15,8 @@
 /* Definitions of physical drive number for each drive */
 
 // Revert to default to SDCard
-#define MMC 1
-#define SPIFLASH 0
+#define MMC 0
+#define SPIFLASH 1
 
 
 

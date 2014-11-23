@@ -35,7 +35,9 @@ int __sys_readc(void) {
 //	}
 //
 //	return read_buffer[buf_index++];
-	return uart0_readchar();
+	int c =  uart0_readchar();
+	fprintf(stderr, "%c", c);
+	return c;
 }
 
 void __sys_appexit() {
