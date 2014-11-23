@@ -13,7 +13,6 @@
 #include "H3L.h" // 3-axis high g accelerometer
 #include "LSM.h" // 9-axis IMU
 #include "LPS.h" // barometric pressure
-
 #include "light_ws2812_cortex.h" // neopixel
 
 #include <stdlib.h>
@@ -22,7 +21,6 @@
 #include "Drivers/gpio.h"
 
 #define DEFAULT_I2C          I2C0
-
 #define SPEED_100KHZ         100000
 #define SPEED_400KHZ         400000
 #define I2C_DEFAULT_SPEED    SPEED_100KHZ
