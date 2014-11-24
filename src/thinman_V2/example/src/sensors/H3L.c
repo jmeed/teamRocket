@@ -1,8 +1,9 @@
 #include "H3L.h"
+#include "logging.h"
 
 int H3L_init(I2C_ID_T id_in, enum H3L_accel_scale a_sc, enum H3L_accel_odr a_odr) {
 	// Set class variables
-	H3L_slave_address = H3L_SA0_HIGH_ADDRESS;
+	H3L_slave_address = H3L_SA0_LOW_ADDRESS;
 	H3L_i2c_id = id_in;
 	H3L_a_scale = a_sc;
 
@@ -121,7 +122,7 @@ int8_t H3L_read_reg(uint8_t reg_addr) {
 	uint8_t rx_size = 1;
 	uint8_t rx_buf[rx_size];
 	// - Read the register value
-	Chip_I2C_MasterRead(H3L_i2c_id, (H3L_slave_address | 0x01 >> 1), rx_buf, rx_size);
+	Chip_I2C_MasterRead(H3L_i2c_id, (H3L_slave_address | 0x01) >> 1, rx_buf, rx_size);
 
 	return rx_buf[0];
 }

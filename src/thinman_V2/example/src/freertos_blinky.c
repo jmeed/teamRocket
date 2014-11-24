@@ -45,8 +45,10 @@
 #include "drivers/neopixel.h"
 #include "drivers/cdc_vcom.h"
 #include "drivers/S25FL.h"
+#include "drivers/i2c.h"
 #include "sensors/LPS.h"
 #include "sensors/LSM.h"
+#include "sensors/H3L.h"
 
 #define SDCARD_START_RETRY_LIMIT 10
 
@@ -115,32 +117,20 @@ static void debug_uart_init(void) {
 }
 
 #define ONBOARD_I2C I2C0
+#define SENSOR_PRIORITY (tskIDLE_PRIORITY + 2)
 static void i2c_onboard_init(void) {
-	Chip_I2C_Init(ONBOARD_I2C);
+	i2c_setup_master(ONBOARD_I2C);
 	Chip_I2C_SetClockRate(ONBOARD_I2C, 100000);
-//	mode_poll &= ~(1 << id);
-	Chip_I2C_SetMasterEventHandler(ONBOARD_I2C, Chip_I2C_EventHandler);
-	NVIC_EnableIRQ(I2C0_IRQn);
 }
 
-void I2C0_IRQHandler(void)
-{
-	if (Chip_I2C_IsMasterActive(ONBOARD_I2C)) {
-		Chip_I2C_MasterStateHandler(ONBOARD_I2C);
-	}
-	else {
-		Chip_I2C_SlaveStateHandler(ONBOARD_I2C);
-	}
-}
 
 static void hardware_init(void) {
 	// Setup UART clocks
-
 	setup_pinmux();
 	spi_init();
 	spi_setup_device(SPI_DEVICE_1, SSP_BITS_8, SSP_FRAMEFORMAT_SPI, SSP_CLOCK_MODE0, true);
-//	spi_set_bit_rate(SPI_DEVICE_1, 48000000);
 	SDCardInit();
+	i2c_init();
 	i2c_onboard_init();
 	neopixel_init();
 }
@@ -175,7 +165,6 @@ static void vLEDTask1(void *pvParameters) {
 		neopixel_set_color(0, num | num << 8 | num << 16);
 		neopixel_set_color(1, ~(num | num << 8 | num << 16));
 		neopixel_refresh();
-//		LOG_INFO("Test float %.4f\r\n", 1.2424125);
 		vTaskDelay(configTICK_RATE_HZ * 2);
 	}
 }
@@ -186,7 +175,6 @@ static void vLEDTask2(void *pvParameters) {
 	while (1) {
 		Board_LED_Set(2, LedState);
 		LedState = (bool) !LedState;
-//		LOG_INFO("Hello World that works!\r\n");
 
 		vTaskDelay(configTICK_RATE_HZ);
 	}
@@ -200,15 +188,16 @@ static void vFlushLogs(void* pvParameters) {
 	}
 }
 
-static xSemaphoreHandle mutex_i2c;
-static void vIMU(void* pvParameters);
-
 static void vBaro(void* pvParameters) {
 	static FIL f_baro_log;
 	static char baro_str_buf[0x20];
 	int result;
 	int counter = 0;
-	LPS_init(I2C0);
+	if (LPS_init(ONBOARD_I2C)) {
+		LOG_INFO("LPS initialized");
+	} else {
+		LOG_ERROR("LPS failed to initialize");
+	}
 	LPS_enable();
 	strcpy(baro_str_buf, "BARO.TAB");
 	{
@@ -230,25 +219,20 @@ static void vBaro(void* pvParameters) {
 		vTaskSuspend(NULL);
 	}
 
-	// DEBUG
-//	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
-	// ENDBEBUG
 	int out;
 	while (true) {
 		float temp, alt;
-		xSemaphoreTake(mutex_i2c, portMAX_DELAY);
 		temp = LPS_read_data(LPS_TEMPERATURE);
 		alt = LPS_read_data(LPS_ALTITUDE);
-		xSemaphoreGive(mutex_i2c);
 		if (result == FR_OK) {
 			sprintf(baro_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), temp, alt);
 			if ((out = f_puts(baro_str_buf, &f_baro_log)) != strlen(baro_str_buf)) {
 				LOG_ERROR("Baro log failed %d", out);
 			}
 			if ((counter % 50) == 0) {
-				LOG_INFO("Syncing Baro");
+//				LOG_INFO("Syncing Baro");
 				out = f_sync(&f_baro_log);
-				LOG_INFO("Sync Done");
+//				LOG_INFO("Sync Done");
 				if (result != FR_OK) {
 					LOG_ERROR("Baro sync failed %d", out);
 				}
@@ -263,10 +247,11 @@ static void vIMU(void* pvParameters) {
 	static FIL f_imu_log;
 	static char imu_str_buf[0x40];
 	LOG_INFO("Initializing IMU");
-	xSemaphoreTake(mutex_i2c, portMAX_DELAY);
-	LSM_init(I2C0, G_SCALE_245DPS, A_SCALE_4G, M_SCALE_4GS, G_ODR_952, A_ODR_952, M_ODR_80);
-	xSemaphoreGive(mutex_i2c);
-	LOG_INFO("IMU initialized");
+	if (LSM_init(ONBOARD_I2C, G_SCALE_245DPS, A_SCALE_4G, M_SCALE_4GS, G_ODR_952, A_ODR_952, M_ODR_80)) {
+		LOG_INFO("IMU initialized");
+	} else {
+		LOG_ERROR("IMU failed to initialize");
+	}
 
 	int result;
 	int counter = 0;
@@ -290,17 +275,15 @@ static void vIMU(void* pvParameters) {
 	}
 	for (;;) {
 		float ax, ay, az, gx, gy, gz, mx, my, mz;
-		xSemaphoreTake(mutex_i2c, portMAX_DELAY);
 		ax = LSM_read_accel_g(LSM_ACCEL_X);
 		ay = LSM_read_accel_g(LSM_ACCEL_Y);
 		az = LSM_read_accel_g(LSM_ACCEL_Z);
-//		gx = LSM_read_accel_g(LSM_GYRO_X);
-//		gy = LSM_read_accel_g(LSM_GYRO_Y);
-//		gz = LSM_read_accel_g(LSM_GYRO_Z);
-//		mx = LSM_read_accel_g(LSM_MAG_X);
-//		my = LSM_read_accel_g(LSM_MAG_Y);
-//		mz = LSM_read_accel_g(LSM_MAG_Z);
-		xSemaphoreGive(mutex_i2c);
+		gx = LSM_read_accel_g(LSM_GYRO_X);
+		gy = LSM_read_accel_g(LSM_GYRO_Y);
+		gz = LSM_read_accel_g(LSM_GYRO_Z);
+		mx = LSM_read_accel_g(LSM_MAG_X);
+		my = LSM_read_accel_g(LSM_MAG_Y);
+		mz = LSM_read_accel_g(LSM_MAG_Z);
 
 		if (result == FR_OK) {
 			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx, gy);
@@ -309,6 +292,55 @@ static void vIMU(void* pvParameters) {
 			f_puts(imu_str_buf, &f_imu_log);
 			if ((counter % 50) == 0) {
 				f_sync(&f_imu_log);
+			}
+		}
+
+		vTaskDelay(50);
+		counter += 1;
+	}
+}
+
+static void vHighG(void* pvParameters) {
+	static FIL f_highg_log;
+	static char highg_str_buf[0x40];
+	LOG_INFO("Initializing HighG");
+	if (H3L_init(ONBOARD_I2C, H3L_SCALE_100G, H3L_ODR_100)) {
+		LOG_INFO("HighG initialized");
+	} else {
+		LOG_ERROR("HighG failed to initialize");
+	}
+
+	int result;
+	int counter = 0;
+	strcpy(highg_str_buf, "HIGHG.TAB");
+	{
+		int rename_number = 1;
+		while(true) {
+			if (f_stat(highg_str_buf, NULL) == FR_OK) {
+				sprintf(highg_str_buf, "HIGHG%d.TAB", rename_number);
+				rename_number ++;
+				continue;
+			}
+			break;
+		}
+	}
+	LOG_INFO("HighG output is %s", highg_str_buf);
+	result = f_open(&f_highg_log, highg_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+	if (result != FR_OK) {
+		LOG_ERROR("Failed to open HighG log file");
+		vTaskSuspend(NULL);
+	}
+	for (;;) {
+		float ax, ay, az;
+		ax = H3L_read_accel_g(H3L_X);
+		ay = H3L_read_accel_g(H3L_Y);
+		az = H3L_read_accel_g(H3L_Z);
+
+		if (result == FR_OK) {
+			sprintf(highg_str_buf, "%d\t%f\t%f\t%f\n", xTaskGetTickCount(), ax, ay, az);
+			f_puts(highg_str_buf, &f_highg_log);
+			if ((counter % 50) == 0) {
+				f_sync(&f_highg_log);
 			}
 		}
 
@@ -584,26 +616,28 @@ static void vBootSystem(void* pvParameters) {
 
 	xTaskCreate(vFlushLogs, (signed char *) "vFlushLogs",
 				256, NULL, (tskIDLE_PRIORITY + 2), NULL);
-//
-//	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
-//				256, NULL, (tskIDLE_PRIORITY + 1UL),
-//				(xTaskHandle *) NULL);
+
+	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
+				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+				(xTaskHandle *) NULL);
 
 	/* LED2 toggle thread */
 	xTaskCreate(vLEDTask2, (signed char *) "vTaskLed2",
-				256, NULL, (tskIDLE_PRIORITY + 1UL),
+				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
 
 	/* LED0 toggle thread */
-//	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
-//				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
-//				(xTaskHandle *) NULL);
+	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
+				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+				(xTaskHandle *) NULL);
 
 	xTaskCreate(vUSBUARTController, (signed char*) "USBUART", 512, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
-	mutex_i2c = xSemaphoreCreateMutex();
+	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, SENSOR_PRIORITY, NULL);
 
-	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, SENSOR_PRIORITY, NULL);
+
+	xTaskCreate(vHighG, (signed char*) "HighG", 256, NULL, SENSOR_PRIORITY, NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
