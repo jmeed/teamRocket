@@ -12,6 +12,7 @@ def read_ts():
         s = sys.stdin.readline()
         if not s:
             break
+        s = s.replace("^@", '\x00')
         # time.sleep(0.1)
         sp.write(s)
 

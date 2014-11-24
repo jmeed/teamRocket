@@ -156,14 +156,15 @@ static void vLEDTask0(void *pvParameters) {
 static void vLEDTask1(void *pvParameters) {
 	bool LedState = false;
 	static uint32_t num;
+	vTaskDelay(1000);
 	while (1) {
 		Board_LED_Set(1, LedState);
 		LedState = (bool) !LedState;
 		Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
 		num += 0x0a;
 		num &= 0xff;
-		neopixel_set_color(0, num | num << 8 | num << 16);
-		neopixel_set_color(1, ~(num | num << 8 | num << 16));
+		neopixel_set_color(0, 0x11111111);
+		neopixel_set_color(1, 0x33333333);
 		neopixel_refresh();
 		vTaskDelay(configTICK_RATE_HZ * 2);
 	}
@@ -584,8 +585,9 @@ static void vBootSystem(void* pvParameters) {
 	fprintf(stderr, "S-,RocketBrd\n");
 	fprintf(stderr, "U\n");
 	// fprintf(stderr, "N,1244\n");
-	fprintf(stderr, "SR,30100800\n");
+	fprintf(stderr, "SR,30200800\n");
 	fprintf(stderr, "A\n");
+	fprintf(stderr, "R,1\n");
 	// fprintf(stderr, "I\n");
 
 	if (1){
@@ -628,7 +630,7 @@ static void vBootSystem(void* pvParameters) {
 				256, NULL, (tskIDLE_PRIORITY + 2), NULL);
 
 	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+				256, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
 
 	/* LED2 toggle thread */

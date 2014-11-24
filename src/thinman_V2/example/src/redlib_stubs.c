@@ -43,3 +43,8 @@ int __sys_readc(void) {
 void __sys_appexit() {
 	blink_error_code(ERROR_CODE_UNKNOWN_ERROR);
 }
+
+void __assertion_failed(char *_Expr) {
+	LOG_CRITICAL("Assertion failed %s", _Expr);
+	exit_error(ERROR_CODE_ASSERTION_FAILED);
+}
