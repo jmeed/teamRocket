@@ -211,6 +211,11 @@ void filter_acceleration(float *ax, float *ay, float *az, float *ax_hist, float 
 }
 
 static xSemaphoreHandle mutex_i2c;
+uint8_t g_count = 0;
+uint8_t g_hist_len = 0;
+float gx_hist[128];
+float gy_hist[128];
+float gz_hist[128];
 static void vIMU(void* pvParameters);
 
 static void vBaro(void* pvParameters) {
@@ -294,7 +299,14 @@ static void vIMU(void* pvParameters) {
 		my = LSM_read_accel_g(LSM_MAG_Y);
 		mz = LSM_read_accel_g(LSM_MAG_Z);
 		xSemaphoreGive(mutex_i2c);
+
+		// Filter crap accel values
 		filter_acceleration(&ax, &ay, &az, ax_hist, ay_hist, az_hist);
+		// Store gyro values for XBee's use
+		gx_hist[g_count] = gx;
+		gy_hist[g_count] = gy;
+		gz_hist[g_count] = gz;
+		++g_count;
 
 		if (result == FR_OK) {
 			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx, gy);
