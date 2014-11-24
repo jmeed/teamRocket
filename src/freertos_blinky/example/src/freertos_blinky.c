@@ -165,6 +165,51 @@ static void vFlushLogs(void* pvParameters) {
 	}
 }
 
+void filter_acceleration(float *ax, float *ay, float *az, float *ax_hist, float *ay_hist, float *az_hist) {
+	float noise_threshold = 0.08;
+	int i;
+	int buf_size = 5;
+
+	// If x-accel is below threshold, look for recent value
+	if (*ax < noise_threshold && *ax > -noise_threshold) {
+		for (i = 0; i < buf_size; ++i) {
+			if (ax_hist[i] > noise_threshold || ax_hist[i] < -noise_threshold) {
+				*ax = ax_hist[i];
+				break;
+			}
+		}
+	}
+	// If y-accel is below threshold, look for recent value
+	if (*ay < noise_threshold && *ay > -noise_threshold) {
+		for (i = 0; i < buf_size; ++i) {
+			if (ay_hist[i] > noise_threshold || ay_hist[i] < -noise_threshold) {
+				*ay = ay_hist[i];
+				break;
+			}
+		}
+	}
+	// If z-accel is below threshold, look for recent value
+	if (*az < noise_threshold && *az > -noise_threshold) {
+		for (i = 0; i < buf_size; ++i) {
+			if (az_hist[i] > noise_threshold || az_hist[i] < -noise_threshold) {
+				*az = az_hist[i];
+				break;
+			}
+		}
+	}
+
+	// Shift the buffer back
+	for (i = buf_size - 1; i >= 0; --i) {
+		ax_hist[i] = ax_hist[i-1];
+		ay_hist[i] = ay_hist[i-1];
+		az_hist[i] = az_hist[i-1];
+	}
+	// Place new values
+	ax_hist[0] = *ax;
+	ay_hist[0] = *ay;
+	az_hist[0] = *az;
+}
+
 static xSemaphoreHandle mutex_i2c;
 static void vIMU(void* pvParameters);
 
@@ -249,6 +294,7 @@ static void vIMU(void* pvParameters) {
 		my = LSM_read_accel_g(LSM_MAG_Y);
 		mz = LSM_read_accel_g(LSM_MAG_Z);
 		xSemaphoreGive(mutex_i2c);
+		filter_acceleration(&ax, &ay, &az, ax_hist, ay_hist, az_hist);
 
 		if (result == FR_OK) {
 			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx, gy);
@@ -292,7 +338,7 @@ static void vBootSystem(void* pvParameters) {
 		Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 	}
 
-	result = logging_init_persistent();
+	result = logging_init_persistent();0
 	if (result != 0) {
 		exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
 	}
@@ -319,6 +365,7 @@ static void vBootSystem(void* pvParameters) {
 	mutex_i2c = xSemaphoreCreateMutex();
 
 	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+//	xTaskCreate(xRadio, (signed char*) "Radio", 256, NULL, (taskIDLE_PRIORITY + 1UL), NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 	vTaskSuspend(boot_handle);
