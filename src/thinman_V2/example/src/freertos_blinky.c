@@ -96,9 +96,9 @@ static void setup_pinmux() {
 
 static void debug_uart_init(void) {
 	logging_init();
-	Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
+	// Chip_Clock_SetUSARTNBaseClockRate((115200 * 256), false);
 	uart0_init();
-	uart0_setup(9600, 1);
+	uart0_setup(115200, UART0_LCR_WLEN8 | UART0_LCR_SBS_1BIT | UART0_LCR_PARITY_DIS);
 
 	if (0) {
 		usb_init_freertos();

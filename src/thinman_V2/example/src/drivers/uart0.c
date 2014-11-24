@@ -7,18 +7,14 @@
 #include "logging.h"
 #include "error_codes.h"
 
-static uint8_t uartHandleMEM[0x40];
-static UART_HANDLE_T* uartHandle = NULL;
 static bool uart_ready = false;
 static xSemaphoreHandle sem_uart_ready;
 static xSemaphoreHandle sem_uart_read_ready;
 static xSemaphoreHandle mutex_uart_in_use;
 static xSemaphoreHandle mutex_uart_read_in_use;
 
-static void uart0_hard_fault() {
-	LOG_ERROR("Failed to initialize UART0!");
-	exit_error(ERROR_CODE_DEBUG_UART_FAILED);
-}
+static RINGBUFF_T txring, rxring;
+static uint8_t rxbuff[UART0_READ_RB_SIZE], txbuff[UART0_WRITE_RB_SIZE];
 
 static void Init_UART0_PinMux(void)
 {
@@ -49,143 +45,91 @@ void uart0_init() {
 	xSemaphoreTake(sem_uart_ready, 0);
 	xSemaphoreTake(sem_uart_read_ready, 0);
 	uart_ready = false;
-	NVIC_EnableIRQ(USART0_IRQn);
 }
 
 void uart0_setup(uint32_t baudrate, uint32_t config) {
-	int errCode;
-	UART_CONFIG_T cfg = {
-		0,				/* U_PCLK frequency in Hz */
-		baudrate,		/* Baud Rate in Hz */
-		config,				/* 8N1 */
-		0,				/* Asynchronous Mode */
-		NO_ERR_EN	/* Enable No Errors */
-	};
-
 	/* Initialize UART0 */
 	Chip_UART0_Init(LPC_USART0);
+	Chip_UART0_SetBaud(LPC_USART0, baudrate);
+	Chip_UART0_ConfigData(LPC_USART0, config);
+	Chip_UART0_SetupFIFOS(LPC_USART0, (UART0_FCR_FIFO_EN | UART0_FCR_TRG_LEV2));
+	Chip_UART0_TXEnable(LPC_USART0);
 
-	/* Perform a sanity check on the storage allocation */
-	if (LPC_UART0D_API->uart_get_mem_size() > sizeof(uartHandleMEM)) {
-		/* Example only: this should never happen and probably isn't needed for
-		   most UART code. */
-		uart0_hard_fault();
-	}
+	RingBuffer_Init(&rxring, rxbuff, 1, UART0_READ_RB_SIZE);
+	RingBuffer_Init(&txring, txbuff, 1, UART0_WRITE_RB_SIZE);
 
-	/* Setup the UART handle */
-	uartHandle = LPC_UART0D_API->uart_setup((uint32_t) LPC_USART0, (uint8_t *) &uartHandleMEM);
-	if (uartHandle == NULL) {
-		uart0_hard_fault();
-	}
-
-	/* Need to tell UART ROM API function the current UART peripheral clock
-		 speed */
-	cfg.sys_clk_in_hz = Chip_Clock_GetSystemClockRate();
-
-	/* Initialize the UART with the configuration parameters */
-	errCode = LPC_UART0D_API->uart_init(uartHandle, &cfg);
-	if (errCode != LPC_OK) {
-		/* Some type of error handling here */
-		uart0_hard_fault();
-	}
-}
-
-static void uart0_callback(uint32_t err_code, uint32_t n) {
-	uart_ready = true;
-	portBASE_TYPE woken = pdFALSE;
-	if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
-		xSemaphoreGiveFromISR(sem_uart_ready, &woken);
-	}
-	// portYIELD_FROM_ISR(woken);
+	Chip_UART0_IntEnable(LPC_USART0, (UART0_IER_RBRINT | UART0_IER_RLSINT));
+	NVIC_EnableIRQ(USART0_IRQn);
 }
 
 void USART0_IRQHandler(void)
 {
-	if (uartHandle) {
-		LPC_UART0D_API->uart_isr(uartHandle);
+	Chip_UART0_IRQRBHandler(LPC_USART0, &rxring, &txring);
+	if (RingBuffer_IsEmpty(&txring)) {
+		xSemaphoreGiveFromISR(sem_uart_ready, NULL);
+	}
+	if (!RingBuffer_IsEmpty(&rxring)) {
+		xSemaphoreGiveFromISR(sem_uart_read_ready, NULL);
 	}
 }
 
+/**
+ * @remarks: behavior changed to block only when txring buffer is full (prior to return)
+ * Guarantees that everything is written (thus retries whenever necessary)
+ */
 static void uart0_write_internal(const uint8_t* data, size_t size, bool in_rtos) {
-	UART_PARAM_T param;
+	uint32_t written;
+	while (size > 0) {
+		written = Chip_UART0_SendRB(LPC_USART0, &txring, data, size);
+		data += written;
+		size -= written;
 
-	param.buffer = (uint8_t *) data;
-	param.size = size;
-
-	/* Interrupt mode, do not append CR/LF to sent data */
-	param.transfer_mode = TX_MODE_BUF_EMPTY;
-	if (!in_rtos)
-		param.driver_mode = DRIVER_MODE_POLLING;
-	else
-		param.driver_mode = DRIVER_MODE_INTERRUPT;
-
-	/* Setup the transmit callback, this will get called when the
-	   transfer is complete */
-	param.callback_func_pt = (UART_CALLBK_T) uart0_callback;
-
-	/* Transmit the data using interrupt mode, the function will
-	   return */
-	uart_ready = false;
-	int error_code = LPC_UART0D_API->uart_put_line(uartHandle, &param);
-
-	if (error_code) {
-		if (in_rtos) {
-			LOG_CRITICAL("CRITICAL: UART0 failed to send string with length %d", size);
-			exit_error(ERROR_CODE_DEBUG_UART_FAILED_SEND * 10 + (error_code & 0xf));
-		} else {
-			exit_error(ERROR_CODE_DEBUG_UART_FAILED_SEND_CRITICAL * 10 + (error_code & 0xf));
+		if (in_rtos && RingBuffer_IsFull(&txring) && xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+			xSemaphoreTake(sem_uart_ready, portMAX_DELAY);
 		}
 	}
 }
 
-
-static void uart0_read_callback(uint32_t err_code, uint32_t n) {
-	portBASE_TYPE woken = pdFALSE;
-	if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
-		xSemaphoreGiveFromISR(sem_uart_read_ready, &woken);
-	}
-	// portYIELD_FROM_ISR(woken);
-}
-
-void uart0_read_all(char* buf, size_t size) {
-	UART_PARAM_T param;
+/**
+ * Reads as much as possible from the USART buffer
+ * Guarantees reading at least one byte. If none present, blocks until at least one byte is received.
+ */
+size_t uart0_read(char* buf, size_t size) {
 	xSemaphoreTake(mutex_uart_read_in_use, portMAX_DELAY);
 
-	param.buffer = (uint8_t *) buf;
-	param.size = size;
+	uint32_t read = 0;
 
-	/* Interrupt mode, do not append CR/LF to sent data */
-	param.transfer_mode = RX_MODE_BUF_FULL;
-	param.driver_mode = DRIVER_MODE_INTERRUPT;
+	while (read == 0) {
+		read += Chip_UART0_ReadRB(LPC_USART0, &rxring, buf, size);
+		size -= read;
+		buf += read;
 
-	/* Setup the transmit callback, this will get called when the
-	   transfer is complete */
-	param.callback_func_pt = (UART_CALLBK_T) uart0_read_callback;
+		// Nothing read, wait
+		if (RingBuffer_IsEmpty(&rxring) && xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+			xSemaphoreTake(sem_uart_read_ready, portMAX_DELAY);
+		}
+	}
 
-	LPC_UART0D_API->uart_get_line(uartHandle, &param);
-
-	xSemaphoreTake(sem_uart_read_ready, portMAX_DELAY);
 	xSemaphoreGive(mutex_uart_read_in_use);
+	return read;
 }
 
 int uart0_readchar() {
 	char b;
-	uart0_read_all(&b, 1);
+	uart0_read(&b, 1);
 	return b;
 }
 
 void uart0_write(const uint8_t* data, size_t size) {
-	if (uartHandle) {
-		if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
-			uart0_write_internal(data, size, false);
-		} else {
-			xSemaphoreTake(mutex_uart_in_use, portMAX_DELAY);
-			// locked
-			uart0_write_internal(data, size, true);
-			xSemaphoreTake(sem_uart_ready, portMAX_DELAY);
+	if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
+		uart0_write_internal(data, size, false);
+	} else {
+		xSemaphoreTake(mutex_uart_in_use, portMAX_DELAY);
+		// locked
+		uart0_write_internal(data, size, true);
+		xSemaphoreTake(sem_uart_ready, portMAX_DELAY);
 
-			xSemaphoreGive(mutex_uart_in_use);
-		}
+		xSemaphoreGive(mutex_uart_in_use);
 	}
 }
 
@@ -194,9 +138,6 @@ void uart0_write_string(const char* str) {
 }
 
 void uart0_write_critical(const uint8_t* data, size_t size) {
-	if (!uartHandle) {
-		exit_error(ERROR_CODE_DEBUG_UART_NOT_READY_FOR_CRITICAL);
-	}
 	uart0_write_internal(data, size, false);
 }
 

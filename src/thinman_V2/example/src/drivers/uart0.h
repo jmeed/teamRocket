@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include "chip.h"
 
+#define UART0_WRITE_RB_SIZE 128
+#define UART0_READ_RB_SIZE 64
+
 void uart0_init(void);
 void uart0_setup(uint32_t baudrate, uint32_t config);
 
@@ -18,5 +21,5 @@ void uart0_write(const uint8_t* data, size_t size);
 void uart0_write_string(const char* str);
 void uart0_write_critical(const uint8_t* data, size_t size);
 void uart0_write_string_critical(const char* str);
-void uart0_read_all(char* buf, size_t size);
+size_t uart0_read(char* buf, size_t size);
 int  uart0_readchar();
