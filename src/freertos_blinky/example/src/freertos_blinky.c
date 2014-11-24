@@ -264,6 +264,9 @@ static void vBaro(void* pvParameters) {
 static void vIMU(void* pvParameters) {
 	static FIL f_imu_log;
 	static char imu_str_buf[0x40];
+	float ax_hist[5];
+	float ay_hist[5];
+	float az_hist[5];
 	LOG_INFO("Initializing IMU");
 	xSemaphoreTake(mutex_i2c, portMAX_DELAY);
 	LSM_init(I2C0, G_SCALE_245DPS, A_SCALE_8G, M_SCALE_4GS, G_ODR_952, A_ODR_952, M_ODR_80);
@@ -350,7 +353,7 @@ static void vBootSystem(void* pvParameters) {
 		Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 	}
 
-	result = logging_init_persistent();0
+	result = logging_init_persistent();
 	if (result != 0) {
 		exit_error(ERROR_CODE_SDCARD_LOGGING_INIT_FAILED);
 	}
