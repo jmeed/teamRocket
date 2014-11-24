@@ -91,7 +91,7 @@ static void setup_pinmux() {
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 2, 2);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 17);
-	Chip_GPIO_SetPinOutLow(LPC_GPIO, 0, 17);
+	Chip_GPIO_SetPinOutHigh(LPC_GPIO, 0, 17);
 }
 
 static void debug_uart_init(void) {
@@ -564,7 +564,7 @@ static void vUSBUARTController(void* pvParameters) {
 //		fprintf(stderr, "Read %d\n", vcom_read_cnt());
 //		fprintf(stderr, "Reads %s\n", buf);
 //		vTaskDelay(100);
-		load_and_parse_command();
+		// load_and_parse_command();
 		while (true) {
 			char c = getchar();
 			if (c == '\r' || c == '\n') break;
@@ -577,6 +577,16 @@ static void vBootSystem(void* pvParameters) {
 	int result;
 	LOG_INFO("Wait for voltage stabilization");
 	vTaskDelay(1000);
+
+//	fprintf(stderr, "$$$\n");
+//	fprintf(stderr, "+\n");
+	fprintf(stderr, "SN,ROCKET\n");
+	fprintf(stderr, "S-,RocketBrd\n");
+	fprintf(stderr, "U\n");
+	// fprintf(stderr, "N,1244\n");
+	fprintf(stderr, "SR,30100800\n");
+	fprintf(stderr, "A\n");
+	// fprintf(stderr, "I\n");
 
 	if (1){
 		int sdcard_retry_limit = SDCARD_START_RETRY_LIMIT;
@@ -640,6 +650,8 @@ static void vBootSystem(void* pvParameters) {
 	xTaskCreate(vHighG, (signed char*) "HighG", 256, NULL, SENSOR_PRIORITY, NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
+
+	LOG_INFO("Starting broadcast");
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 	vTaskDelete(NULL);
 }

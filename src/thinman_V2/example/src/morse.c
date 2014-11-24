@@ -17,7 +17,7 @@
 #define LED_ON() Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, true);
 #define LED_OFF() Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 
-static void DELAY_MS(uint16_t ms) {
+void DELAY_MS(uint16_t ms) {
 	volatile int i;
 	volatile uint16_t ms2 = ms;
     while (ms2 > 0) {
