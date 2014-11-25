@@ -65,9 +65,9 @@ void FreeRTOSDelay(uint32_t ms)
 /* FreeRTOS malloc fail hook */
 void vApplicationMallocFailedHook(void)
 {
-	exit_error(ERROR_CODE_MALLOC_FAILURE);
-	LOG_CRITICAL("DIE:ERROR:FreeRTOS: Malloc Failure!\r\n");
 	taskDISABLE_INTERRUPTS();
+	exit_error(ERROR_CODE_MALLOC_FAILURE);
+	// LOG_CRITICAL("DIE:ERROR:FreeRTOS: Malloc Failure!\r\n");
 	for (;; ) {}
 }
 
@@ -84,12 +84,12 @@ void vApplicationStackOverflowHook(xTaskHandle pxTask, signed char *pcTaskName)
 	(void) pxTask;
 	(void) pcTaskName;
 
-	LOG_CRITICAL("Stack overflow in task %s (%d)", pcTaskName, (int) pxTask);
+	taskDISABLE_INTERRUPTS();
+ 	// LOG_CRITICAL("Stack overflow in task %s (%d)", pcTaskName, (int) pxTask);
 	exit_error(ERROR_CODE_STACK_OVERFLOW);
 	/* Run time stack overflow checking is performed if
 	   configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
 	   function is called if a stack overflow is detected. */
-	taskDISABLE_INTERRUPTS();
 	for (;; ) {}
 }
 

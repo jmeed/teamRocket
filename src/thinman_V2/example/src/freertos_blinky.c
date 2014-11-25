@@ -49,6 +49,7 @@
 #include "sensors/LPS.h"
 #include "sensors/LSM.h"
 #include "sensors/H3L.h"
+#include "tasks/bluetooth_command.h"
 
 #define SDCARD_START_RETRY_LIMIT 10
 
@@ -350,245 +351,12 @@ static void vHighG(void* pvParameters) {
 	}
 }
 
-static void load_and_parse_command() {
-	static char command[6] = {0};
-	static char buff[20] = {0};
-	static uint8_t block[S25FL_SECTOR_SIZE];
-	static FIL t_file;
-	FRESULT res;
-
-	if (scanf("%5s", command) == 0) return;
-
-	if (strcmp(command, "read") == 0) {
-		uint32_t addr;
-		if (scanf("%u", &addr) == 0) {
-			fprintf(stderr, "Needs argument <address>\n");
-			return;
-		}
-
-		S25FL_read(addr, block, 512);
-
-		int i;
-		for (i = 0; i < 512; i++) {
-			fprintf(stderr, "%02x ", block[i]);
-		}
-		fprintf(stderr, "\n");
-	} else if (strcmp(command, "writw") == 0) {
-		uint32_t addr;
-		if (scanf("%u", &addr) == 0) {
-			fprintf(stderr, "Needs argument <address>\n");
-			return;
-		}
-
-		fprintf(stderr, "Please enter data in hex octets, ending with anything none\n");
-
-		int i = 0;
-		memset(block, 0xff, 512);
-		for (;;) {
-			uint32_t byte;
-			scanf("%9s", buff);
-			if (sscanf(buff, "%x", &byte) == 0) {
-				break;
-			}
-			block[i++] = byte;
-			if (i >= 512) {
-				break;
-			}
-		}
-
-		fprintf(stderr, "printing back\n");
-		for (i = 0; i < 512; i++) {
-			fprintf(stderr, "%02x ", block[i]);
-		}
-		fprintf(stderr, "\n");
-
-		fprintf(stderr, "writing to block\n");
-		S25FL_write(addr, block, 512);
-	} else if (strcmp(command, "erase") == 0) {
-		uint32_t addr;
-		if (scanf("%u", &addr) == 0) {
-			fprintf(stderr, "Need argument <address>\n");
-			return;
-		}
-
-		S25FL_erase_4k(addr);
-		fprintf(stderr, "Erasure complete\n");
-	} else if (strcmp(command, "erasa") == 0) {
-		S25FL_erase_bulk();
-		fprintf(stderr, "Everything erased\n");
-	} else if (strcmp(command, "writs") == 0) {
-			uint32_t addr;
-			if (scanf("%u", &addr) == 0) {
-				fprintf(stderr, "Needs argument <sector>\n");
-				return;
-			}
-
-			fprintf(stderr, "Please enter data in hex octets, ending with anything none\n");
-
-			int i = 0;
-			memset(block, 0xff, S25FL_SECTOR_SIZE);
-			for (;;) {
-				uint32_t byte;
-				scanf("%9s", buff);
-				if (sscanf(buff, "%x", &byte) == 0) {
-					break;
-				}
-				block[i++] = byte;
-				if (i >= S25FL_SECTOR_SIZE) {
-					break;
-				}
-			}
-
-			fprintf(stderr, "writing to block\n");
-			S25FL_write_sector(block, addr);
-	} else if (strcmp(command, "reads") == 0) {
-		uint32_t addr;
-		if (scanf("%u", &addr) == 0) {
-			fprintf(stderr, "Needs argument <address>\n");
-			return;
-		}
-
-		S25FL_read_sector(block, addr);
-
-		int i;
-		for (i = 0; i < S25FL_SECTOR_SIZE; i++) {
-			fprintf(stderr, "%02x ", block[i]);
-		}
-		fprintf(stderr, "\n");
-	} else if (strcmp(command, "stats") == 0) {
-		static uint32_t* stat_registers[] = {&S25FL_read_sector_count, &S25FL_write_sector_count, &S25FL_erase_sector_count};
-		static const char* stat_names[] = {"read sectors", "write sectors", "erase sectors (4k)"};
-
-		int i;
-		for (i = 0; i < sizeof(stat_registers) / sizeof(stat_registers[0]); i++) {
-			fprintf(stderr, "Stat %s = %d\n", stat_names[i], *stat_registers[i]);
-		}
-	} else if (strcmp(command, "ls") == 0) {
-		static FILINFO fno;
-	    static DIR dir;
-
-	    res = f_opendir(&dir, "/");
-	    if (res != FR_OK) {
-	    	fprintf(stderr, "root dir open failed with erro %d\n", res);
-	    	return;
-	    }
-
-	    for(;;) {
-	    	res = f_readdir(&dir, &fno);
-	    	if (res != FR_OK || fno.fname[0] == 0) break;
-	    	if (fno.fname[0] == '.') continue;
-	    	if (fno.fattrib & AM_DIR) {
-	    		fprintf(stderr, "D %d %s\n", fno.fsize, fno.fname);
-	    	} else {
-	    		fprintf(stderr, "F %d %s\n", fno.fsize, fno.fname);
-	    	}
-	    }
-	    fprintf(stderr, "END\n");
-	    if (res != FR_OK) {
-	    	fprintf(stderr, "readdir failed with error %d\n", res);
-	    }
-	} else if (strcmp(command, "cat") == 0) {
-		if (scanf("%19s", buff) == 0) {
-			fprintf(stderr, "Need <filename>\n");
-			return;
-		}
-		res = f_open(&t_file, buff, FA_OPEN_EXISTING | FA_READ);
-		if (res != FR_OK) {
-			fprintf(stderr, "open file %s failed with error %d\n", buff, res);
-			return;
-		}
-
-		for(;;) {
-			UINT read = 0;
-			res = f_read(&t_file, block, 40, &read);
-			if (res != FR_OK) {
-				break;
-			}
-			if (read == 0) break;
-			uart0_write(block, read);
-			// vcom_write(block, read);
-
-		}
-
-		fprintf(stderr, "END\n");
-		if (res != FR_OK) {
-			fprintf(stderr, "f_read failed with error %d\n", res);
-		}
-
-		f_close(&t_file);
-	} else if (strcmp(command, "rm") == 0) {
-		if (scanf("%19s", buff) == 0) {
-			fprintf(stderr, "Need <filename>\n");
-			return;
-		}
-		res = f_unlink(buff);
-		if (res != FR_OK) {
-			fprintf(stderr, "Failed to unlink file %s with error %d\n", buff, res);
-		}
-	} else if (strcmp(command, "appd") == 0) {
-		if (scanf("%19s", buff) == 0) {
-			fprintf(stderr, "Need <filename>\n");
-			return;
-		}
-		res = f_open(&t_file, buff, FA_OPEN_ALWAYS | FA_WRITE);
-		if (res != FR_OK) {
-			fprintf(stderr, "Failed to open file %s with error %d\n", buff, res);
-			return;
-		}
-
-		res = f_lseek(&t_file, f_size(&t_file));
-		if (res != FR_OK) {
-			fprintf(stderr, "Failed to seek to end with error %d\n", res);
-			goto fail;
-		}
-
-		if (scanf("%19s", buff) == 0) {
-			fprintf(stderr, "Need <string>\n");
-			goto fail;
-		}
-		res = f_write(&t_file, buff, strlen(buff), NULL);
-		if (res != FR_OK) {
-			fprintf(stderr, "Failed to write with error %d\n", res);
-			goto fail;
-		}
-
-		fail:
-		f_close(&t_file);
-	} else {
-		fprintf(stderr, "Invalid command %s\n", command);
-	}
-
-}
-
-static void vUSBUARTController(void* pvParameters) {
-	for(;;) {
-//		fprintf(stderr, "Read %d\n", vcom_read_cnt());
-//		fprintf(stderr, "Reads %s\n", buf);
-//		vTaskDelay(100);
-		// load_and_parse_command();
-		while (true) {
-			char c = getchar();
-			if (c == '\r' || c == '\n') break;
-		}
-	}
-}
 
 static FATFS root_fs;
 static void vBootSystem(void* pvParameters) {
 	int result;
 	LOG_INFO("Wait for voltage stabilization");
 	vTaskDelay(1000);
-
-//	fprintf(stderr, "$$$\n");
-//	fprintf(stderr, "+\n");
-	fprintf(stderr, "SN,ROCKET\n");
-	fprintf(stderr, "S-,RocketBrd\n");
-	fprintf(stderr, "U\n");
-	// fprintf(stderr, "N,1244\n");
-	fprintf(stderr, "SR,30200800\n");
-	fprintf(stderr, "A\n");
-	fprintf(stderr, "R,1\n");
-	// fprintf(stderr, "I\n");
 
 	if (1){
 		int sdcard_retry_limit = SDCARD_START_RETRY_LIMIT;
@@ -643,7 +411,7 @@ static void vBootSystem(void* pvParameters) {
 				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
 
-	xTaskCreate(vUSBUARTController, (signed char*) "USBUART", 512, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	xTaskCreate(task_bluetooth_commands, (signed char*) "USBUART", 1024, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
 	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, SENSOR_PRIORITY, NULL);
 
@@ -653,7 +421,6 @@ static void vBootSystem(void* pvParameters) {
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 
-	LOG_INFO("Starting broadcast");
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 	vTaskDelete(NULL);
 }
