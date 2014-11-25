@@ -88,6 +88,11 @@ static void setup_pinmux() {
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 5,
 		(IOCON_FUNC1 | IOCON_FASTI2C_EN) | IOCON_DIGMODE_EN);
 
+	// Interboard
+	Chip_SYSCTL_PeriphReset(RESET_I2C1);
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 24, (IOCON_FUNC2 | IOCON_FASTI2C_EN | IOCON_MODE_INACT) | IOCON_DIGMODE_EN);  // SDA
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 7, (IOCON_FUNC3 | IOCON_FASTI2C_EN | IOCON_MODE_INACT) | IOCON_DIGMODE_EN);   // SCL
+
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 20);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 2);
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 2, 2);
@@ -118,10 +123,16 @@ static void debug_uart_init(void) {
 }
 
 #define ONBOARD_I2C I2C0
+#define OFFBOARD_I2C I2C1
 #define SENSOR_PRIORITY (tskIDLE_PRIORITY + 2)
 static void i2c_onboard_init(void) {
 	i2c_setup_master(ONBOARD_I2C);
 	Chip_I2C_SetClockRate(ONBOARD_I2C, 100000);
+}
+
+static void i2c_offboard_init(void) {
+	i2c_setup_master(OFFBOARD_I2C);
+	Chip_I2C_SetClockRate(OFFBOARD_I2C, 100000);
 }
 
 
@@ -133,6 +144,7 @@ static void hardware_init(void) {
 	SDCardInit();
 	i2c_init();
 	i2c_onboard_init();
+	i2c_offboard_init();
 	neopixel_init();
 }
 
@@ -179,6 +191,7 @@ static void vLEDTask2(void *pvParameters) {
 		LedState = (bool) !LedState;
 
 		vTaskDelay(configTICK_RATE_HZ);
+		Chip_I2C_MasterSend(I2C1, 12, "abc", 3);
 	}
 }
 
