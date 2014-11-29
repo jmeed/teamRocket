@@ -34,7 +34,7 @@
 #include "FreeRTOSCommonHooks.h"
 #include "logging.h"
 #include "error_codes.h"
-
+#include "drivers/neopixel.h"
 #include "chip.h"
 
 /*****************************************************************************
@@ -75,6 +75,7 @@ void vApplicationMallocFailedHook(void)
 void vApplicationIdleHook(void)
 {
 	/* Best to sleep here until next systick */
+	neopixel_refresh_now();
 	__WFI();
 }
 

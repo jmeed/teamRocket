@@ -76,7 +76,8 @@ static void setup_pinmux() {
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 23, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // SSEL
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 2, 2, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN);  // #RESET
 
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 10, (IOCON_FUNC3 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN | IOCON_INV_EN); // NEOPixel
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 10, (IOCON_FUNC1 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // NEOPixel
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 10);
 
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 17, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // Bluetooth wakeup
 
@@ -154,44 +155,16 @@ static void prvSetupHardware(void)
 	Board_Init();
 }
 
-/* LED0 toggle thread */
-static void vLEDTask0(void *pvParameters) {
-	bool LedState = false;
-	while (1) {
-		Board_LED_Set(0, LedState);
-		LedState = (bool) !LedState;
-
-		vTaskDelay(configTICK_RATE_HZ / 2);
-	}
-}
-
 /* LED1 toggle thread */
 static void vLEDTask1(void *pvParameters) {
-	bool LedState = false;
-	static uint32_t num;
-	vTaskDelay(1000);
 	while (1) {
-		Board_LED_Set(1, LedState);
-		LedState = (bool) !LedState;
-		Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
-		num += 0x0a;
-		num &= 0xff;
-		neopixel_set_color(0, 0x11111111);
-		neopixel_set_color(1, 0x33333333);
-		neopixel_refresh();
-		vTaskDelay(configTICK_RATE_HZ * 2);
-	}
-}
-
-/* LED2 toggle thread */
-static void vLEDTask2(void *pvParameters) {
-	bool LedState = false;
-	while (1) {
-		Board_LED_Set(2, LedState);
-		LedState = (bool) !LedState;
-
+		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x1f0000));
 		vTaskDelay(configTICK_RATE_HZ);
-		Chip_I2C_MasterSend(I2C1, 12, "abc", 3);
+		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x0f0f00));
+		vTaskDelay(configTICK_RATE_HZ);
+		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x00001f));
+		vTaskDelay(configTICK_RATE_HZ);
+		Chip_I2C_MasterSend(I2C1, 12, (const uint8_t*) "abc", 3);
 	}
 }
 
@@ -412,16 +385,6 @@ static void vBootSystem(void* pvParameters) {
 
 	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
 				256, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
-
-	/* LED2 toggle thread */
-	xTaskCreate(vLEDTask2, (signed char *) "vTaskLed2",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
-
-	/* LED0 toggle thread */
-	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
 
 	xTaskCreate(task_bluetooth_commands, (signed char*) "USBUART", 1024, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
