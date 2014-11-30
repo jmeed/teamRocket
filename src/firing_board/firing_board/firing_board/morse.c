@@ -12,7 +12,7 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include "morse.h"
-#include "neopixel.h"
+#include "drivers/neopixel.h"
 
 // Source: http://www.kg6haf.com/embedded_morse.html
 // Playing Morse Code on an LED

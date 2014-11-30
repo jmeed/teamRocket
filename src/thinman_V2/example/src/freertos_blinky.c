@@ -46,6 +46,7 @@
 #include "drivers/cdc_vcom.h"
 #include "drivers/S25FL.h"
 #include "drivers/i2c.h"
+#include "drivers/firing_board.h"
 #include "sensors/LPS.h"
 #include "sensors/LSM.h"
 #include "sensors/H3L.h"
@@ -147,6 +148,7 @@ static void hardware_init(void) {
 	i2c_onboard_init();
 	i2c_offboard_init();
 	neopixel_init();
+	firing_board_init();
 }
 
 static void prvSetupHardware(void)
@@ -164,7 +166,6 @@ static void vLEDTask1(void *pvParameters) {
 		vTaskDelay(configTICK_RATE_HZ);
 		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x00001f));
 		vTaskDelay(configTICK_RATE_HZ);
-		Chip_I2C_MasterSend(I2C1, 12, (const uint8_t*) "abc", 3);
 	}
 }
 
@@ -324,6 +325,14 @@ static void vHighG(void* pvParameters) {
 		ay = H3L_read_accel_g(H3L_Y);
 		az = H3L_read_accel_g(H3L_Z);
 
+		if (fabs(ay) > 2.0) {
+			if (!firing_board_fire_channel(2)) {
+				LOG_DEBUG("Failed to fire 2");
+			} else {
+				LOG_DEBUG("Firing 2");
+			}
+		}
+
 		if (result == FR_OK) {
 			sprintf(highg_str_buf, "%d\t%f\t%f\t%f\n", xTaskGetTickCount(), ax, ay, az);
 			f_puts(highg_str_buf, &f_highg_log);
@@ -337,6 +346,54 @@ static void vHighG(void* pvParameters) {
 	}
 }
 
+static void vVolts(void* pv) {
+	static FIL f_volts;
+	static char highg_str_buf[0x40];
+	LOG_INFO("Initializing Firing board");
+	if (firing_board_setup(OFFBOARD_I2C)) {
+		LOG_INFO("Firing board initialized");
+	} else {
+		LOG_ERROR("Firing board erred");
+		// vTaskSuspend(NULL);
+	}
+
+	int result;
+	int counter = 0;
+	strcpy(highg_str_buf, "VOLTS.TAB");
+	{
+		int rename_number = 1;
+		while(true) {
+			if (f_stat(highg_str_buf, NULL) == FR_OK) {
+				sprintf(highg_str_buf, "VOLTS%d.TAB", rename_number);
+				rename_number ++;
+				continue;
+			}
+			break;
+		}
+	}
+	LOG_INFO("Volts output is %s", highg_str_buf);
+	result = f_open(&f_volts, highg_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+	if (result != FR_OK) {
+		LOG_ERROR("Failed to open volts log file");
+		vTaskSuspend(NULL);
+	}
+	for (;;) {
+		float vext, vbus;
+		vext = firing_board_read_volt(VOLTAGE_EXTERNAL_BAT);
+		vbus = firing_board_read_volt(VOLTAGE_BUS);
+
+		if (result == FR_OK) {
+			sprintf(highg_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), vext, vbus);
+			f_puts(highg_str_buf, &f_volts);
+			if ((counter % 5) == 0) {
+				f_sync(&f_volts);
+			}
+		}
+
+		vTaskDelay(500);
+		counter += 1;
+	}
+}
 
 static FATFS root_fs;
 static void vBootSystem(void* pvParameters) {
@@ -394,6 +451,7 @@ static void vBootSystem(void* pvParameters) {
 	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, SENSOR_PRIORITY, NULL);
 
 	xTaskCreate(vHighG, (signed char*) "HighG", 256, NULL, SENSOR_PRIORITY, NULL);
+	xTaskCreate(vVolts, (signed char*) "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 

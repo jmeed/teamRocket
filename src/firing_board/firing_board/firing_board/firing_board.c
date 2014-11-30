@@ -11,7 +11,10 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <avr/io.h>
-#include "neopixel.h"
+#include <avr/interrupt.h>
+#include "error_codes.h"
+#include "drivers/neopixel.h"
+#include "drivers/USI_TWI_Slave.h"
 #include "morse.h"
 
 typedef enum {
@@ -102,14 +105,31 @@ void init_channels(void) {
 	DDRB |= _BV(1);
 }
 
+typedef enum {
+	SYSTEM_MODE_BOOTING,
+	SYSTEM_MODE_NO_POWER,
+	SYSTEM_MODE_READY,
+	SYSTEM_MODE_FIRE_READY,
+	SYSTEM_MODE_FIRING
+} system_mode_t;
+
 #define EXT_BAT_THRES 40 // ~ 1.0V
-static void test_channel_detect(void) {
+system_mode_t system_mode;
+uint16_t external_bat_volt;
+uint16_t bus_volt;
+uint8_t system_mode;
+uint8_t fire_channel = 0;
+static void main_loop(void) {
 	static uint8_t channel_mux[] = {6, 4, 0, 2};
-	static uint16_t external_bat_volt;
+	const static uint8_t channel_pins[] = {6, 4, 1, 3};
+	system_mode = SYSTEM_MODE_NO_POWER;
+	static uint16_t counter = 0;
 	for(;;) {
 		uint8_t i;
 		external_bat_volt = adc_convert(8);
+		bus_volt = adc_convert(7);
 		if (external_bat_volt < EXT_BAT_THRES) {
+			system_mode = SYSTEM_MODE_NO_POWER;
 			set_channel_color(CHANNELS, COLOR_DISCONNECTED);
 			_delay_ms(100);
 			set_channel_color(CHANNELS, COLOR_OFF);
@@ -117,20 +137,120 @@ static void test_channel_detect(void) {
 			continue;
 		}
 		
-		for (i = 0; i < CHANNELS; i++) {
-			uint16_t result = adc_convert(channel_mux[i]);
-
-			if (result > external_bat_volt / 2) {
-				set_channel_color(i, COLOR_CONNECTED_READY);
-			} else {
-				set_channel_color(i, COLOR_DISCONNECTED);
-			}
+		if (system_mode == SYSTEM_MODE_NO_POWER) {
+			system_mode = SYSTEM_MODE_READY;
+			fire_channel = 0;
 		}
+		
+		if (system_mode != SYSTEM_MODE_FIRING) {			
+			if (system_mode == SYSTEM_MODE_READY) {
+				for (i = 0; i < CHANNELS; i++) {
+					uint16_t result = adc_convert(channel_mux[i]);
+
+					if (result > external_bat_volt / 2) {
+						set_channel_color(i, COLOR_CONNECTED_READY);
+						} else {
+						set_channel_color(i, COLOR_DISCONNECTED);
+					}
+				}
+
+				if (fire_channel > 0 && fire_channel <= CHANNELS) {
+					system_mode = SYSTEM_MODE_FIRE_READY;
+					counter = 0;
+				} else {
+					fire_channel = 0;
+				}
+			} else if (system_mode == SYSTEM_MODE_FIRE_READY) {
+				if (fire_channel == 0 || fire_channel > CHANNELS) {
+					system_mode = SYSTEM_MODE_READY;
+					fire_channel = 0;
+				} else {
+					if (((counter / 100) % 2) == 1) {
+						set_channel_color(fire_channel - 1, COLOR_FIRE_READY_1);
+					} else {
+						set_channel_color(fire_channel - 1, COLOR_FIRE_READY_2);
+					}
+					if (counter >= 2000) {
+						system_mode = SYSTEM_MODE_FIRING;
+					}
+				}
+			}
+			
+			_delay_ms(1);
+		} else if (system_mode == SYSTEM_MODE_FIRING) {
+			uint8_t temp_chan = fire_channel;
+			set_channel_color(fire_channel - 1, COLOR_FIRING);
+			fire_channel = 0;
+			if (temp_chan > 0 && temp_chan <= CHANNELS) {
+				temp_chan -= 1;
+				// Master Arm
+				PORTB &= ~_BV(1);
+			
+				// Channel ARM
+				PORTA |= _BV(channel_pins[temp_chan]);
+				_delay_ms(10);
+				
+				// Disarm
+				PORTA &= ~_BV(channel_pins[temp_chan]);
+			
+				PORTB |= _BV(1);
+			}
+			system_mode = SYSTEM_MODE_READY;
+		}
+		counter ++;
+	}
+}
+
+#define DEVICE_ID 0x93
+
+typedef enum {
+	I2C_COMMAND_READ_DEVICE_ID,
+	I2C_COMMAND_READ_VOLTS,
+	I2C_COMMAND_READ_SYSTEM_MODE,
+	I2C_COMMAND_FIRE,
+} i2c_command_t;
+
+void handle_i2c_command_non_blocking(void) {
+	// This method should be as fast as possible, must not hold for too long or I2C read to this address will block the SCK clock line extremely long
+	int16_t command = usi_twi_receive_byte_non_blocking();
+	if (command == I2C_COMMAND_READ_DEVICE_ID) {
+		usi_twi_tranmit_byte_non_blocking(0x00);
+		usi_twi_tranmit_byte_non_blocking(DEVICE_ID);
+	} else if (command == I2C_COMMAND_READ_VOLTS) {
+		uint16_t result_value = 0;
+		switch(usi_twi_receive_byte_non_blocking()) {
+			case 0:
+				result_value = external_bat_volt;
+				break;
+			case 1:
+				result_value = bus_volt;
+				break;
+			default:
+				usi_twi_tranmit_byte_non_blocking(0x01);
+				return;
+		}
+		usi_twi_tranmit_byte_non_blocking(0x00);
+		usi_twi_tranmit_uint16_nb(result_value);
+	} else if (command == I2C_COMMAND_READ_SYSTEM_MODE) {
+		usi_twi_tranmit_byte_non_blocking(0x00);
+		usi_twi_tranmit_byte_non_blocking(system_mode);
+	} else if (command == I2C_COMMAND_FIRE) {
+		int16_t channel = usi_twi_receive_byte_non_blocking();
+		fire_channel = channel;
+		if (channel > 0 && channel <= CHANNELS) {
+			usi_twi_tranmit_byte_non_blocking(0x00);
+		} else {
+			usi_twi_tranmit_byte_non_blocking(0x01);
+		}
+	} else {
+		usi_twi_tranmit_byte_non_blocking(0x01);
 	}
 }
 
 int main(void)
 {
+	system_mode = SYSTEM_MODE_BOOTING;
+	fire_channel = 0;
 	init_channels();
 	neopixel_init();
 	// Set clock division to 1, making 8MHz / 1 = 8MHz. See http://embdev.net/topic/291954 for the cause of assembly.
@@ -147,34 +267,11 @@ int main(void)
 	while (CLKPR & _BV(CLKPCE));  // wait until timeout
 
 	update_channel_colors();
-	
 	adc_init();
+	USI_TWI_Slave_Initialise(12);
 	
-	test_channel_detect();
-	int channel = 0;
-    while(1)
-    {
-		int i;
-		set_channel_color(channel, COLOR_DISCONNECTED);
-		_delay_ms(2000);
-		
-		set_channel_color(channel, COLOR_CONNECTED_READY);
-		_delay_ms(1000);
-		
-		for (i = 0; i < 10; i++) {
-			_delay_ms(100);
-			set_channel_color(channel, COLOR_FIRE_READY_1);
-			_delay_ms(100);
-			set_channel_color(channel, COLOR_FIRE_READY_2);
-		}
-		
-		set_channel_color(channel, COLOR_FIRING);
-		_delay_ms(500);
-		
-		set_channel_color(channel, COLOR_FIRED);
-		_delay_ms(5000);
-        //TODO:: Please write your application code 
-		channel ++;
-		channel %= CHANNELS;
-    }
+	sei();
+
+	main_loop();	
+	blink_error_code(ERROR_CODE_MAINLOOP_FALL_THRU);
 }
