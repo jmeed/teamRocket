@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "chip.h"
 #include "board.h"
 #include "FreeRTOS.h"
@@ -158,19 +159,35 @@ static void prvSetupHardware(void)
 }
 
 /* LED1 toggle thread */
-static void vLEDTask1(void *pvParameters) {
-	void Init_SC16IS752 (void);
-	void UART_Send_String(int16_t CHAN, const char* str);
 
-	 Init_SC16IS752();
+static bool volt_active;
+static bool gps_activated = false;
+static void vLEDTask1(void *pvParameters) {
+	int counter = 0;
 	while (1) {
-		UART_Send_String(0, "Hello World\r\n");
-		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x1f0000));
-		vTaskDelay(configTICK_RATE_HZ);
-		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x0f0f00));
-		vTaskDelay(configTICK_RATE_HZ);
-		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x00001f));
-		vTaskDelay(configTICK_RATE_HZ);
+		switch (counter % 3) {
+		case 0:
+			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x1f0000));
+			break;
+		case 1:
+			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x0f0f00));
+			break;
+		case 2:
+			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x00001f));
+			break;
+		}
+
+		uint32_t sec_color = 0;
+		if (gps_activated) {
+			sec_color += 0x1f0000;
+		}
+		if (volt_active) {
+			sec_color += 0x001f00;
+		}
+		neopixel_set_color(1, NEOPIXEL_COLOR_FROM_RGB(sec_color));
+
+		vTaskDelay(1000);
+		counter += 1;
 	}
 }
 
@@ -288,7 +305,7 @@ static void vIMU(void* pvParameters) {
 			f_puts(imu_str_buf, &f_imu_log);
 			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", gy, gz, mx, my, mz);
 			f_puts(imu_str_buf, &f_imu_log);
-			if ((counter % 50) == 0) {
+			if ((counter % 100) == 0) {
 				f_sync(&f_imu_log);
 			}
 		}
@@ -337,7 +354,7 @@ static void vHighG(void* pvParameters) {
 		while (!(H3L_read_reg(H3L_STATUS_REG) & 4));
 		az = H3L_read_accel_g(H3L_Z);
 
-		if (fabs(ay) > 2.0) {
+		if (fabs(ay) > 5.0) {
 			if (!firing_board_fire_channel(2)) {
 				LOG_DEBUG("Failed to fire 2");
 			} else {
@@ -355,6 +372,57 @@ static void vHighG(void* pvParameters) {
 
 		vTaskDelay(50);
 		counter += 1;
+	}
+}
+
+static void vGPS(void* pv) {
+	void Init_SC16IS752 (void);
+	void UART_Send_String(int16_t CHAN, const char* str);
+	char Poll_UART_RHR(CHAN);
+
+	Init_SC16IS752();
+	UART_Send_String(0, "Hello World\r\n");
+
+	static FIL f_volts;
+	static char highg_str_buf[0x40];
+	LOG_INFO("Initializing GPS board");
+
+	int result;
+	int counter = 0;
+	strcpy(highg_str_buf, "GPS.TAB");
+	{
+		int rename_number = 1;
+		while(true) {
+			if (f_stat(highg_str_buf, NULL) == FR_OK) {
+				sprintf(highg_str_buf, "GPS%d.TAB", rename_number);
+				rename_number ++;
+				continue;
+			}
+			break;
+		}
+	}
+	LOG_INFO("GPS output is %s", highg_str_buf);
+	result = f_open(&f_volts, highg_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+	if (result != FR_OK) {
+		LOG_ERROR("Failed to open gps log file");
+		vTaskSuspend(NULL);
+	}
+
+	for(;;) {
+		char c;
+		while(1) {
+			c = Poll_UART_RHR(1);
+			if (c == 0) {
+				break;
+			}
+
+			f_putc(c, &f_volts);
+			if (c == '\n' || c == '\r') {
+				f_sync(&f_volts);
+			}
+			gps_activated = true;
+		}
+		vTaskDelay(500);
 	}
 }
 
@@ -401,6 +469,8 @@ static void vVolts(void* pv) {
 				f_sync(&f_volts);
 			}
 		}
+
+		volt_active = (vbus < 20.0f);
 
 		vTaskDelay(500);
 		counter += 1;
@@ -464,6 +534,7 @@ static void vBootSystem(void* pvParameters) {
 
 	xTaskCreate(vHighG, (signed char*) "HighG", 256, NULL, SENSOR_PRIORITY, NULL);
 	xTaskCreate(vVolts, (signed char*) "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	// xTaskCreate(vGPS, (signed char*) "GPS", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 
