@@ -241,7 +241,7 @@ static void vIMU(void* pvParameters) {
 	static FIL f_imu_log;
 	static char imu_str_buf[0x40];
 	LOG_INFO("Initializing IMU");
-	if (LSM_init(ONBOARD_I2C, G_SCALE_245DPS, A_SCALE_4G, M_SCALE_4GS, G_ODR_952, A_ODR_952, M_ODR_80)) {
+	if (LSM_init(ONBOARD_I2C, G_SCALE_500DPS, A_SCALE_16G, M_SCALE_4GS, G_ODR_952, A_ODR_952, M_ODR_80)) {
 		LOG_INFO("IMU initialized");
 	} else {
 		LOG_ERROR("IMU failed to initialize");
@@ -269,20 +269,24 @@ static void vIMU(void* pvParameters) {
 	}
 	for (;;) {
 		float ax, ay, az, gx, gy, gz, mx, my, mz;
+
+		while (!(LSM_read_reg_xlg(LSM_STATUS_REG1_XL) & 1));
 		ax = LSM_read_accel_g(LSM_ACCEL_X);
 		ay = LSM_read_accel_g(LSM_ACCEL_Y);
 		az = LSM_read_accel_g(LSM_ACCEL_Z);
-		gx = LSM_read_accel_g(LSM_GYRO_X);
-		gy = LSM_read_accel_g(LSM_GYRO_Y);
-		gz = LSM_read_accel_g(LSM_GYRO_Z);
-		mx = LSM_read_accel_g(LSM_MAG_X);
-		my = LSM_read_accel_g(LSM_MAG_Y);
-		mz = LSM_read_accel_g(LSM_MAG_Z);
+		while (!(LSM_read_reg_xlg(LSM_STATUS_REG1_XL) & 2));
+		gx = LSM_read_gyro_dps(LSM_GYRO_X);
+		gy = LSM_read_gyro_dps(LSM_GYRO_Y);
+		gz = LSM_read_gyro_dps(LSM_GYRO_Z);
+		while (!(LSM_read_reg_mag(LSM_STATUS_REG_M) & 8));
+		mx = LSM_read_mag_gs(LSM_MAG_X);
+		my = LSM_read_mag_gs(LSM_MAG_Y);
+		mz = LSM_read_mag_gs(LSM_MAG_Z);
 
 		if (result == FR_OK) {
-			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx, gy);
+			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx);
 			f_puts(imu_str_buf, &f_imu_log);
-			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", gz, mx, my, mz);
+			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", gy, gz, mx, my, mz);
 			f_puts(imu_str_buf, &f_imu_log);
 			if ((counter % 50) == 0) {
 				f_sync(&f_imu_log);
@@ -326,8 +330,11 @@ static void vHighG(void* pvParameters) {
 	}
 	for (;;) {
 		float ax, ay, az;
+		while (!(H3L_read_reg(H3L_STATUS_REG) & 1));
 		ax = H3L_read_accel_g(H3L_X);
+		while (!(H3L_read_reg(H3L_STATUS_REG) & 2));
 		ay = H3L_read_accel_g(H3L_Y);
+		while (!(H3L_read_reg(H3L_STATUS_REG) & 4));
 		az = H3L_read_accel_g(H3L_Z);
 
 		if (fabs(ay) > 2.0) {

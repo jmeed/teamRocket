@@ -110,8 +110,8 @@ enum LSM_gyro_scale {
 // accel_scale defines all possible FSR's of the accelerometer:
 enum LSM_accel_scale {
 	A_SCALE_2G,	// 00:  2g
-	A_SCALE_4G,	// 01:  4g
-	A_SCALE_NA,	// 10:  na
+	A_SCALE_16G,	// 01:  16g
+	A_SCALE_4G,	// 10:  4g
 	A_SCALE_8G	// 11   8g
 };
 // mag_scale defines all possible FSR's of the magnetometer:
@@ -319,13 +319,13 @@ void LSM_calc_a_res();
 void LSM_calc_m_res();
 
 // Read a register on the accel/gyro device
-int8_t LSM_read_reg_xlg(uint8_t reg_addr);
+uint8_t LSM_read_reg_xlg(uint8_t reg_addr);
 
 // Write a register on the accel/gyro device
 void LSM_write_reg_xlg(uint8_t reg_addr, uint8_t data);
 
 // Read a register on the magnetometer device
-int8_t LSM_read_reg_mag(uint8_t reg_addr);
+uint8_t LSM_read_reg_mag(uint8_t reg_addr);
 
 // Write a register on the magnetometer
 void LSM_write_reg_mag(uint8_t reg_addr, uint8_t data);
