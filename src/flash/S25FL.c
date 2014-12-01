@@ -56,7 +56,7 @@ uint8_t S25FL_read_register(uint8_t reg) {
 	spi_transceive(S25FL_tx_len, S25FL_rx_len);
 	S25FL_ss_clear();
 
-	return S25FL_rx_buf[0];
+	return S25FL_rx_buf[1];
 }
 
 void S25FL_set_page_size(enum Page_Size page_size) {
