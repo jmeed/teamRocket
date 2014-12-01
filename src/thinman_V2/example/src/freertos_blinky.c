@@ -159,7 +159,12 @@ static void prvSetupHardware(void)
 
 /* LED1 toggle thread */
 static void vLEDTask1(void *pvParameters) {
+	void Init_SC16IS752 (void);
+	void UART_Send_String(int16_t CHAN, const char* str);
+
+	 Init_SC16IS752();
 	while (1) {
+		UART_Send_String(0, "Hello World\r\n");
 		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x1f0000));
 		vTaskDelay(configTICK_RATE_HZ);
 		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x0f0f00));

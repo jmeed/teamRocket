@@ -114,6 +114,9 @@ typedef enum {
 } system_mode_t;
 
 #define EXT_BAT_THRES 40 // ~ 1.0V
+#define IS_ANY_CHARGE(channel_v, ext_v) (channel_v > (ext_v / 2))
+// Approximately < 10KOhm
+#define IS_UNFIRED_CHARGE(channel_v, ext_v) (channel_v > (ext_v * 9 / 10))
 system_mode_t system_mode;
 uint16_t external_bat_volt;
 uint16_t bus_volt;
@@ -147,9 +150,11 @@ static void main_loop(void) {
 				for (i = 0; i < CHANNELS; i++) {
 					uint16_t result = adc_convert(channel_mux[i]);
 
-					if (result > external_bat_volt / 2) {
+					if (IS_UNFIRED_CHARGE(result, external_bat_volt)) {
 						set_channel_color(i, COLOR_CONNECTED_READY);
-						} else {
+					} else if (IS_ANY_CHARGE(result, external_bat_volt)) {
+						set_channel_color(i, COLOR_FIRED);
+					} else {
 						set_channel_color(i, COLOR_DISCONNECTED);
 					}
 				}
