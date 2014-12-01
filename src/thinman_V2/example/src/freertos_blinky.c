@@ -46,6 +46,7 @@
 #include "drivers/cdc_vcom.h"
 #include "drivers/S25FL.h"
 #include "drivers/i2c.h"
+#include "drivers/firing_board.h"
 #include "sensors/LPS.h"
 #include "sensors/LSM.h"
 #include "sensors/H3L.h"
@@ -76,7 +77,8 @@ static void setup_pinmux() {
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 1, 23, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // SSEL
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 2, 2, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN);  // #RESET
 
-	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 10, (IOCON_FUNC3 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN | IOCON_INV_EN); // NEOPixel
+	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 10, (IOCON_FUNC1 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // NEOPixel
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 10);
 
 	Chip_IOCON_PinMuxSet(LPC_IOCON, 0, 17, (IOCON_FUNC0 | IOCON_MODE_INACT) | IOCON_DIGMODE_EN); // Bluetooth wakeup
 
@@ -146,6 +148,7 @@ static void hardware_init(void) {
 	i2c_onboard_init();
 	i2c_offboard_init();
 	neopixel_init();
+	firing_board_init();
 }
 
 static void prvSetupHardware(void)
@@ -154,44 +157,15 @@ static void prvSetupHardware(void)
 	Board_Init();
 }
 
-/* LED0 toggle thread */
-static void vLEDTask0(void *pvParameters) {
-	bool LedState = false;
-	while (1) {
-		Board_LED_Set(0, LedState);
-		LedState = (bool) !LedState;
-
-		vTaskDelay(configTICK_RATE_HZ / 2);
-	}
-}
-
 /* LED1 toggle thread */
 static void vLEDTask1(void *pvParameters) {
-	bool LedState = false;
-	static uint32_t num;
-	vTaskDelay(1000);
 	while (1) {
-		Board_LED_Set(1, LedState);
-		LedState = (bool) !LedState;
-		Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
-		num += 0x0a;
-		num &= 0xff;
-		neopixel_set_color(0, 0x11111111);
-		neopixel_set_color(1, 0x33333333);
-		neopixel_refresh();
-		vTaskDelay(configTICK_RATE_HZ * 2);
-	}
-}
-
-/* LED2 toggle thread */
-static void vLEDTask2(void *pvParameters) {
-	bool LedState = false;
-	while (1) {
-		Board_LED_Set(2, LedState);
-		LedState = (bool) !LedState;
-
+		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x1f0000));
 		vTaskDelay(configTICK_RATE_HZ);
-		Chip_I2C_MasterSend(I2C1, 12, "abc", 3);
+		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x0f0f00));
+		vTaskDelay(configTICK_RATE_HZ);
+		neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x00001f));
+		vTaskDelay(configTICK_RATE_HZ);
 	}
 }
 
@@ -351,6 +325,14 @@ static void vHighG(void* pvParameters) {
 		ay = H3L_read_accel_g(H3L_Y);
 		az = H3L_read_accel_g(H3L_Z);
 
+		if (fabs(ay) > 2.0) {
+			if (!firing_board_fire_channel(2)) {
+				LOG_DEBUG("Failed to fire 2");
+			} else {
+				LOG_DEBUG("Firing 2");
+			}
+		}
+
 		if (result == FR_OK) {
 			sprintf(highg_str_buf, "%d\t%f\t%f\t%f\n", xTaskGetTickCount(), ax, ay, az);
 			f_puts(highg_str_buf, &f_highg_log);
@@ -364,6 +346,54 @@ static void vHighG(void* pvParameters) {
 	}
 }
 
+static void vVolts(void* pv) {
+	static FIL f_volts;
+	static char highg_str_buf[0x40];
+	LOG_INFO("Initializing Firing board");
+	if (firing_board_setup(OFFBOARD_I2C)) {
+		LOG_INFO("Firing board initialized");
+	} else {
+		LOG_ERROR("Firing board erred");
+		// vTaskSuspend(NULL);
+	}
+
+	int result;
+	int counter = 0;
+	strcpy(highg_str_buf, "VOLTS.TAB");
+	{
+		int rename_number = 1;
+		while(true) {
+			if (f_stat(highg_str_buf, NULL) == FR_OK) {
+				sprintf(highg_str_buf, "VOLTS%d.TAB", rename_number);
+				rename_number ++;
+				continue;
+			}
+			break;
+		}
+	}
+	LOG_INFO("Volts output is %s", highg_str_buf);
+	result = f_open(&f_volts, highg_str_buf, FA_WRITE | FA_CREATE_ALWAYS);
+	if (result != FR_OK) {
+		LOG_ERROR("Failed to open volts log file");
+		vTaskSuspend(NULL);
+	}
+	for (;;) {
+		float vext, vbus;
+		vext = firing_board_read_volt(VOLTAGE_EXTERNAL_BAT);
+		vbus = firing_board_read_volt(VOLTAGE_BUS);
+
+		if (result == FR_OK) {
+			sprintf(highg_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), vext, vbus);
+			f_puts(highg_str_buf, &f_volts);
+			if ((counter % 5) == 0) {
+				f_sync(&f_volts);
+			}
+		}
+
+		vTaskDelay(500);
+		counter += 1;
+	}
+}
 
 static FATFS root_fs;
 static void vBootSystem(void* pvParameters) {
@@ -414,16 +444,6 @@ static void vBootSystem(void* pvParameters) {
 				256, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
 
-	/* LED2 toggle thread */
-	xTaskCreate(vLEDTask2, (signed char *) "vTaskLed2",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
-
-	/* LED0 toggle thread */
-	xTaskCreate(vLEDTask0, (signed char *) "vTaskLed0",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
-
 	xTaskCreate(task_bluetooth_commands, (signed char*) "USBUART", 1024, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
 	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, SENSOR_PRIORITY, NULL);
@@ -431,6 +451,7 @@ static void vBootSystem(void* pvParameters) {
 	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, SENSOR_PRIORITY, NULL);
 
 	xTaskCreate(vHighG, (signed char*) "HighG", 256, NULL, SENSOR_PRIORITY, NULL);
+	xTaskCreate(vVolts, (signed char*) "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 
