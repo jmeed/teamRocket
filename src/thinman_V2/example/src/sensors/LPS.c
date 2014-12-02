@@ -77,19 +77,15 @@ float LPS_pressure_to_altitude_m(float pressure_mbar, float altimeter_setting_mb
 uint8_t LPS_read_reg(uint8_t reg_addr) {
 	// Write the register we want to read
 	// - Make a transmit buffer
-	uint8_t tx_size = 1;
-	uint8_t tx_buf[tx_size];
-	// - Set the register address
-	tx_buf[0] = reg_addr;
-	// - Write the register value
-	Chip_I2C_MasterSend(LPS_i2c_id, LPS_slave_address >> 1, tx_buf, tx_size);
 
 	// Read the register value
 	// - Make a receive buffer
 	uint8_t rx_size = 1;
 	uint8_t rx_buf[rx_size];
 	// - Read the register value
-	Chip_I2C_MasterRead(LPS_i2c_id, (LPS_slave_address | 0x01) >> 1, rx_buf, rx_size);
+	if (Chip_I2C_MasterCmdRead(LPS_i2c_id, LPS_slave_address >> 1, reg_addr, rx_buf, rx_size) == 0) {
+		rx_buf[0] = 0;
+	}
 
 	return rx_buf[0];
 }

@@ -38,7 +38,7 @@ bool firing_board_setup(I2C_ID_T i2c_device) {
 float firing_board_read_volt(firing_board_volt_channel_t vchan) {
 	uint16_t raw_output;
 	if (firing_board_transceive_command(0x01, &vchan, 1, &raw_output, sizeof(raw_output)) != 0) {
-		return NAN;
+		return INFINITY;
 	}
 	return raw_output * (2.56f / 1023 * ((82+10) / 10));
 }

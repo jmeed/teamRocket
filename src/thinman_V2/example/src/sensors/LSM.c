@@ -48,7 +48,7 @@ int LSM_init(I2C_ID_T id_in,
 }
 
 int16_t LSM_read_gyro_raw(uint8_t dimension) {
-	int8_t out_l, out_h;
+	uint8_t out_l, out_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
 		case LSM_GYRO_X:
@@ -78,7 +78,7 @@ float LSM_read_gyro_dps(uint8_t dimension) {
 }
 
 int16_t LSM_read_accel_raw(uint8_t dimension) {
-	int8_t out_l, out_h;
+	uint8_t out_l, out_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
 		case LSM_ACCEL_X:
@@ -108,7 +108,7 @@ float LSM_read_accel_g(uint8_t dimension) {
 }
 
 int16_t LSM_read_mag_raw(uint8_t dimension) {
-	int8_t out_l, out_h;
+	uint8_t out_l, out_h;
 	uint8_t reg_addr_l, reg_addr_h;
 	switch (dimension) {
 		case LSM_MAG_X:
@@ -400,6 +400,9 @@ void LSM_calc_a_res() {
 		case A_SCALE_8G:
 			LSM_a_res = 8.0f / 32768.0f;
 			break;
+		case A_SCALE_16G:
+			LSM_a_res = 24.0f / 32768.0f;
+			break;
 		default:
 			LSM_a_res = 1.0f;
 	}
@@ -424,22 +427,18 @@ void LSM_calc_m_res() {
 	}
 }
 
-int8_t LSM_read_reg_xlg(uint8_t reg_addr) {
+uint8_t LSM_read_reg_xlg(uint8_t reg_addr) {
 	// Write the register we want to read
 	// - Make a transmit buffer
-	uint8_t tx_size = 1;
-	uint8_t tx_buf[tx_size];
-	// - Set the register address
-	tx_buf[0] = reg_addr;
-	// - Write the register value
-	Chip_I2C_MasterSend(LSM_i2c_id, LSM_xlg_address, tx_buf, tx_size);
 
 	// Read the register value
 	// - Make a receive buffer
 	uint8_t rx_size = 1;
 	uint8_t rx_buf[rx_size];
 	// - Read the register value
-	Chip_I2C_MasterRead(LSM_i2c_id, LSM_xlg_address, rx_buf, rx_size);
+	if (Chip_I2C_MasterCmdRead(LSM_i2c_id, LSM_xlg_address, reg_addr, rx_buf, rx_size) == 0) {
+		rx_buf[0] = 0;
+	}
 
 	return rx_buf[0];
 }
@@ -456,22 +455,17 @@ void LSM_write_reg_xlg(uint8_t reg_addr, uint8_t data) {
 	Chip_I2C_MasterSend(LSM_i2c_id, LSM_xlg_address, tx_buf, tx_size);
 }
 
-int8_t LSM_read_reg_mag(uint8_t reg_addr) {
+uint8_t LSM_read_reg_mag(uint8_t reg_addr) {
 	// Write the register we want to read
 	// - Make a transmit buffer
-	uint8_t tx_size = 1;
-	uint8_t tx_buf[tx_size];
-	// - Set the register address
-	tx_buf[0] = reg_addr;
-	// - Write the register value
-	Chip_I2C_MasterSend(LSM_i2c_id, LSM_mag_address, tx_buf, tx_size);
-
 	// Read the register value
 	// - Make a receive buffer
 	uint8_t rx_size = 1;
 	uint8_t rx_buf[rx_size];
 	// - Read the register value
-	Chip_I2C_MasterRead(LSM_i2c_id, LSM_mag_address, rx_buf, rx_size);
+	if (Chip_I2C_MasterCmdRead(LSM_i2c_id, LSM_mag_address, reg_addr, rx_buf, rx_size) == 0) {
+		rx_buf[0] = 0;
+	}
 
 	return rx_buf[0];
 }
