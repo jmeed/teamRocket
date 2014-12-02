@@ -3,7 +3,7 @@ function stats = calc_stats(baro, imu)
 % Parameters
 m2ft = 3.28084;
 clock = 48e6;
-clock_scale = 5e4;
+clock_scale = 8e2;
 
 % Setup output
 stats.altitude_m = 0;%
@@ -25,7 +25,7 @@ gyro = imu(:,(5:7));
 mag = imu(:,(8:10));
 
 % Calculate altitude
-base_alt = min(alt);
+base_alt = mode(alt);
 top_alt = max(alt);
 stats.altitude_m = top_alt - base_alt;
 stats.altitude_ft = stats.altitude_m * m2ft;
@@ -39,10 +39,10 @@ t_imu_thrust = imu_t(i_t_imu_thrust);
 t_baro_flight = baro_t(i_t_baro_flight);
 
 % Get peak and average accel
-max_accel = max(accel_thrust(:,1));
-i_max = find(accel_thrust(:,1) == max_accel);
+max_sums = sum(accel_thrust,2);
+i_max = find(max_sums == max(max_sums));
+i_max = i_max(1);
 max_accel = accel_thrust(i_max,:);
-max_accel = max_accel(1,:);
 stats.peak_accel = sqrt(sum(max_accel.^2)) - 1;
 avg_accel = mean(accel_thrust);
 stats.avg_accel = sqrt(sum(avg_accel.^2)) - 1;
