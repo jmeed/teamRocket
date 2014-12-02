@@ -95,7 +95,7 @@ void H3L_init_accel();
 void H3L_calc_a_res();
 
 // Read from a register on the device
-int8_t H3L_read_reg(uint8_t reg_addr);
+uint8_t H3L_read_reg(uint8_t reg_addr);
 
 // Write to a register on the device
 void H3L_write_reg(uint8_t reg_addr, uint8_t data);

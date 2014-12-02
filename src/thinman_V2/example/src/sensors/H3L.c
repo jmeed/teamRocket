@@ -107,22 +107,17 @@ void H3L_calc_a_res() {
 	}
 }
 
-int8_t H3L_read_reg(uint8_t reg_addr) {
+uint8_t H3L_read_reg(uint8_t reg_addr) {
 	// Write the register we want to read
 	// - Make a transmit buffer
-	uint8_t tx_size = 1;
-	uint8_t tx_buf[tx_size];
-	// - Set the register address
-	tx_buf[0] = reg_addr;
-	// - Write the register value
-	Chip_I2C_MasterSend(H3L_i2c_id, H3L_slave_address >> 1, tx_buf, tx_size);
-
 	// Read the register value
 	// - Make a receive buffer
 	uint8_t rx_size = 1;
 	uint8_t rx_buf[rx_size];
 	// - Read the register value
-	Chip_I2C_MasterRead(H3L_i2c_id, (H3L_slave_address | 0x01) >> 1, rx_buf, rx_size);
+	if (Chip_I2C_MasterCmdRead(H3L_i2c_id, H3L_slave_address >> 1, reg_addr, rx_buf, rx_size) == 0) {
+		rx_buf[0] = 0;
+	}
 
 	return rx_buf[0];
 }
