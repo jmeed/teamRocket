@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14sp"
+        android:text="@string/flight_data_desc" />
+
+    <Button
+        android:id="@+id/third_past_flight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/second_past_flight"
+        android:layout_toRightOf="@+id/second_past_flight"
+        android:text="@string/third_past_flight"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/second_past_flight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/first_past_flight"
+        android:layout_alignBottom="@+id/first_past_flight"
+        android:layout_toRightOf="@+id/first_past_flight"
+        android:text="@string/second_past_flight"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/most_recent_flight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/most_recent_flight"
+        android:textSize="12sp"
+        android:onClick="refresh_most_recent_flight" />
+
+    <TextView
+        android:id="@+id/text_descent_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/text_avg_acceleration"
+        android:layout_below="@+id/text_avg_acceleration"
+        android:layout_marginTop="16dp"
+        android:text="@string/descent_rate" />
+
+    <TextView
+        android:id="@+id/text_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/text_descent_rate"
+        android:layout_below="@+id/text_descent_rate"
+        android:layout_marginTop="16dp"
+        android:text="@string/duration" />
+    
+    <TextView
+        android:id="@+id/text_max_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/text_duration"
+        android:layout_below="@+id/text_duration"
+        android:layout_marginTop="16dp"
+        android:text="@string/max_speed" />
+    
+    <TextView
+        android:id="@+id/data_avg_acceleration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text_avg_acceleration"
+        android:layout_marginLeft="27dp"
+        android:layout_toRightOf="@+id/text_avg_acceleration" />
+    
+    <TextView
+        android:id="@+id/data_max_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text_max_speed"
+        android:layout_marginLeft="27dp"
+        android:layout_toRightOf="@+id/text_max_speed" />
+    
+    <TextView
+        android:id="@+id/data_descent_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text_descent_rate"
+        android:layout_marginLeft="27dp"
+        android:layout_toRightOf="@+id/text_descent_rate" />
+    
+    <TextView
+        android:id="@+id/data_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text_duration"
+        android:layout_marginLeft="27dp"
+        android:layout_toRightOf="@+id/text_duration" />
+
+    <TextView
+        android:id="@+id/avg_acceleration_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_avg_acceleration"
+        android:layout_alignBottom="@+id/data_avg_acceleration"
+        android:layout_alignLeft="@+id/max_acceleration_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/descent_rate_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_duration"
+        android:layout_alignLeft="@+id/avg_acceleration_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/duration_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_max_speed"
+        android:layout_alignLeft="@+id/descent_rate_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/speed_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_max_speed"
+        android:layout_alignBottom="@+id/data_max_speed"
+        android:layout_alignLeft="@+id/duration_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/first_past_flight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/most_recent_flight"
+        android:layout_alignBottom="@+id/most_recent_flight"
+        android:layout_toRightOf="@+id/most_recent_flight"
+        android:text="@string/first_past_flight"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/text_max_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/first_past_flight"
+        android:layout_below="@+id/most_recent_flight"
+        android:layout_marginTop="24dp"
+        android:text="@string/max_alt" />
+
+    <TextView
+        android:id="@+id/max_altitude_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_max_altitude"
+        android:layout_alignBottom="@+id/data_max_altitude"
+        android:layout_alignRight="@+id/third_past_flight"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/data_max_acceleration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/text_max_acceleration"
+        android:layout_alignLeft="@+id/data_avg_acceleration" />
+
+    <TextView
+        android:id="@+id/data_max_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/text_max_altitude"
+        android:layout_alignBottom="@+id/text_max_altitude"
+        android:layout_alignLeft="@+id/data_max_acceleration"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:id="@+id/text_max_acceleration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/text_max_altitude"
+        android:layout_marginTop="16dp"
+        android:text="@string/max_gs" />
+
+    <TextView
+        android:id="@+id/text_avg_acceleration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/second_past_flight"
+        android:layout_below="@+id/text_max_acceleration"
+        android:layout_marginTop="16dp"
+        android:text="@string/avg_gs" />
+
+    <TextView
+        android:id="@+id/max_acceleration_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_max_acceleration"
+        android:layout_alignBottom="@+id/data_max_acceleration"
+        android:layout_alignLeft="@+id/max_altitude_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+</RelativeLayout>

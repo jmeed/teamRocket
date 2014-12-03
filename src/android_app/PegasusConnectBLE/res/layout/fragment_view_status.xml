@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:text="@string/status_string" />
+
+    <CheckedTextView
+        android:id="@+id/checkedTextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:checkMark="@drawable/not_ready"
+        android:text="@string/wireless_board_detected" />
+
+    <CheckedTextView
+        android:id="@+id/checkedTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/checkedTextView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:checkMark="@drawable/not_ready"
+        android:text="@string/secondary_board_detected" />
+
+    <CheckedTextView
+        android:id="@+id/CheckedTextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/checkedTextView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
+        android:checkMark="@drawable/ready"
+        android:checked="false"
+        android:text="@string/secondary_board_detected" />
+
+</RelativeLayout>
