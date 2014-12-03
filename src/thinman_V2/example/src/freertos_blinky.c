@@ -162,19 +162,29 @@ static void prvSetupHardware(void)
 
 static bool volt_active;
 static bool gps_activated = false;
+static bool baro_running = false;
+static bool imu_running = false;
+static bool highg_running = false;
+const uint32_t neopixel_number_translation[] = {
+	0x1f0000, // R
+	0x001f00, // G
+	0x00001f, // B
+	0x000f0f, // C
+	0x0f000f, // M
+	0x0f0f00, // Y
+};
 static void vLEDTask1(void *pvParameters) {
-	int counter = 0;
+	uint32_t counter = 0;
+	uint32_t current_counter = 0;
 	while (1) {
-		switch (counter % 3) {
-		case 0:
-			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x1f0000));
-			break;
-		case 1:
-			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x0f0f00));
-			break;
-		case 2:
-			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x00001f));
-			break;
+		{
+			if (current_counter == 0) {
+				current_counter = xTaskGetTickCount() / 1000;
+				neopixel_set_color(0, 0);
+			} else {
+				neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(neopixel_number_translation[current_counter % 6]));
+				current_counter /= 6;
+			}
 		}
 
 		uint32_t sec_color = 0;
@@ -183,6 +193,15 @@ static void vLEDTask1(void *pvParameters) {
 		}
 		if (volt_active) {
 			sec_color += 0x001f00;
+		}
+		if (baro_running) {
+			sec_color += 0x00000a;
+		}
+		if (imu_running) {
+			sec_color += 0x00000a;
+		}
+		if (highg_running) {
+			sec_color += 0x00000a;
 		}
 		neopixel_set_color(1, NEOPIXEL_COLOR_FROM_RGB(sec_color));
 		gps_activated = false;
@@ -209,6 +228,7 @@ static void vBaro(void* pvParameters) {
 		LOG_INFO("LPS initialized");
 	} else {
 		LOG_ERROR("LPS failed to initialize");
+		vTaskSuspend(NULL);
 	}
 	LPS_enable();
 	strcpy(baro_str_buf, "BARO.TAB");
@@ -232,6 +252,7 @@ static void vBaro(void* pvParameters) {
 	}
 
 	int out;
+	baro_running = true;
 	while (true) {
 		float temp, alt;
 		temp = LPS_read_data(LPS_TEMPERATURE);
@@ -263,6 +284,7 @@ static void vIMU(void* pvParameters) {
 		LOG_INFO("IMU initialized");
 	} else {
 		LOG_ERROR("IMU failed to initialize");
+		vTaskSuspend(NULL);
 	}
 
 	int result;
@@ -285,6 +307,7 @@ static void vIMU(void* pvParameters) {
 		LOG_ERROR("Failed to open IMU log file");
 		vTaskSuspend(NULL);
 	}
+	imu_running = true;
 	for (;;) {
 		float ax, ay, az, gx, gy, gz, mx, my, mz;
 
@@ -324,6 +347,7 @@ static void vHighG(void* pvParameters) {
 		LOG_INFO("HighG initialized");
 	} else {
 		LOG_ERROR("HighG failed to initialize");
+		vTaskSuspend(NULL);
 	}
 
 	int result;
@@ -346,6 +370,7 @@ static void vHighG(void* pvParameters) {
 		LOG_ERROR("Failed to open HighG log file");
 		vTaskSuspend(NULL);
 	}
+	highg_running = true;
 	for (;;) {
 		float ax, ay, az;
 		while (!(H3L_read_reg(H3L_STATUS_REG) & 1));
@@ -540,7 +565,7 @@ static void vBootSystem(void* pvParameters) {
 	}
 
 	LOG_INFO("Starting real tasks");
-	xTaskCreate(vTaskDepthRecorder, "DepthRec", 156, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
+//	xTaskCreate(vTaskDepthRecorder, "DepthRec", 156, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
 	xTaskCreate(vFlushLogs, "vFlushLogs",
 				128, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
@@ -549,11 +574,11 @@ static void vBootSystem(void* pvParameters) {
 				128, NULL, (tskIDLE_PRIORITY + 1UL),
 				&monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(task_bluetooth_commands, "USBUART", 512, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
+	xTaskCreate(task_bluetooth_commands, "USBUART", 256, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vBaro, "Baro", 200, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
+	xTaskCreate(vBaro, "Baro", 256, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vIMU, "IMU", 512, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
+	xTaskCreate(vIMU, "IMU", 256, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
 
 	xTaskCreate(vHighG, "HighG", 256, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
 	xTaskCreate(vVolts, "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);

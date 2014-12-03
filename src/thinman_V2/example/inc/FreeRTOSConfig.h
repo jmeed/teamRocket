@@ -149,7 +149,7 @@ to all Cortex-M ports, and do not rely on any particular library functions. */
 header file. */
 void logging_config_assert_failed(const char* file, uint32_t line);
 void exit_error(int);
-#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); exit_error(ERROR_CODE_CONFIG_ASSERT_FAILED); logging_config_assert_failed(__FILE__, __LINE__); for( ;; ); }
+#define configASSERT( x ) if( ( x ) == 0 ) { exit_error(ERROR_CODE_CONFIG_ASSERT_FAILED); logging_config_assert_failed(__FILE__, __LINE__); for( ;; ); }
 
 #define configUSE_CUSTOM_TICK 0
 
