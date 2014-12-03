@@ -185,6 +185,7 @@ static void vLEDTask1(void *pvParameters) {
 			sec_color += 0x001f00;
 		}
 		neopixel_set_color(1, NEOPIXEL_COLOR_FROM_RGB(sec_color));
+		gps_activated = false;
 
 		vTaskDelay(1000);
 		counter += 1;
@@ -378,10 +379,15 @@ static void vHighG(void* pvParameters) {
 static void vGPS(void* pv) {
 	void Init_SC16IS752 (void);
 	void UART_Send_String(int16_t CHAN, const char* str);
+	void Set_GPIO_Dir(bits);
+	void Write_GPIO(data);
 	char Poll_UART_RHR(CHAN);
 
 	Init_SC16IS752();
 	UART_Send_String(0, "Hello World\r\n");
+
+	Set_GPIO_Dir(1 << 3);
+	Write_GPIO(1 << 3);
 
 	static FIL f_volts;
 	static char highg_str_buf[0x40];
@@ -417,7 +423,8 @@ static void vGPS(void* pv) {
 			}
 
 			f_putc(c, &f_volts);
-			if (c == '\n' || c == '\r') {
+			UART_Send_Char(0, c);
+			if (c == '\n') {
 				f_sync(&f_volts);
 			}
 			gps_activated = true;
@@ -477,6 +484,21 @@ static void vVolts(void* pv) {
 	}
 }
 
+static TaskHandle_t monitor_tasks[10];
+static uint32_t monitor_task_write_ptr;
+
+void vTaskDepthRecorder(void* pv) {
+	int i;
+	for (;;) {
+		for (i = 0; i < sizeof(monitor_tasks) / sizeof(*monitor_tasks); i++) {
+			if (monitor_tasks[i]) {
+				LOG_DEBUG("Task %s: watermark %d", pcTaskGetTaskName(monitor_tasks[i]), uxTaskGetStackHighWaterMark(monitor_tasks[i]));
+			}
+		}
+		vTaskDelay(2000);
+	}
+}
+
 static FATFS root_fs;
 static void vBootSystem(void* pvParameters) {
 	int result;
@@ -518,25 +540,27 @@ static void vBootSystem(void* pvParameters) {
 	}
 
 	LOG_INFO("Starting real tasks");
+	xTaskCreate(vTaskDepthRecorder, "DepthRec", 156, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vFlushLogs, (signed char *) "vFlushLogs",
-				256, NULL, (tskIDLE_PRIORITY + 2), NULL);
+	xTaskCreate(vFlushLogs, "vFlushLogs",
+				128, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
-				256, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
+	xTaskCreate(vLEDTask1, "vTaskLed1",
+				128, NULL, (tskIDLE_PRIORITY + 1UL),
+				&monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(task_bluetooth_commands, (signed char*) "USBUART", 1024, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	xTaskCreate(task_bluetooth_commands, "USBUART", 512, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, SENSOR_PRIORITY, NULL);
+	xTaskCreate(vBaro, "Baro", 200, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, SENSOR_PRIORITY, NULL);
+	xTaskCreate(vIMU, "IMU", 512, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vHighG, (signed char*) "HighG", 256, NULL, SENSOR_PRIORITY, NULL);
-	xTaskCreate(vVolts, (signed char*) "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
-	// xTaskCreate(vGPS, (signed char*) "GPS", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	xTaskCreate(vHighG, "HighG", 256, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
+	xTaskCreate(vVolts, "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
+	xTaskCreate(vGPS, "GPS", 156, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
+	LOG_INFO("Free memory %d", xPortGetFreeHeapSize());
 
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 	vTaskDelete(NULL);
@@ -555,17 +579,19 @@ int main(void)
 {
 	prvSetupHardware();
 
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 20);
 	debug_uart_init();
 	LOG_INFO("Initializing hardware");
-	hardware_init();
-
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, true);
+	hardware_init();
+	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, true);
+
 
 	/* LED1 toggle thread */
 
 	LOG_INFO("Starting tasks");
 
-	xTaskCreate(vBootSystem, NULL, 256, NULL, (tskIDLE_PRIORITY + 2), NULL);
+	xTaskCreate(vBootSystem, "Boot", 256, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
 	LOG_INFO("Tasks created; Starting scheduler");
 	/* Start the scheduler */

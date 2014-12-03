@@ -36,7 +36,7 @@ int __sys_readc(void) {
 //
 //	return read_buffer[buf_index++];
 	int c = uart0_readchar();
-	printf("%c", c);
+//	printf("%c", c);
 	return c;
 }
 
