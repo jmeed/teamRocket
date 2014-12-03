@@ -416,7 +416,7 @@ static void vHighG(void* pvParameters) {
 
 static void vGPS(void* pv) {
 	i2c_uart_init();
-	i2c_uart_send_string(I2C_UART_CHANA, "Hello World\r\n");
+//	i2c_uart_send_string(I2C_UART_CHANA, "Hello World\r\n");
 
 	i2c_uart_set_gpio_direction(1 << 3);
 	i2c_uart_write_gpio(1 << 3);
@@ -458,7 +458,7 @@ static void vGPS(void* pv) {
 			}
 
 			f_putc(c, &f_volts);
-			i2c_uart_send_byte(I2C_UART_CHANA, c);
+//			i2c_uart_send_byte(I2C_UART_CHANA, c);
 			if (c == '\n') {
 				f_sync(&f_volts);
 				line_broken = true;
@@ -469,10 +469,10 @@ static void vGPS(void* pv) {
 		}
 		if (line_broken) {
 			static char imu_out_buf[40];
-			sprintf(imu_out_buf, "S,IMUACC,%f,%f,%f", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
+			sprintf(imu_out_buf, "S,IMUACC,%.2f,%.2f,%.2f", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
 			i2c_uart_send_string(I2C_UART_CHANA, imu_out_buf);
 		}
-		vTaskDelayUntil(&xLastWakeTime, 500);
+		vTaskDelayUntil(&xLastWakeTime, 30);
 	}
 }
 
