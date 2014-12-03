@@ -9,10 +9,9 @@
  */
 extern uint32_t logging_counter;
 #define LOG_CRITICAL(msg, ...) { \
-	char buffer[50]; \
-	uart0_write_string_critical("CRITICAL "); \
-	sprintf(buffer, msg, ##__VA_ARGS__); \
-	uart0_write_string_critical(buffer); \
+	vTaskSuspendAll(); \
+	LOG_NORMAL("CRITICAL ", msg, ##__VA_ARGS__); \
+	logging_flush_persistent(); \
 }
 #define LOG_NORMAL(type, msg, ...) {\
 	logging_enter(); \

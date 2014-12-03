@@ -134,6 +134,7 @@ void morsePause() {
 
 void blink_error_code(int code) {
 	// Morse code
+	morsePlay("SOS");
 	for(;;) {
 		morseInt(code);
 		morsePause();

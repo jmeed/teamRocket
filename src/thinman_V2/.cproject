@@ -90,7 +90,7 @@
 					<sourceEntries>
 						<entry excluding="src/drivers/usb.h|src/drivers/usb.c|src/drivers/cdc_vcom.h|src/drivers/cdc_desc.c|src/drivers/cdc_vcom.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="example"/>
 						<entry excluding="option" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="fatfs"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="freertos"/>
+						<entry excluding="src/heap_3.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="freertos"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

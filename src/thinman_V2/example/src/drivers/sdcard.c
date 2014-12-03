@@ -16,7 +16,7 @@ typedef struct {
 	int command; int response; int argument; int crc1; int crc2;
 } SDCardError;
 
-static SDCardError sdcard_errors[SDCARD_ERROR_LOG_SIZE] = {0};
+static SDCardError sdcard_errors[SDCARD_ERROR_LOG_SIZE];
 static size_t sdcard_error_count = 0;
 static void SDCardLogError(int command, int response, int argument, int crc1, int crc2) {
 	if (sdcard_error_count < SDCARD_ERROR_LOG_SIZE) {
@@ -82,7 +82,8 @@ void SDCardWaitIdle() {
 
 int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer, size_t recvSize) {
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 2, !Chip_GPIO_GetPinState(LPC_GPIO, 0, 2));
-	xSemaphoreTake(xMutexSDCard, portMAX_DELAY);
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)
+		xSemaphoreTake(xMutexSDCard, portMAX_DELAY);
 	int result = SDCARD_ERROR_GENERIC;
 	int wait = SDCARD_SPI_MAX_WAIT;
 	int i;
@@ -172,7 +173,8 @@ int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer
 	}
  finish:
 	SDCardClearSS();
-	xSemaphoreGive(xMutexSDCard);
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)
+		xSemaphoreGive(xMutexSDCard);
 	return result;
 
 }
@@ -387,6 +389,7 @@ static int SDCardWriteSectorInternal(const uint8_t* buffer, uint32_t sector) {
 int SDCardWriteSector(const uint8_t* buffer, uint32_t sector) {
 	int retry_limit = SDCARD_WRITE_CRC_FAIL_RETRY;
 	int result;
+	Chip_GPIO_SetPinToggle(LPC_GPIO, 0, 20);
 	while (retry_limit > 0) {
 		result = SDCardWriteSectorInternal(buffer, sector);
 		if (result == 11) { // CRC error
@@ -407,5 +410,6 @@ int SDCardDiskWrite(const uint8_t* buffer, uint32_t sector, size_t count) {
 		sector ++;
 		count --;
 	}
+	Chip_GPIO_SetPinOutLow(LPC_GPIO, 0, 20);
 	return result;
 }

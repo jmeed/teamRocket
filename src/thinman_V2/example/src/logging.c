@@ -63,11 +63,13 @@ void logging_flush_persistent() {
 }
 
 void logging_enter(void) {
-	xSemaphoreTake(logging_mutex, portMAX_DELAY);
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)
+		xSemaphoreTake(logging_mutex, portMAX_DELAY);
 }
 
 void logging_exit(void) {
-	xSemaphoreGive(logging_mutex);
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)
+		xSemaphoreGive(logging_mutex);
 }
 
 void logging_config_assert_failed(const char* file, uint32_t line) {

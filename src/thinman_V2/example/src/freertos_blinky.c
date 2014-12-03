@@ -48,6 +48,7 @@
 #include "drivers/S25FL.h"
 #include "drivers/i2c.h"
 #include "drivers/firing_board.h"
+#include "drivers/i2c_uart.h"
 #include "sensors/LPS.h"
 #include "sensors/LSM.h"
 #include "sensors/H3L.h"
@@ -162,19 +163,29 @@ static void prvSetupHardware(void)
 
 static bool volt_active;
 static bool gps_activated = false;
+static bool baro_running = false;
+static bool imu_running = false;
+static bool highg_running = false;
+const uint32_t neopixel_number_translation[] = {
+	0x1f0000, // R
+	0x001f00, // G
+	0x00001f, // B
+	0x000f0f, // C
+	0x0f000f, // M
+	0x0f0f00, // Y
+};
 static void vLEDTask1(void *pvParameters) {
-	int counter = 0;
+	uint32_t counter = 0;
+	uint32_t current_counter = 0;
 	while (1) {
-		switch (counter % 3) {
-		case 0:
-			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x1f0000));
-			break;
-		case 1:
-			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x0f0f00));
-			break;
-		case 2:
-			neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(0x00001f));
-			break;
+		{
+			if (current_counter == 0) {
+				current_counter = xTaskGetTickCount() / 1000;
+				neopixel_set_color(0, 0);
+			} else {
+				neopixel_set_color(0, NEOPIXEL_COLOR_FROM_RGB(neopixel_number_translation[current_counter % 6]));
+				current_counter /= 6;
+			}
 		}
 
 		uint32_t sec_color = 0;
@@ -184,7 +195,17 @@ static void vLEDTask1(void *pvParameters) {
 		if (volt_active) {
 			sec_color += 0x001f00;
 		}
+		if (baro_running) {
+			sec_color += 0x00000a;
+		}
+		if (imu_running) {
+			sec_color += 0x00000a;
+		}
+		if (highg_running) {
+			sec_color += 0x00000a;
+		}
 		neopixel_set_color(1, NEOPIXEL_COLOR_FROM_RGB(sec_color));
+		gps_activated = false;
 
 		vTaskDelay(1000);
 		counter += 1;
@@ -208,6 +229,7 @@ static void vBaro(void* pvParameters) {
 		LOG_INFO("LPS initialized");
 	} else {
 		LOG_ERROR("LPS failed to initialize");
+		vTaskSuspend(NULL);
 	}
 	LPS_enable();
 	strcpy(baro_str_buf, "BARO.TAB");
@@ -231,6 +253,7 @@ static void vBaro(void* pvParameters) {
 	}
 
 	int out;
+	baro_running = true;
 	while (true) {
 		float temp, alt;
 		temp = LPS_read_data(LPS_TEMPERATURE);
@@ -254,6 +277,20 @@ static void vBaro(void* pvParameters) {
 	}
 }
 
+typedef struct {
+	float ax;
+	float ay;
+	float az;
+	float gx;
+	float gy;
+	float gz;
+	float mx;
+	float my;
+	float mz;
+} imu_measurements_t;
+
+
+static imu_measurements_t imu_measurements;
 static void vIMU(void* pvParameters) {
 	static FIL f_imu_log;
 	static char imu_str_buf[0x40];
@@ -262,6 +299,7 @@ static void vIMU(void* pvParameters) {
 		LOG_INFO("IMU initialized");
 	} else {
 		LOG_ERROR("IMU failed to initialize");
+		vTaskSuspend(NULL);
 	}
 
 	int result;
@@ -284,26 +322,25 @@ static void vIMU(void* pvParameters) {
 		LOG_ERROR("Failed to open IMU log file");
 		vTaskSuspend(NULL);
 	}
+	imu_running = true;
 	for (;;) {
-		float ax, ay, az, gx, gy, gz, mx, my, mz;
-
 		while (!(LSM_read_reg_xlg(LSM_STATUS_REG1_XL) & 1));
-		ax = LSM_read_accel_g(LSM_ACCEL_X);
-		ay = LSM_read_accel_g(LSM_ACCEL_Y);
-		az = LSM_read_accel_g(LSM_ACCEL_Z);
+		imu_measurements.ax = LSM_read_accel_g(LSM_ACCEL_X);
+		imu_measurements.ay = LSM_read_accel_g(LSM_ACCEL_Y);
+		imu_measurements.az = LSM_read_accel_g(LSM_ACCEL_Z);
 		while (!(LSM_read_reg_xlg(LSM_STATUS_REG1_XL) & 2));
-		gx = LSM_read_gyro_dps(LSM_GYRO_X);
-		gy = LSM_read_gyro_dps(LSM_GYRO_Y);
-		gz = LSM_read_gyro_dps(LSM_GYRO_Z);
+		imu_measurements.gx = LSM_read_gyro_dps(LSM_GYRO_X);
+		imu_measurements.gy = LSM_read_gyro_dps(LSM_GYRO_Y);
+		imu_measurements.gz = LSM_read_gyro_dps(LSM_GYRO_Z);
 		while (!(LSM_read_reg_mag(LSM_STATUS_REG_M) & 8));
-		mx = LSM_read_mag_gs(LSM_MAG_X);
-		my = LSM_read_mag_gs(LSM_MAG_Y);
-		mz = LSM_read_mag_gs(LSM_MAG_Z);
+		imu_measurements.mx = LSM_read_mag_gs(LSM_MAG_X);
+		imu_measurements.my = LSM_read_mag_gs(LSM_MAG_Y);
+		imu_measurements.mz = LSM_read_mag_gs(LSM_MAG_Z);
 
 		if (result == FR_OK) {
-			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx);
+			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), imu_measurements.ax, imu_measurements.ay, imu_measurements.az, imu_measurements.gx);
 			f_puts(imu_str_buf, &f_imu_log);
-			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", gy, gz, mx, my, mz);
+			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", imu_measurements.gy, imu_measurements.gz, imu_measurements.mx, imu_measurements.my, imu_measurements.mz);
 			f_puts(imu_str_buf, &f_imu_log);
 			if ((counter % 100) == 0) {
 				f_sync(&f_imu_log);
@@ -323,6 +360,7 @@ static void vHighG(void* pvParameters) {
 		LOG_INFO("HighG initialized");
 	} else {
 		LOG_ERROR("HighG failed to initialize");
+		vTaskSuspend(NULL);
 	}
 
 	int result;
@@ -345,6 +383,7 @@ static void vHighG(void* pvParameters) {
 		LOG_ERROR("Failed to open HighG log file");
 		vTaskSuspend(NULL);
 	}
+	highg_running = true;
 	for (;;) {
 		float ax, ay, az;
 		while (!(H3L_read_reg(H3L_STATUS_REG) & 1));
@@ -376,12 +415,11 @@ static void vHighG(void* pvParameters) {
 }
 
 static void vGPS(void* pv) {
-	void Init_SC16IS752 (void);
-	void UART_Send_String(int16_t CHAN, const char* str);
-	char Poll_UART_RHR(CHAN);
+	i2c_uart_init();
+	i2c_uart_send_string(I2C_UART_CHANA, "Hello World\r\n");
 
-	Init_SC16IS752();
-	UART_Send_String(0, "Hello World\r\n");
+	i2c_uart_set_gpio_direction(1 << 3);
+	i2c_uart_write_gpio(1 << 3);
 
 	static FIL f_volts;
 	static char highg_str_buf[0x40];
@@ -408,21 +446,33 @@ static void vGPS(void* pv) {
 		vTaskSuspend(NULL);
 	}
 
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+	bool line_broken = true;
+
 	for(;;) {
-		char c;
+		int c;
 		while(1) {
-			c = Poll_UART_RHR(1);
-			if (c == 0) {
+			c = i2c_uart_readc(I2C_UART_CHANB);
+			if (c < 0) {
 				break;
 			}
 
 			f_putc(c, &f_volts);
-			if (c == '\n' || c == '\r') {
+			i2c_uart_send_byte(I2C_UART_CHANA, c);
+			if (c == '\n') {
 				f_sync(&f_volts);
+				line_broken = true;
+			} else {
+				line_broken = false;
 			}
 			gps_activated = true;
 		}
-		vTaskDelay(500);
+		if (line_broken) {
+			static char imu_out_buf[40];
+			sprintf(imu_out_buf, "S,IMUACC,%f,%f,%f", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
+			i2c_uart_send_string(I2C_UART_CHANA, imu_out_buf);
+		}
+		vTaskDelayUntil(&xLastWakeTime, 500);
 	}
 }
 
@@ -477,6 +527,21 @@ static void vVolts(void* pv) {
 	}
 }
 
+static TaskHandle_t monitor_tasks[10];
+static uint32_t monitor_task_write_ptr;
+
+void vTaskDepthRecorder(void* pv) {
+	int i;
+	for (;;) {
+		for (i = 0; i < sizeof(monitor_tasks) / sizeof(*monitor_tasks); i++) {
+			if (monitor_tasks[i]) {
+				LOG_DEBUG("Task %s: watermark %d", pcTaskGetTaskName(monitor_tasks[i]), uxTaskGetStackHighWaterMark(monitor_tasks[i]));
+			}
+		}
+		vTaskDelay(2000);
+	}
+}
+
 static FATFS root_fs;
 static void vBootSystem(void* pvParameters) {
 	int result;
@@ -518,25 +583,27 @@ static void vBootSystem(void* pvParameters) {
 	}
 
 	LOG_INFO("Starting real tasks");
+//	xTaskCreate(vTaskDepthRecorder, "DepthRec", 156, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vFlushLogs, (signed char *) "vFlushLogs",
-				256, NULL, (tskIDLE_PRIORITY + 2), NULL);
+	xTaskCreate(vFlushLogs, "vFlushLogs",
+				128, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vLEDTask1, (signed char *) "vTaskLed1",
-				256, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
+	xTaskCreate(vLEDTask1, "vTaskLed1",
+				128, NULL, (tskIDLE_PRIORITY + 1UL),
+				&monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(task_bluetooth_commands, (signed char*) "USBUART", 1024, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	xTaskCreate(task_bluetooth_commands, "USBUART", 256, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vBaro, (signed char*) "Baro", 256, NULL, SENSOR_PRIORITY, NULL);
+	xTaskCreate(vBaro, "Baro", 256, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vIMU, (signed char*) "IMU", 512, NULL, SENSOR_PRIORITY, NULL);
+	xTaskCreate(vIMU, "IMU", 256, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
 
-	xTaskCreate(vHighG, (signed char*) "HighG", 256, NULL, SENSOR_PRIORITY, NULL);
-	xTaskCreate(vVolts, (signed char*) "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
-	// xTaskCreate(vGPS, (signed char*) "GPS", 256, NULL, (tskIDLE_PRIORITY + 1UL), NULL);
+	xTaskCreate(vHighG, "HighG", 256, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
+	xTaskCreate(vVolts, "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
+	xTaskCreate(vGPS, "GPS", 256, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
+	LOG_INFO("Free memory %d", xPortGetFreeHeapSize());
 
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, false);
 	vTaskDelete(NULL);
@@ -555,17 +622,19 @@ int main(void)
 {
 	prvSetupHardware();
 
+	Chip_GPIO_SetPinDIROutput(LPC_GPIO, 0, 20);
 	debug_uart_init();
 	LOG_INFO("Initializing hardware");
-	hardware_init();
-
 	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, true);
+	hardware_init();
+	Chip_GPIO_SetPinState(LPC_GPIO, 0, 20, true);
+
 
 	/* LED1 toggle thread */
 
 	LOG_INFO("Starting tasks");
 
-	xTaskCreate(vBootSystem, NULL, 256, NULL, (tskIDLE_PRIORITY + 2), NULL);
+	xTaskCreate(vBootSystem, "Boot", 256, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
 	LOG_INFO("Tasks created; Starting scheduler");
 	/* Start the scheduler */
