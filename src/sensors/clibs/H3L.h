@@ -63,6 +63,7 @@ enum H3L_accel_scale H3L_a_scale;
 // Conversion factor (sensor scale) / (2^15)
 float H3L_a_res;
 
+// Initializes the device with the I2C device, and the scale/data rate
 int H3L_init(I2C_ID_T id_in, enum H3L_accel_scale a_sc, enum H3L_accel_odr a_odr);
 
 // Read accelerometer values
@@ -79,7 +80,6 @@ void H3L_set_accel_odr(enum H3L_accel_odr a_odr);
 void H3L_configure_int_1(uint8_t int1_cfg, uint8_t int1_ths, uint8_t duration);
 // Configure the device's second interrupt. Check datasheet for register values
 void H3L_configure_int_2(uint8_t int2_cfg, uint8_t int2_ths, uint8_t duration);
-
 
 // Sets up the accelerometer to begin reading.
 //	- H3L_CTRL_REG1 = 0x3F: Normal power, 1000 Hz ODR, all axes enabled
