@@ -18,6 +18,7 @@ typedef struct {
 	xSemaphoreHandle mutex;
 	xSemaphoreHandle sem_ready;
 	Chip_SSP_DATA_SETUP_T xf_setup;
+	bool ready;
 } spi_device_t;
 
 #define SPI_DEVICE_COUNT 2

@@ -54,9 +54,8 @@ static void spi_interrupt_transceive(spi_device_t* device) {
 		Chip_SSP_Int_Enable(device->ssp_device);	/* enable all interrupts */
 	}
 	else {
-		portBASE_TYPE woken = pdFALSE;
-		xSemaphoreGiveFromISR(device->sem_ready, &woken);
-		portYIELD_FROM_ISR(woken);
+		xSemaphoreGiveFromISR(device->sem_ready, NULL);
+		device->ready = true;
 	}
 }
 
@@ -69,7 +68,8 @@ void SSP1_IRQHandler(void) {
 }
 
 static void spi_transceive_internal(spi_device_t* device, uint8_t* read_buffer, const uint8_t* write_buffer, size_t size) {
-	xSemaphoreTake(device->mutex, portMAX_DELAY);
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)
+		xSemaphoreTake(device->mutex, portMAX_DELAY);
 	device->xf_setup.rx_data = read_buffer;
 	device->xf_setup.tx_data = (void*) write_buffer;
 	device->xf_setup.length = size;
@@ -82,9 +82,18 @@ static void spi_transceive_internal(spi_device_t* device, uint8_t* read_buffer, 
 
 	// Wait till done
 
-	xSemaphoreTake(device->sem_ready, portMAX_DELAY);
+	device->ready = false;
 
-	xSemaphoreGive(device->mutex);
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+		xSemaphoreTake(device->sem_ready, portMAX_DELAY);
+	} else {
+		while (!device->ready) {
+			Chip_GPIO_SetPinToggle(LPC_GPIO, 0, 20);
+		}
+	}
+
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)
+		xSemaphoreGive(device->mutex);
 }
 
 void spi_transceive(spi_device_t* device, uint8_t* buffer, size_t size) {

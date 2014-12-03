@@ -42,6 +42,7 @@
 I2C_ID_T LPS_i2c_id;
 uint8_t LPS_slave_address;
 
+// Initialize the device with the I2C device ID
 int LPS_init(I2C_ID_T id_in);
 
 // Dimensions are LPS_ALTITUDE and LPS_TEMPERATURE for this sensor

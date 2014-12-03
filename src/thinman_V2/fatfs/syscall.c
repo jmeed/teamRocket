@@ -5,6 +5,8 @@
 
 #include <stdlib.h>		/* ANSI memory controls */
 //#include <malloc.h>		/* ANSI memory controls */
+#include <FreeRTOS.h>
+#include <task.h>
 
 #include "ff.h"
 
@@ -93,7 +95,11 @@ int ff_req_grant (	/* TRUE:Got a grant to access the volume, FALSE:Could not get
 //	OSMutexPend(sobj, _FS_TIMEOUT, &err));		/* uC/OS-II */
 //	ret = (int)(err == OS_NO_ERR);
 
-	ret = (int)(xSemaphoreTake(sobj, _FS_TIMEOUT) == pdTRUE);	/* FreeRTOS */
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+		ret = (int)(xSemaphoreTake(sobj, _FS_TIMEOUT) == pdTRUE);	/* FreeRTOS */
+	} else {
+		return true;
+	}
 
 	return ret;
 }
@@ -116,7 +122,11 @@ void ff_rel_grant (
 
 //	OSMutexPost(sobj);		/* uC/OS-II */
 
-	xSemaphoreGive(sobj);	/* FreeRTOS */
+	if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+		xSemaphoreGive(sobj);	/* FreeRTOS */
+	} else {
+		// pass
+	}
 }
 
 #endif

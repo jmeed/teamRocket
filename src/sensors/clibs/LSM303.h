@@ -80,6 +80,7 @@
 I2C_ID_T LSM303_i2c_id;
 uint8_t LSM303_slave_address;
 
+// Initializes the device with the I2C device ID
 int LSM303_init(I2C_ID_T id_in);
 
 // Dimensions are LSM303_ACCEL_X, LSM303_ACCEL_Y, LSM303_ACCEL_Z,
@@ -102,20 +103,19 @@ the registers it writes to.
 */
 void LSM303_enable();
 
-// Read data
+// Read data - called interally by LSM303_read_data()
 int16_t LSM303_read_accel_raw(uint8_t dimension);
 float LSM303_read_accel_g(uint8_t dimension);
 int16_t LSM303_read_mag_raw(uint8_t dimension);
 float LSM303_read_mag_gauss(uint8_t dimension);
 int16_t LSM303_read_temperature_raw();
-// Using same raw conversion as LPS sensor, probably needs calibration
 float LSM303_read_temperature_C();
 
 // Low level register work
 uint8_t LSM303_read_reg(uint8_t reg_addr);
 void LSM303_write_reg(uint8_t reg_addr, uint8_t data);
 
-// Unused
+// Unused, detects if the device is present on the I2C bus
 //bool detect_device();
 
 #endif /* LSM303_H */

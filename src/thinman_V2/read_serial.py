@@ -3,7 +3,7 @@ import sys
 import threading
 import time
 
-sp = serial.Serial('COM3', 9600, timeout=0.1, writeTimeout=None)
+sp = serial.Serial('COM7', 115200, timeout=0.1, writeTimeout=None)
 
 BUF_SIZE = 512
 

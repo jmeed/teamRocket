@@ -79,7 +79,7 @@
 #define configTICK_RATE_HZ				( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES			( ( unsigned portBASE_TYPE ) 8 )
 #define configMINIMAL_STACK_SIZE		( ( unsigned short ) 64 )
-#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 1024 + 512) )
+#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 20 * 1024 ) )
 #define configMAX_TASK_NAME_LEN			( 10 )
 #define configUSE_TRACE_FACILITY		1
 #define configUSE_16_BIT_TICKS			0
@@ -119,6 +119,8 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelay				1
 #define INCLUDE_xTaskGetCurrentTaskHandle 1
 #define INCLUDE_xTaskGetSchedulerState 1
+#define INCLUDE_pcTaskGetTaskName 1
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
 
 /* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS
@@ -147,7 +149,7 @@ to all Cortex-M ports, and do not rely on any particular library functions. */
 header file. */
 void logging_config_assert_failed(const char* file, uint32_t line);
 void exit_error(int);
-#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); logging_config_assert_failed(__FILE__, __LINE__); exit_error(ERROR_CODE_CONFIG_ASSERT_FAILED); for( ;; ); }
+#define configASSERT( x ) if( ( x ) == 0 ) { exit_error(ERROR_CODE_CONFIG_ASSERT_FAILED); logging_config_assert_failed(__FILE__, __LINE__); for( ;; ); }
 
 #define configUSE_CUSTOM_TICK 0
 

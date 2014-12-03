@@ -27,8 +27,8 @@ static void bluetooth_event(EVENT_TYPE_T event) {
 		LOG_INFO("Bluetooth Connected");
 		bluetooth_mldp_active = true;
 	} else if (event == BT_EVENT_DISCONNECTED) {
-		LOG_INFO("Bluetooth Disconnected. Rebooting");
-		fprintf(stderr, "R,1\n");
+		LOG_INFO("Bluetooth Disconnected.");
+		// fprintf(stderr, "R,1\n");
 		bluetooth_mldp_active = false;
 	}
 }
@@ -41,6 +41,7 @@ static void bluetooth_handle_command(const char* command_line) {
 	static FIL t_file;
 	FRESULT res;
 
+	if (strlen(command_line) == 0) return;
 	if (sscanf(command_line, "%5s", command) == 0) return;
 
 	if (strcmp(command, "ls") == 0) {
@@ -152,10 +153,10 @@ void task_bluetooth_commands(void* pvParameters) {
 	vTaskDelay(1000);
 	Chip_UART0_SetBaud(LPC_USART0, 9600);
 	fprintf(stderr, "\n");
-	fprintf(stderr, "SN,ROCKET\n");
-	fprintf(stderr, "S-,RocketBrd\n");
+//	fprintf(stderr, "SN,ROCKET\n");
+	fprintf(stderr, "SN,RocketBrd\n");
 	fprintf(stderr, "U\n");
-	fprintf(stderr, "SR,30200800\n");
+	fprintf(stderr, "SR,30000800\n");
 	fprintf(stderr, "A\n");
 	fprintf(stderr, "R,1\n");
 
@@ -167,13 +168,11 @@ void task_bluetooth_commands(void* pvParameters) {
 			if (line_buffer[0] == 0 && line_buffer[1] != 0) {
 				LOG_INFO("extras %s", &line_buffer[1]);
 			}
-			if (line_buffer[0] == 0 && strcmp(&line_buffer[1], "Connected\r\n") == 0) {
+			if (strcmp(&line_buffer[0], "Connected\r\n") == 0 || line_buffer[0] == 0 && strcmp(&line_buffer[1], "Connected\r\n") == 0) {
 				bluetooth_event(BT_EVENT_CONNECTED);
 			} else if (strcmp(line_buffer, "Connection End\r\n") == 0) {
 				bluetooth_event(BT_EVENT_DISCONNECTED);
-			}
-
-			if (bluetooth_mldp_active) {
+			} else if (bluetooth_mldp_active) {
 				bluetooth_handle_command(line_buffer);
 			}
 		}
