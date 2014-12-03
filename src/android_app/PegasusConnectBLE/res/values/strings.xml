@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Pegasus Connect</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="View_Status">View Status</string>
+    <string name="Set_Parameters">Set Parameters</string>
+    <string name="welcome_to_pegasus">Welcome to the Pegasus Connect Application.  This application allows you to pair your Pegasus board with your smartphone, allowing you to read both configuration and flight data from the device as well as to modify some of the configuration settings in the field.</string>
+    <string name="pair_your_pegasus">Pair Your Pegasus</string>
+    <string name="status_string">Here you can view the status of the device.</string>
+    <string name="wireless_board_detected">Wireless Board Detected</string>
+    <string name="secondary_board_detected">Secondary Board Detected</string>
+    <string name="pair_device">Here you can pair your Pegasus device with your Bluetooth enabled smartphone.  If the device is listed below, please tap the device - otherwise press &quot;Pair&quot; and restart your Pegasus device to make it discoverable.</string>
+    <string name="action_menu_home">Pegasus Connect Home</string>
+    <string name="view_flight_data">View Flight Data</string>
+    <string name="action_home">Pegasus Connect Home</string>
+    <string name="flight_data_desc">Here you can view the flight data from up to the last 5 flights recorded.  Use the buttons below to switch between them or refresh the data.</string>
+    <string name="choose_units">Use the buttons below to choose the units for the app, either metric or imperial.</string>
+    <string name="select_metric_units">Use Metric\nUnits</string>
+    <string name="select_imperial_units">Use Imperial\nUnits</string>
+    <string name="most_recent_flight">Most\nRecent</string>
+    <string name="first_past_flight">1 Flight\nAgo</string>
+    <string name="second_past_flight">2 Flights\nAgo</string>
+    <string name="third_past_flight">3 Flights\nAgo</string>
+    <string name="fourth_past_flight">4 Flights\nAgo</string>
+    <string name="max_alt">Maximum Altitude: </string>
+    <string name="max_gs">Maximum Acceleration: </string>
+    <string name="max_speed">Maximum Speed: </string>
+    <string name="avg_gs">Average Acceleration:</string>
+    <string name="descent_rate">Descent Rate: </string>
+    <string name="duration">Duration: </string>
+    <string name="seconds_unit">seconds</string>
+    <string name="authors">The Pegasus project was created by George Allen, Patrick D\'Agostino, Jonathan Meed, Arthur Rajala, and Yichen Zhao.</string>
+	<string name="selected_device">The currently paired device is:</string>
+	<string name="change_device">Press the button below to change the paired device.</string>
+	<string name="change_device_button">Change Device</string>
+	<string name="choose_device">Choose Device:</string>
+	<string name="Cancel">Cancel</string>
+	<string name="Accept">Accept</string>
+	<string name="Close">Close</string>
+    <string name="discoverable_desc">Or if you prefer to pair the devices from the other device, click the button below to make this device discoverable</string>
+    <string name="make_discoverable">Make Discoverable</string>
+    <string name="disconnect">Disconnect Device</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="mldp_not_supported">mldp not supported</string>
+    <string name="acceleration_units">G\'s</string>
+    <string name="units_placeholder">Units</string>
+</resources>
