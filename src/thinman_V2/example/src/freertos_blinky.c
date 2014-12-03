@@ -52,6 +52,7 @@
 #include "sensors/LSM.h"
 #include "sensors/H3L.h"
 #include "tasks/bluetooth_command.h"
+#include "tasks/volatile_flight_data.h"
 
 #define SDCARD_START_RETRY_LIMIT 10
 
@@ -236,6 +237,10 @@ static void vBaro(void* pvParameters) {
 		temp = LPS_read_data(LPS_TEMPERATURE);
 		alt = LPS_read_data(LPS_ALTITUDE);
 		if (result == FR_OK) {
+			if(alt > max_alt) {
+				max_alt = alt;
+			}
+			duration = xTaskGetTickCount() * 1000;
 			sprintf(baro_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), temp, alt);
 			if ((out = f_puts(baro_str_buf, &f_baro_log)) != strlen(baro_str_buf)) {
 				LOG_ERROR("Baro log failed %d", out);
@@ -301,6 +306,11 @@ static void vIMU(void* pvParameters) {
 		mz = LSM_read_mag_gs(LSM_MAG_Z);
 
 		if (result == FR_OK) {
+			if(ax > max_acc) {
+				max_acc = ax;
+			}
+			//Find average acceleration
+
 			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx);
 			f_puts(imu_str_buf, &f_imu_log);
 			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", gy, gz, mx, my, mz);
@@ -363,6 +373,10 @@ static void vHighG(void* pvParameters) {
 		}
 
 		if (result == FR_OK) {
+			if( ax > max_acc ) {
+				max_acc = ax;
+			}
+			//find average acceleration
 			sprintf(highg_str_buf, "%d\t%f\t%f\t%f\n", xTaskGetTickCount(), ax, ay, az);
 			f_puts(highg_str_buf, &f_highg_log);
 			if ((counter % 50) == 0) {
@@ -551,8 +565,18 @@ static void vBootSystem(void* pvParameters) {
  * @return	Nothing, function should not exit
  */
 
+
 int main(void)
 {
+
+	/* Initialize Globals */
+	max_spd = 0;
+	max_acc = 0;
+	max_alt = 0;
+	avg_acc = 0;
+	duration = 0;
+	descent_rate = 0;
+
 	prvSetupHardware();
 
 	debug_uart_init();

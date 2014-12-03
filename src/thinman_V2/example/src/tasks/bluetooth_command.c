@@ -12,6 +12,7 @@
 #include <ff.h>
 #include "./bluetooth_command.h"
 #include "logging.h"
+#include "volatile_flight_data.h"
 
 static bool bluetooth_mldp_active = false;
 static char line_buffer[80];
@@ -133,7 +134,13 @@ static void bluetooth_handle_command(const char* command_line) {
 
 		fail:
 		f_close(&t_file);
-	} else {
+	}  else if (strcmp(command, "fld") == 0) {
+		fprintf(stderr, "=F %f %f %f %f %f %f\n", max_alt, max_acc, avg_acc, descent_rate, duration, max_spd);
+	} else if (strcmp(command, "stat") == 0) {
+		fprintf(stderr, "=S Status Message\n");
+	} else if (strcmp(command, "par") == 0) {
+		fprintf(stderr, "=P Parameter Message\n");
+	}  else {
 		fprintf(stderr, "Invalid command %s\n", command);
 	}
 
