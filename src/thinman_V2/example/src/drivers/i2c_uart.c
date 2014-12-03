@@ -18,11 +18,8 @@
 #include <Chip.h>
 #include <stdint.h>
 #include <string.h>
+#include "./i2c_uart.h"
 #include "logging.h"
-
-typedef uint8_t byte;
-typedef int8_t int8;
-typedef int16_t int1;
 
 #define RHR          0x00 //  Recv Holding Register is 0x00 in READ Mode
 #define THR          0x00 //  Xmit Holding Register is 0x00 in WRITE Mode
@@ -52,119 +49,100 @@ typedef int16_t int1;
 //
 #define EFR          0x02  // Enhanced Function Register
 //
-#define I2CWRITE     0x00
-#define I2CREAD      0x01
-
-#define CHANA      0
-#define CHANB      1
-
-#define UART_ADDR 0x90
-
-
 //
 //***********************************************
-byte ReadUART(int8 RegAddr, int1 CHAN)   // Internal register address plus channel #(0 or 1)
-   { // returns byte read from the UART register
-   byte  data;
-   //
-   data = (RegAddr << 3) | (CHAN << 1);
-   Chip_I2C_MasterSend(I2C1, UART_ADDR >> 1, &data, 1);
-   Chip_I2C_MasterRead(I2C1, UART_ADDR >> 1, &data, 1);
-   return(data);
-   }
+static uint8_t i2c_uart_read_reg(uint8_t RegAddr, i2c_uart_channel_t CHAN)   // Internal register address plus channel #(0 or 1)
+{ // returns byte read from the UART register
+	uint8_t data, buffer;
+	data = (RegAddr << 3) | (CHAN << 1);
+	Chip_I2C_MasterCmdRead(I2C_UART_I2C_ID, UART_ADDR >> 1, data, &buffer, 1);
+	return buffer;
+}
  //
  //*********************************************
-void WriteUART(int8 RegAddr, int1 CHAN, byte Data) // Internal register address plus channel #(0 or 1)
-   { // sends data byte to selected UART register
+static void i2c_uart_write_reg(uint8_t RegAddr, i2c_uart_channel_t CHAN, uint8_t Data) // Internal register address plus channel #(0 or 1)
+{ // sends data byte to selected UART register
 
 	uint8_t buffer[2];
 	buffer[0] = (RegAddr << 3) | (CHAN << 1);
 	buffer[1] = Data;
-    Chip_I2C_MasterSend(I2C1, UART_ADDR >> 1, buffer, 2);
-   }
+    Chip_I2C_MasterSend(I2C_UART_I2C_ID, UART_ADDR >> 1, buffer, 2);
+}
 //
 //*********************************************
-void UART_Send_Char(int1 CHAN, byte Data) //channel #(0 or 1) plus the data byte to be sent
+void i2c_uart_send_byte(i2c_uart_channel_t CHAN, uint8_t Data) //channel #(0 or 1) plus the data byte to be sent
 { // send byte to UART Xmit via the I2C bus
-     WriteUART(THR, CHAN, Data);  // send data to UART Transmit Holding Register
+     i2c_uart_write_reg(THR, CHAN, Data);  // send data to UART Transmit Holding Register
 }
 
-void UART_Send_String(int1 CHAN, const char* str) {
+void i2c_uart_send_string(i2c_uart_channel_t CHAN, const char* str) {
 	int i;
 	for (i = 0; i < strlen(str); i++) {
-		UART_Send_Char(CHAN, str[i]);
+		i2c_uart_send_byte(CHAN, str[i]);
 	}
 }
 
-uint8_t UART_Read_TXLVL(int1 CHAN) {
-	return ReadUART(TXLVL, CHAN);
+uint8_t i2c_uart_get_tx_free(i2c_uart_channel_t CHAN) {
+	return i2c_uart_read_reg(TXLVL, CHAN);
 }
 //
 //*******************************************************
-void Init_SC16IS752 (void)
-  {
+void i2c_uart_init(void)
+{
   // This init routine initializes ChannelS A and B
   //
   // Channel A Setups
   //Prescaler in MCR defaults on MCU reset to the value of 1
-  WriteUART(LCR, CHANA, 0x80); // 0x80 to program baud rate divisor
-  WriteUART(DLL, CHANA, 0x4e); // 0x4e = 9600baud // 0x18=9600K, 0x06 =38,42K with X1=3.6864MHz
-  WriteUART(DLH, CHANA, 0x00); //
+  i2c_uart_write_reg(LCR, I2C_UART_CHANA, 0x80); // 0x80 to program baud rate divisor
+  i2c_uart_write_reg(DLL, I2C_UART_CHANA, 0x4e); // 0x4e = 9600baud // 0x18=9600K, 0x06 =38,42K with X1=3.6864MHz
+  i2c_uart_write_reg(DLH, I2C_UART_CHANA, 0x00); //
 //
-  WriteUART(LCR, CHANA, 0xBF); // access EFR register
-  WriteUART(EFR, CHANA, 0X10); // enable enhanced registers
+  i2c_uart_write_reg(LCR, I2C_UART_CHANA, 0xBF); // access EFR register
+  i2c_uart_write_reg(EFR, I2C_UART_CHANA, 0X10); // enable enhanced registers
   //
-  WriteUART(LCR, CHANA, 0x03); // 8 data bits, 1 stop bit, no parity
-  WriteUART(FCR, CHANA, 0x07); // reset TXFIFO, reset RXFIFO, enable FIFO mode
+  i2c_uart_write_reg(LCR, I2C_UART_CHANA, 0x03); // 8 data bits, 1 stop bit, no parity
+  i2c_uart_write_reg(FCR, I2C_UART_CHANA, 0x07); // reset TXFIFO, reset RXFIFO, enable FIFO mode
 
   // Channel B Setups
   //Prescaler in MCR defaults on MCU reset to the value of 1
-  WriteUART(LCR, CHANB, 0x80); // 0x80 to program baud rate divisor
-  WriteUART(DLL, CHANB, 0x4e); // 0x18=9600K, 0x06 =38,42K with X1=3.6864MHz
-  WriteUART(DLH, CHANB, 0x00); //
+  i2c_uart_write_reg(LCR, I2C_UART_CHANB, 0x80); // 0x80 to program baud rate divisor
+  i2c_uart_write_reg(DLL, I2C_UART_CHANB, 0x4e); // 0x18=9600K, 0x06 =38,42K with X1=3.6864MHz
+  i2c_uart_write_reg(DLH, I2C_UART_CHANB, 0x00); //
 //
-  WriteUART(LCR, CHANB, 0xBF); // access EFR register
-  WriteUART(EFR, CHANB, 0X10); // enable enhanced registers
+  i2c_uart_write_reg(LCR, I2C_UART_CHANB, 0xBF); // access EFR register
+  i2c_uart_write_reg(EFR, I2C_UART_CHANB, 0X10); // enable enhanced registers
   //
-  WriteUART(LCR, CHANB, 0x03); // 8 data bits, 1 stop bit, no parity
-  WriteUART(FCR, CHANB, 0x07); // reset TXFIFO, reset RXFIFO, enable FIFO mode
-  }
+  i2c_uart_write_reg(LCR, I2C_UART_CHANB, 0x03); // 8 data bits, 1 stop bit, no parity
+  i2c_uart_write_reg(FCR, I2C_UART_CHANB, 0x07); // reset TXFIFO, reset RXFIFO, enable FIFO mode
+}
 //
 //*********************************************
-char Poll_UART_RHR(CHAN)
-   { // Poll UART to determine if data is waiting
-     char data = 0x00;
-//
-     if (ReadUART(LSR, CHAN) & 0x01) // is data waiting??
-        { // data present in receiver FIFO
-             data = ReadUART(RHR, CHAN);
-         }
-// return received char or zero
-     return(data);
-    }
+int i2c_uart_readc(i2c_uart_channel_t CHAN)
+{ // Poll UART to determine if data is waiting
+	if (i2c_uart_read_reg(LSR, CHAN) & 0x01) // is data waiting??
+	{ // data present in receiver FIFO
+		return i2c_uart_read_reg(RHR, CHAN);
+	}
+	return -1;
+}
 //
 //*********************************************
-void Set_GPIO_Dir(bits)
-   { // Set Direction on UART GPIO Port pins GPIO0 to GPIO7
-     // 0=input   1=Output
-     WriteUART(IOControl, 0, 0x03); // Set the IOControl Register to GPIO Control
-     WriteUART(IODir,0, bits); // output the control bits to the IO Direction Register
-    }
+void i2c_uart_set_gpio_direction(uint8_t bits)
+{ // Set Direction on UART GPIO Port pins GPIO0 to GPIO7
+	// 0=input   1=Output
+	i2c_uart_write_reg(IOControl, 0, 0x03); // Set the IOControl Register to GPIO Control
+	i2c_uart_write_reg(IODir, 0, bits); // output the control bits to the IO Direction Register
+}
 //*********************************************
-byte Read_GPIO()
-   { // Read UART GPIO Port
-     char data = 0x00;
-//
-     data=ReadUART(IOState,0); // get GPIO Bits state 0-7
-
-// return data bits state or zero
-     return(data);
-    }
+uint8_t i2c_uart_read_gpio()
+{ // Read UART GPIO Port
+     return i2c_uart_read_reg(IOState, 0); // get GPIO Bits state 0-7
+}
 //
 //*********************************************
-void Write_GPIO(data)
-   { // Load UART GPIO Port
-     WriteUART(IOState,0, data); // set GPIO Output pins state 0-7
-    }
+void i2c_uart_write_gpio(uint8_t data)
+{ // Load UART GPIO Port
+	i2c_uart_write_reg(IOState, 0, data); // set GPIO Output pins state 0-7
+}
 //
 //*********************************************

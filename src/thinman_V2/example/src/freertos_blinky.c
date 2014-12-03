@@ -48,6 +48,7 @@
 #include "drivers/S25FL.h"
 #include "drivers/i2c.h"
 #include "drivers/firing_board.h"
+#include "drivers/i2c_uart.h"
 #include "sensors/LPS.h"
 #include "sensors/LSM.h"
 #include "sensors/H3L.h"
@@ -276,6 +277,20 @@ static void vBaro(void* pvParameters) {
 	}
 }
 
+typedef struct {
+	float ax;
+	float ay;
+	float az;
+	float gx;
+	float gy;
+	float gz;
+	float mx;
+	float my;
+	float mz;
+} imu_measurements_t;
+
+
+static imu_measurements_t imu_measurements;
 static void vIMU(void* pvParameters) {
 	static FIL f_imu_log;
 	static char imu_str_buf[0x40];
@@ -309,25 +324,23 @@ static void vIMU(void* pvParameters) {
 	}
 	imu_running = true;
 	for (;;) {
-		float ax, ay, az, gx, gy, gz, mx, my, mz;
-
 		while (!(LSM_read_reg_xlg(LSM_STATUS_REG1_XL) & 1));
-		ax = LSM_read_accel_g(LSM_ACCEL_X);
-		ay = LSM_read_accel_g(LSM_ACCEL_Y);
-		az = LSM_read_accel_g(LSM_ACCEL_Z);
+		imu_measurements.ax = LSM_read_accel_g(LSM_ACCEL_X);
+		imu_measurements.ay = LSM_read_accel_g(LSM_ACCEL_Y);
+		imu_measurements.az = LSM_read_accel_g(LSM_ACCEL_Z);
 		while (!(LSM_read_reg_xlg(LSM_STATUS_REG1_XL) & 2));
-		gx = LSM_read_gyro_dps(LSM_GYRO_X);
-		gy = LSM_read_gyro_dps(LSM_GYRO_Y);
-		gz = LSM_read_gyro_dps(LSM_GYRO_Z);
+		imu_measurements.gx = LSM_read_gyro_dps(LSM_GYRO_X);
+		imu_measurements.gy = LSM_read_gyro_dps(LSM_GYRO_Y);
+		imu_measurements.gz = LSM_read_gyro_dps(LSM_GYRO_Z);
 		while (!(LSM_read_reg_mag(LSM_STATUS_REG_M) & 8));
-		mx = LSM_read_mag_gs(LSM_MAG_X);
-		my = LSM_read_mag_gs(LSM_MAG_Y);
-		mz = LSM_read_mag_gs(LSM_MAG_Z);
+		imu_measurements.mx = LSM_read_mag_gs(LSM_MAG_X);
+		imu_measurements.my = LSM_read_mag_gs(LSM_MAG_Y);
+		imu_measurements.mz = LSM_read_mag_gs(LSM_MAG_Z);
 
 		if (result == FR_OK) {
-			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), ax, ay, az, gx);
+			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), imu_measurements.ax, imu_measurements.ay, imu_measurements.az, imu_measurements.gx);
 			f_puts(imu_str_buf, &f_imu_log);
-			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", gy, gz, mx, my, mz);
+			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", imu_measurements.gy, imu_measurements.gz, imu_measurements.mx, imu_measurements.my, imu_measurements.mz);
 			f_puts(imu_str_buf, &f_imu_log);
 			if ((counter % 100) == 0) {
 				f_sync(&f_imu_log);
@@ -402,17 +415,11 @@ static void vHighG(void* pvParameters) {
 }
 
 static void vGPS(void* pv) {
-	void Init_SC16IS752 (void);
-	void UART_Send_String(int16_t CHAN, const char* str);
-	void Set_GPIO_Dir(bits);
-	void Write_GPIO(data);
-	char Poll_UART_RHR(CHAN);
+	i2c_uart_init();
+	i2c_uart_send_string(I2C_UART_CHANA, "Hello World\r\n");
 
-	Init_SC16IS752();
-	UART_Send_String(0, "Hello World\r\n");
-
-	Set_GPIO_Dir(1 << 3);
-	Write_GPIO(1 << 3);
+	i2c_uart_set_gpio_direction(1 << 3);
+	i2c_uart_write_gpio(1 << 3);
 
 	static FIL f_volts;
 	static char highg_str_buf[0x40];
@@ -439,22 +446,33 @@ static void vGPS(void* pv) {
 		vTaskSuspend(NULL);
 	}
 
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+	bool line_broken = true;
+
 	for(;;) {
-		char c;
+		int c;
 		while(1) {
-			c = Poll_UART_RHR(1);
-			if (c == 0) {
+			c = i2c_uart_readc(I2C_UART_CHANB);
+			if (c < 0) {
 				break;
 			}
 
 			f_putc(c, &f_volts);
-			UART_Send_Char(0, c);
+			i2c_uart_send_byte(I2C_UART_CHANA, c);
 			if (c == '\n') {
 				f_sync(&f_volts);
+				line_broken = true;
+			} else {
+				line_broken = false;
 			}
 			gps_activated = true;
 		}
-		vTaskDelay(500);
+		if (line_broken) {
+			static char imu_out_buf[40];
+			sprintf(imu_out_buf, "S,IMUACC,%f,%f,%f", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
+			i2c_uart_send_string(I2C_UART_CHANA, imu_out_buf);
+		}
+		vTaskDelayUntil(&xLastWakeTime, 500);
 	}
 }
 
@@ -582,7 +600,7 @@ static void vBootSystem(void* pvParameters) {
 
 	xTaskCreate(vHighG, "HighG", 256, NULL, SENSOR_PRIORITY, &monitor_tasks[monitor_task_write_ptr++]);
 	xTaskCreate(vVolts, "Volts", 256, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
-	xTaskCreate(vGPS, "GPS", 156, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
+	xTaskCreate(vGPS, "GPS", 256, NULL, (tskIDLE_PRIORITY + 1UL), &monitor_tasks[monitor_task_write_ptr++]);
 
 	LOG_INFO("Initialization Complete. Clock speed is %d", SystemCoreClock);
 	LOG_INFO("Free memory %d", xPortGetFreeHeapSize());
