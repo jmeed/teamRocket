@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/pair_device" />
+
+    <TextView
+        android:id="@+id/selected_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:textSize="20sp"
+        android:text="@string/selected_device" />
+
+    <TextView
+        android:id="@+id/data_pair_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/selected_device"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/data_pair_device"
+        android:layout_marginTop="33dp"
+        android:gravity="center"
+        android:text="@string/change_device" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="19dp"
+        android:onClick="change_device"
+        android:text="@string/change_device_button" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="14dp"
+        android:onClick="disconnect_bluetooth"
+        android:text="@string/disconnect" />
+
+</RelativeLayout>

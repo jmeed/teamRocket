@@ -13,13 +13,13 @@
 #include "drivers/cdc_vcom.h"
 
 int __sys_write(int iFileHandle, char *pcBuffer, int iLength) {
-	if (iFileHandle == 1) {
+	if (iFileHandle == 1) {//stdout
 		// stderr totally doesn't work
 		// uart0_write((const uint8_t*) pcBuffer, iLength);
 		logging_log_persistent(pcBuffer, iLength);
 		// vcom_write((uint8_t*) pcBuffer, iLength);
-	} else if (iFileHandle == 2) {
-		uart0_write((const uint8_t*) pcBuffer, iLength);
+	} else if (iFileHandle == 2) { //stderr
+		uart0_write((const uint8_t*) pcBuffer, iLength);//mapped to bluetooth module
 		// vcom_write((uint8_t*) pcBuffer, iLength);
 	}
 	return iLength;
