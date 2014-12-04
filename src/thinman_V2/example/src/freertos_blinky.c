@@ -484,6 +484,7 @@ static void vGPS(void* pv) {
 			size_t line_position = 0;
             static char line_buffer[200];
             bool is_gpgga = false;
+            bool is_firing = true;
             line_buffer[sizeof(line_buffer) - 1] = 0;
 			for(;;) {
 				int c;
@@ -526,6 +527,28 @@ static void vGPS(void* pv) {
 						line_broken = false;
 					}
 					gps_activated = true;
+				}
+				while (1) {
+					c = i2c_uart_readc(I2C_UART_CHANA);
+					if (c < 0) {
+						break;
+					}
+
+					if (is_firing) {
+						is_firing = false;
+						if (c >= '1' && c <= '4') {
+							if (firing_board_fire_channel(c - '0')) {
+								i2c_uart_send_string(I2C_UART_CHANA, "Firing\n");
+							} else {
+								i2c_uart_send_string(I2C_UART_CHANA, "Failed to fire\n");
+							}
+						} else {
+							i2c_uart_send_string(I2C_UART_CHANA, "Bad channel\n");
+						}
+					}
+					if (c == 'F') {
+						is_firing = true;
+					}
 				}
 				if ((counter % 10) == 0) {
 					static char imu_out_buf[40];
