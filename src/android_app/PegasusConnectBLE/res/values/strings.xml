@@ -29,8 +29,8 @@
     <string name="fourth_past_flight">4 Flights\nAgo</string>
     <string name="max_alt">Maximum Altitude: </string>
     <string name="max_gs">Maximum Acceleration: </string>
-    <string name="max_speed">Maximum Speed: </string>
-    <string name="cur_spd">Current Speed:</string>
+    <string name="max_speed">Max Vertical Speed: </string>
+    <string name="cur_spd">Current Vertical Speed:</string>
     <string name="descent_rate">Descent Rate: </string>
     <string name="duration">Duration: </string>
     <string name="seconds_unit">seconds</string>
