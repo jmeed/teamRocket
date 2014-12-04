@@ -472,6 +472,7 @@ static void vGPS(void* pv) {
 
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	bool line_broken = true;
+	uint8_t counter = 0;
 
     LOG_INFO("Initializing Telem wing");
 	for(;;) {
@@ -480,6 +481,10 @@ static void vGPS(void* pv) {
 			i2c_uart_set_gpio_direction(1 << 3);
 			i2c_uart_write_gpio(1 << 3);
 			LOG_INFO("Telemetry wing initialized");
+			size_t line_position = 0;
+            static char line_buffer[200];
+            bool is_gpgga = false;
+            line_buffer[sizeof(line_buffer) - 1] = 0;
 			for(;;) {
 				int c;
 				if (i2c_uart_transmit_error) {
@@ -493,22 +498,42 @@ static void vGPS(void* pv) {
 						break;
 					}
 
+
+					if (line_position < sizeof(line_buffer) - 1) {
+						line_buffer[line_position] = c;
+					}
 					f_putc(c, &f_volts);
-//					i2c_uart_send_byte(I2C_UART_CHANA, c);
+					line_position ++;
+
+					if (line_position == 6) {
+						line_buffer[6] = 0;
+						if (strcmp(line_buffer, "$GPGGA") == 0) {
+							is_gpgga = true;
+						}
+					}
+
 					if (c == '\n') {
 						f_sync(&f_volts);
+						if (is_gpgga) {
+							line_buffer[line_position] = 0;
+							i2c_uart_send_string(I2C_UART_CHANA, line_buffer);
+						}
+
 						line_broken = true;
+						line_position = 0;
+						is_gpgga = false;
 					} else {
 						line_broken = false;
 					}
 					gps_activated = true;
 				}
-				if (line_broken) {
+				if ((counter % 10) == 0) {
 					static char imu_out_buf[40];
 					sprintf(imu_out_buf, "S,IMUACC,%.2f,%.2f,%.2f\n", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
 					i2c_uart_send_string(I2C_UART_CHANA, imu_out_buf);
 				}
-				vTaskDelayUntil(&xLastWakeTime, 100);
+				vTaskDelayUntil(&xLastWakeTime, 10);
+				counter ++;
 			}
 		}
 		vTaskDelay(500); // Wait for device to connect
@@ -541,6 +566,7 @@ static void vVolts(void* pv) {
 	}
 
 
+	LOG_INFO("Init Firing Board ");
 	for (;;) {
 		if (firing_board_setup(OFFBOARD_I2C)) {
 			LOG_INFO("Firing board initialized");

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA54QK7CffP8uh-sgWYhnWhVZcOQ3sGJTc">
+    </script>
+    <script type="text/javascript">
+        "use strict";
+      function initialize() {
+        var mapOptions = {
+          center: { lat: 42.2919233, lng: -83.7154429},
+          zoom: 17
+        };
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+
+        var marker = new google.maps.Marker({
+            position: {lat: 42.2919233, lng: -83.7154429},
+            map: map,
+            title:"Your Rocket"
+        });
+
+        function translateDeg(degmins) {
+            var split = degmins.indexOf('.');
+            var deg = degmins.substr(0, split - 2);
+            var mins = degmins.substr(split-2);
+            return parseFloat(deg) + parseFloat(mins) / 60;
+        }
+
+        var ws = new WebSocket("ws://127.0.0.1:8888/ws");
+        ws.onmessage = function(pkt) {
+            var msg = pkt.data;
+            if (/\$GPGGA/.test(msg)) {
+                var parts = msg.split(",");
+                var lat = parts[2];
+                var latt = parts[3];
+                var lng = parts[4];
+                var lngt = parts[5];
+                if (lat && lng) {
+                    var coords = {lat: (latt == 'N' ? 1 : -1) * translateDeg(lat), lng: (lngt == 'E' ? 1 : -1) * translateDeg(lng)};
+                    console.log(coords);
+                    marker.setPosition(coords);
+                }
+            }
+        }
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</head>
+<body>
+<div id="map-canvas"></div>
+</body>
+</html><ht></ht><h></h><div></div>
