@@ -137,8 +137,8 @@ static void bluetooth_handle_command(const char* command_line) {
 		f_close(&t_file);
 	}  else if (strcmp(command, "fld") == 0) {
 		float cur_spd = 0;
-		double elapsed_time = time_arr[0] - time_arr[5];
-		double vertical_change = abs(alt_arr[0] - alt_arr[5]);
+		double elapsed_time = time_arr[0] - time_arr[4];
+		double vertical_change = abs(alt_arr[0] - alt_arr[4]);
 		if( elapsed_time != 0 ) {
 			cur_spd = vertical_change / elapsed_time;
 		}
