@@ -8,8 +8,9 @@
 float max_alt;
 float max_acc;
 float avg_acc;
-float duration;
+double duration;
 float descent_rate;
 float max_spd;
+float cur_alt;
 
 #endif /* VOLATILE_FLIGHT_DATA_H */

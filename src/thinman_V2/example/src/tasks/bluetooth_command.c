@@ -136,11 +136,11 @@ static void bluetooth_handle_command(const char* command_line) {
 		fail:
 		f_close(&t_file);
 	}  else if (strcmp(command, "fld") == 0) {
-		fprintf(stderr, "=F %f %f %f %f %f %f\n", max_alt, max_acc, avg_acc, descent_rate, duration, max_spd);
+		fprintf(stderr, "=F %f %f %f %f %f %f %f\n", max_alt, max_acc, avg_acc, descent_rate, duration, max_spd, cur_alt, res);
 	} else if (strcmp(command, "stat") == 0) {
-		fprintf(stderr, "=S Status Message\n");
+		fprintf(stderr, "=S Status Message\n", res);
 	} else if (strcmp(command, "par") == 0) {
-		fprintf(stderr, "=P Parameter Message\n");
+		fprintf(stderr, "=P Parameter Message\n", res);
 	}  else {
 		fprintf(stderr, "Invalid command %s\n", command);
 	}

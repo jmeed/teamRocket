@@ -263,7 +263,8 @@ static void vBaro(void* pvParameters) {
 			if(alt > max_alt) {
 				max_alt = alt;
 			}
-			duration = xTaskGetTickCount() * 1000;
+			cur_alt = alt;
+			duration = xTaskGetTickCount() / 1000.0;
 			sprintf(baro_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), temp, alt);
 			if ((out = f_puts(baro_str_buf, &f_baro_log)) != strlen(baro_str_buf)) {
 				LOG_ERROR("Baro log failed %d", out);
