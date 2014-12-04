@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -22,19 +21,16 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import edu.teamrocket.pegasusconnectble.BluetoothLeService;
 
 import edu.teamrocket.pegasusconnectble.R;
-import edu.teamrocket.pegasusconnectble.R.id;
-import edu.teamrocket.pegasusconnectble.R.layout;
-import edu.teamrocket.pegasusconnectble.R.menu;
-import edu.teamrocket.pegasusconnectble.R.string;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,11 +38,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+
 
 //Bluetooth Adapter we are working with
 //http://www.mouser.com/ProductDetail/Microchip-Technology/RN4020-V-RM/?qs=sGAEpiMZZMsjLMBIknjmko2zmeVevXBl0yBSR12fEkVlMpaBXEso2g%3D%3D
@@ -105,6 +101,7 @@ public class MainActivity extends ActionBarActivity implements
 	String secondary_additive_buffer;
 	boolean complete_message;
 	boolean mConnected;
+	public static int current_fragment;
 
 	ProgressDialog progress;
 
@@ -291,6 +288,7 @@ public class MainActivity extends ActionBarActivity implements
 			fm.beginTransaction()
 					.replace(R.id.container, HomeFragment.newInstance(), "Home")
 					.commit();
+			current_fragment = Constants.HOME;
 			break;
 			
 		case 1:
@@ -298,14 +296,14 @@ public class MainActivity extends ActionBarActivity implements
 					.replace(R.id.container, StatusFragment.newInstance(),
 							"Status").commit();
 			if(paired_device != null ) {
-//				bnd.putString("data", "stat");
-				writeBnd.putString("data", "ls");
+				writeBnd.putString("data", "stat");
 				writeMsg.setData(writeBnd);
 				handler.sendMessage(writeMsg);
 				writeBnd = new Bundle();
 				
 				handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
 			}
+			current_fragment = Constants.STATUS;
 			break;
 			
 		case 2:
@@ -314,25 +312,38 @@ public class MainActivity extends ActionBarActivity implements
 							"FlightData").commit();
 
 			if(paired_device != null ) {
-				writeBnd.putString("data", "fld");
-				writeMsg.setData(writeBnd);
-				handler.sendMessage(writeMsg);
-				
-				handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
-				
-				handler.postDelayed(new Runnable() {
+				current_fragment = Constants.FLIGHT;
+				new Thread( new Runnable() {
 					public void run() {
-						Message writeMsg = handler.obtainMessage(Constants.MESSAGE_WRITE);
-						Bundle writeBnd = new Bundle();
-						writeBnd.putString("data", "fld");
-						writeMsg.setData(writeBnd);
-						handler.sendMessage(writeMsg);
-						handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
+						while( current_fragment == Constants.FLIGHT ) {
+							Message writeMsg = handler.obtainMessage(Constants.MESSAGE_WRITE);
+							Bundle writeBnd = new Bundle();
+							writeBnd.putString("data", "fld");
+							writeMsg.setData(writeBnd);
+							handler.sendMessage(writeMsg);
+							try {
+								TimeUnit.MILLISECONDS.sleep(500);
+							}
+							catch(InterruptedException e) {
+								Log.d(TAG, "sleep interrupted");
+							}
+							handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
+							try {
+								TimeUnit.MILLISECONDS.sleep(500);
+							}
+							catch(InterruptedException e) {
+								Log.d(TAG, "sleep interrupted");
+							}
+						}
 					}
-				}, 500);
+				}).start();
+				
 			}
+			
 			break;
+			
 		case 3:
+			Context context = getActivity();
 			fm.beginTransaction()
 					.replace(R.id.container, ParametersFragment.newInstance(),
 							"Parameters").commit();
@@ -343,12 +354,17 @@ public class MainActivity extends ActionBarActivity implements
 				
 				handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
 			}
+			(Toast.makeText(context, "Parameters not yet implemented", Toast.LENGTH_LONG)).show();
+			current_fragment = Constants.PARAM;
 			break;
+			
 		case 4:
 			fm.beginTransaction()
 					.replace(R.id.container, PairDeviceFragment.newInstance(),
 							"PairDevice").commit();
 			choose_device();
+			current_fragment = Constants.PAIR;
+			
 			break;
 		}
 
@@ -392,18 +408,33 @@ public class MainActivity extends ActionBarActivity implements
 			currentHandler = new Handler(Looper.getMainLooper()) {
 				@Override
 				public void handleMessage(Message msg) {
-					Context context = getActivity();
 
 					switch (msg.what) {
 					case Constants.MESSAGE_STATUS_DATA:
 						// update necessary textviews
-						// ((TextView)getView().findViewById(R.id.data_max_altitude)).setText(msg.getData().getString(Constants.MAXALT));
-
+						if(msg.getData().getChar(Constants.CONNECTED) == 'y') {
+							((TextView)getView().findViewById(R.id.connected)).setText(R.string.device_connected);
+						}
+						if(msg.getData().getChar(Constants.GPS_CONNECTED) == 'y') {
+							((TextView)getView().findViewById(R.id.gps_detected)).setText(R.string.gps_detected);
+						}
+						if(msg.getData().getChar(Constants.IMU_CONNECTED) == 'y') {
+							((TextView)getView().findViewById(R.id.imu_detected)).setText(R.string.imu_detected);
+						}
+						if(msg.getData().getChar(Constants.HIGHG_CONNECTED) == 'y') {
+							((TextView)getView().findViewById(R.id.highg_detected)).setText(R.string.highg_detected);
+						}						
+						if(msg.getData().getChar(Constants.FIRING_BOARD_CONNECTED) == 'y') {
+							((TextView)getView().findViewById(R.id.firing_board_detected)).setText(R.string.firing_board_detected);
+						}	
+						if(msg.getData().getChar(Constants.BARO_CONNECTED) == 'y') {
+							((TextView)getView().findViewById(R.id.baro_detected)).setText(R.string.baro_detected);
+						}	
+						break;
+					case Constants.MESSAGE_FLIGHT_DATA:
 						break;
 					default:
-						(Toast.makeText(context,
-								"Status fragment: failed to understand internal message of type: "
-										+ msg.what, Toast.LENGTH_LONG)).show();
+						Log.e("curHandler", "Status fragment failed to understand internal message of type: " + msg.what);
 						break;
 
 					} // end switch
@@ -435,8 +466,6 @@ public class MainActivity extends ActionBarActivity implements
 			currentHandler = new Handler(Looper.getMainLooper()) {
 				@Override
 				public void handleMessage(Message msg) {
-					Context context = getActivity();
-
 					switch (msg.what) {
 					case Constants.MESSAGE_FLIGHT_DATA:
 						((TextView) getView().findViewById(
@@ -446,8 +475,8 @@ public class MainActivity extends ActionBarActivity implements
 								R.id.data_max_acceleration)).setText(msg
 								.getData().getString(Constants.MAXACC));
 						((TextView) getView().findViewById(
-								R.id.data_avg_acceleration)).setText(msg
-								.getData().getString(Constants.AVGACC));
+								R.id.data_cur_speed)).setText(msg
+								.getData().getString(Constants.CURSPD));
 						((TextView) getView().findViewById(
 								R.id.data_descent_rate)).setText(msg.getData()
 								.getString(Constants.DESCENT));
@@ -457,39 +486,47 @@ public class MainActivity extends ActionBarActivity implements
 						((TextView) getView().findViewById(R.id.data_max_speed))
 								.setText(msg.getData().getString(
 										Constants.MAXSPD));
+						((TextView) getView().findViewById(R.id.data_current_altitude))
+								.setText(msg.getData().getString(
+										Constants.CURALT));
 						
 						//set metric units
 						if(msg.getData().getInt("units") == METRIC_UNITS) {
 							((TextView) getView().findViewById(
 									R.id.max_altitude_units)).setText("meters");
 							((TextView) getView().findViewById(
+									R.id.current_altitude_units)).setText("meters");
+							((TextView) getView().findViewById(
 									R.id.descent_rate_units)).setText("m/s");
 							((TextView) getView().findViewById(R.id.speed_units))
 									.setText("m/s");
+							((TextView) getView().findViewById(
+									R.id.cur_speed_units)).setText("m/s");
 						}
 						//set imperial units
 						else {
 							((TextView) getView().findViewById(
-									R.id.max_altitude_units)).setText("mph");
+									R.id.max_altitude_units)).setText("feet");
 							((TextView) getView().findViewById(
-									R.id.descent_rate_units)).setText("m/s");
+									R.id.current_altitude_units)).setText("feet");
+							((TextView) getView().findViewById(
+									R.id.descent_rate_units)).setText("mph");
 							((TextView) getView().findViewById(R.id.speed_units))
-									.setText("m/s");
+									.setText("mph");
+							((TextView) getView().findViewById(
+									R.id.cur_speed_units)).setText("mph");
 						}
 						
 						//Set units that are the same for both metric and imperial
 						((TextView) getView().findViewById(
 								R.id.max_acceleration_units)).setText("G's");
-						((TextView) getView().findViewById(
-								R.id.avg_acceleration_units)).setText("G's");
 						((TextView) getView().findViewById(R.id.duration_units))
 								.setText("seconds");
 
 						break;
 					default:
-						(Toast.makeText(context,
-								"Flight Data fragment: failed to understand internal message of type: "
-										+ msg.what, Toast.LENGTH_LONG)).show();
+						Log.e("curHandler", "Flight Data fragment failed to understand internal message of type: " + msg.what);
+
 						break;
 
 					} // end switch
@@ -521,7 +558,6 @@ public class MainActivity extends ActionBarActivity implements
 			currentHandler = new Handler(Looper.getMainLooper()) {
 				@Override
 				public void handleMessage(Message msg) {
-					Context context = getActivity();
 
 					switch (msg.what) {
 					case Constants.MESSAGE_PARAMETER_DATA:
@@ -529,9 +565,7 @@ public class MainActivity extends ActionBarActivity implements
 						//((TextView)getView().findViewById(R.id.data_pair_device)).setText(msg.getData().getString(Constants.MAXALT));
 						break;
 					default:
-						(Toast.makeText(context,
-								"Parameters fragment: failed to understand internal message of type: "
-										+ msg.what, Toast.LENGTH_LONG)).show();
+						Log.e("curHandler", "Status fragment failed to understand internal message of type: " + msg.what);
 						break;
 
 					} // end switch
@@ -544,9 +578,6 @@ public class MainActivity extends ActionBarActivity implements
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_set_parameters,
 					container, false);
-			if(paired_device_name != null) {
-				((TextView)getView().findViewById(R.id.data_pair_device)).setText(paired_device_name);
-			}
 			return rootView;
 		}
 	}
@@ -585,10 +616,10 @@ public class MainActivity extends ActionBarActivity implements
 								R.id.data_pair_device)).setText(msg.getData()
 								.getString(Constants.DEVICE_NAME));
 						break;
+					case Constants.MESSAGE_FLIGHT_DATA:
+						break;
 					default:
-						(Toast.makeText(context,
-								"Pair Device fragment: failed to understand internal message of type: "
-										+ msg.what, Toast.LENGTH_LONG)).show();
+						Log.e("curHandler", "Status fragment failed to understand internal message of type: " + msg.what);
 						break;
 
 					} // end switch
@@ -704,7 +735,9 @@ public class MainActivity extends ActionBarActivity implements
 				break;
 				
 			case Constants.START_MESSAGE_READ:
-				bService.readCharacteristic(mDataMLDP);
+				if( bService != null ) {
+					bService.readCharacteristic(mDataMLDP);
+				}
 				break;
 
 			case Constants.MESSAGE_DISCOVER_DEVICE:
@@ -769,8 +802,6 @@ public class MainActivity extends ActionBarActivity implements
 			case Constants.MESSAGE_DEVICE_NAME:
 				paired_device_name = msg.getData().getString(
 						Constants.DEVICE_NAME);
-				(Toast.makeText(context, paired_device_name
-						+ " is now selected.", Toast.LENGTH_SHORT)).show();
 				Message outgoingmsg = currentHandler
 						.obtainMessage(Constants.MESSAGE_DEVICE_NAME);
 				Bundle bundle = new Bundle();
@@ -790,6 +821,37 @@ public class MainActivity extends ActionBarActivity implements
 					input_additive_buffer = "";
 					input_additive_buffer = secondary_additive_buffer;
 					secondary_additive_buffer = "";
+					String trash = input_additive_buffer;
+					int count = trash.length() - trash.replace(" ", "").length();
+
+					if(input_additive_buffer.contains("\n") | ( count == 8 & input_additive_buffer.contains("=F"))) {
+				    	try {
+				    		TimeUnit.MILLISECONDS.sleep(500);
+				    	}
+				    	catch (InterruptedException e) {
+				    		Log.e(TAG, "sleep interrupted");
+				    	}
+						processMessage(input_additive_buffer);
+						input_additive_buffer = "";
+					}
+					else if( input_additive_buffer.contains("\n") | (count == 6 & input_additive_buffer.contains("=S"))) {
+				    	try {
+				    		TimeUnit.MILLISECONDS.sleep(500);
+				    	}
+				    	catch (InterruptedException e) {
+				    		Log.e(TAG, "sleep interrupted");
+				    	}
+						processMessage(input_additive_buffer);
+						input_additive_buffer = "";
+					}
+					else if( count > 6 & input_additive_buffer.contains("=S")) {
+						input_additive_buffer = "";
+						secondary_additive_buffer = "";
+					}
+					else if( count > 8 & input_additive_buffer.contains("=F") ) {
+						input_additive_buffer = "";
+						secondary_additive_buffer = "";
+					}
 				}
 				break;
 
@@ -805,9 +867,7 @@ public class MainActivity extends ActionBarActivity implements
 				break;
 
 			default:
-				(Toast.makeText(context,
-						"Failed to understand internal message of type: "
-								+ msg.what, Toast.LENGTH_LONG)).show();
+				Log.e(TAG, "Main Handler: Unable to understand message of type " + msg.what );
 				break;
 
 			} // end switch
@@ -819,7 +879,9 @@ public class MainActivity extends ActionBarActivity implements
 			input_additive_buffer += input;
 		} else {
 			String[] parts = input.split("\n");
-			input_additive_buffer += parts[0];
+			if( parts.length != 0) {
+				input_additive_buffer += parts[0];
+			}
 			if (parts.length > 1) {
 				secondary_additive_buffer = parts[1];
 			}
@@ -831,55 +893,88 @@ public class MainActivity extends ActionBarActivity implements
 
 		String[] parts = input.split(" ");
 
-		if (parts[0].equals("=F") ) {
-			(Toast.makeText(this, "made it inside flight data",
-					Toast.LENGTH_LONG)).show();
-
+		if (parts[0].equals("=F") & parts.length == 8 ) {
 			if (Units == METRIC_UNITS) {
 				Message tmpmsg = currentHandler
 						.obtainMessage(Constants.MESSAGE_FLIGHT_DATA);
 				Bundle bundle = new Bundle();
-				bundle.putString(Constants.MAXALT, parts[1]);
-				// Convert G's to m/s/s
-				bundle.putString(Constants.MAXACC,
-						String.valueOf(Float.parseFloat(parts[2])));
-				// Convert G's to m/s/s
-				bundle.putString(Constants.AVGACC,
-						String.valueOf(Float.parseFloat(parts[3])));
-				bundle.putString(Constants.DESCENT, parts[4]);
-				bundle.putString(Constants.DURATION, parts[5]);
-				bundle.putString(Constants.MAXSPD, parts[6]);
+				bundle.putString(Constants.MAXALT, parts[1].substring(0, parts[1].indexOf(".") + 3));
+				bundle.putString(Constants.MAXACC, parts[2].substring(0, parts[2].indexOf(".") + 3));
+				bundle.putString(Constants.DESCENT, parts[3].substring(0, parts[3].indexOf(".") + 3));
+				bundle.putString(Constants.DURATION, parts[4].substring(0, parts[4].indexOf(".") + 3));
+				bundle.putString(Constants.MAXSPD, parts[5].substring(0, parts[5].indexOf(".") + 3));
+				bundle.putString(Constants.CURSPD, parts[6].substring(0, parts[6].indexOf(".") + 3));
+				bundle.putString(Constants.CURALT, parts[7].substring(0, parts[7].indexOf(".") + 3));
 				bundle.putInt("units", Units);
 				tmpmsg.setData(bundle);
 
 				currentHandler.sendMessage(tmpmsg);
 			} else {
+				DecimalFormat df = new DecimalFormat("#0.00");
 				Message tmpmsg = currentHandler
 						.obtainMessage(Constants.MESSAGE_FLIGHT_DATA);
 				Bundle bundle = new Bundle();
 				// Convert Meters to Feet
 				bundle.putString(Constants.MAXALT,
-						String.valueOf(Float.parseFloat(parts[1]) / .3048));
+						String.valueOf(df.format(Float.parseFloat(parts[1]) / .3048)));
 				// Already in G's
-				bundle.putString(Constants.MAXACC, parts[2]);
+				bundle.putString(Constants.MAXACC, parts[2].substring(0, parts[2].indexOf(".") + 3));
 				// Already in G's
-				bundle.putString(Constants.AVGACC, parts[3]);
+//				bundle.putString(Constants.AVGACC, parts[3].substring(0, parts[3].indexOf(".") + 3));
 				// Convert m/s to fps
-				bundle.putString(Constants.DESCENT, String.valueOf(Float
-						.parseFloat(parts[4]) * 3.28083989501312));
+				bundle.putString(Constants.DESCENT, String.valueOf(df.format(Float
+						.parseFloat(parts[3]) * 3.28083989501312)));
 				// Seconds are metric and imperial
-				bundle.putString(Constants.DURATION, parts[5]);
+				bundle.putString(Constants.DURATION, parts[4].substring(0, parts[4].indexOf(".") + 3));
 				// Convert m/s to fps
-				bundle.putString(Constants.MAXSPD, String.valueOf(Float
-						.parseFloat(parts[6]) * 3.28083989501312));
+				bundle.putString(Constants.MAXSPD, String.valueOf(df.format(Float
+						.parseFloat(parts[5]) * 3.28083989501312)));
+				bundle.putString(Constants.CURSPD, String.valueOf(df.format(Float
+						.parseFloat(parts[6]) * 3.28083989501312)));
+				bundle.putString(Constants.CURALT, 
+						String.valueOf(df.format(Float.parseFloat(parts[7]) / .3048)));
+				
 				tmpmsg.setData(bundle);
 
 				currentHandler.sendMessage(tmpmsg);
 			}
 		} else if (parts[0] == "=P") {
 			// TODO fill out
-		} else if (parts[0] == "=S") {
-			// TODO fill out
+		} else if (parts[0] == "=S" & parts.length == 6) {
+			Message tmp = currentHandler.obtainMessage(Constants.MESSAGE_STATUS_DATA);
+			Bundle bnd = new Bundle();
+			if(parts[1] == "1") {
+				bnd.putChar(Constants.GPS_CONNECTED, 'y');
+			}
+			else {
+				bnd.putChar(Constants.GPS_CONNECTED, 'n');
+			}
+			if(parts[2] == "1") {
+				bnd.putChar(Constants.IMU_CONNECTED, 'y');
+			}
+			else {
+				bnd.putChar(Constants.IMU_CONNECTED, 'n');
+			}			
+			if(parts[3] == "1") {
+				bnd.putChar(Constants.HIGHG_CONNECTED, 'y');
+			}
+			else {
+				bnd.putChar(Constants.HIGHG_CONNECTED, 'n');
+			}			
+			if(parts[4] == "1") {
+				bnd.putChar(Constants.FIRING_BOARD_CONNECTED, 'y');
+			}
+			else {
+				bnd.putChar(Constants.FIRING_BOARD_CONNECTED, 'n');
+			}			
+			if(parts[5] == "1") {
+				bnd.putChar(Constants.BARO_CONNECTED, 'y');
+			}
+			else {
+				bnd.putChar(Constants.BARO_CONNECTED, 'n');
+			}
+			tmp.setData(bnd);
+			currentHandler.sendMessage(tmp);
 		}
 	}
 
@@ -916,6 +1011,7 @@ public class MainActivity extends ActionBarActivity implements
 	public void disconnect_bluetooth(View view) {
 		(Toast.makeText(this, "Device disconnected", Toast.LENGTH_SHORT))
 				.show();
+		
 		end_connection();
 	}
 
@@ -981,19 +1077,14 @@ public class MainActivity extends ActionBarActivity implements
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();                                   //Get the action that was broadcast by the intent that was received
-            Log.i(TAG,"Broadcast Received" + intent.toString());
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {              //Service has connected to BLE device
                 mConnected = true;                                                      //Record the new connection state
-				Message tmp = handler.obtainMessage(Constants.MESSAGE_TOAST);
-				Bundle bnd = new Bundle();
-				bnd.putString(Constants.TOAST, "Connected to BLE Device");
-				tmp.setData(bnd);
-				handler.sendMessage(tmp);                              //Update the display to say "Connected"
             } 
             
             else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {		//Service has disconnected from BLE device
-                mConnected = false;                                                     //Record the new connection state
+                mConnected = false;                                                    //Record the new connection state
+                paired_device_name = null;
 				Message tmp = handler.obtainMessage(Constants.MESSAGE_TOAST);
 				Bundle bnd = new Bundle();
 				bnd.putString(Constants.TOAST, "Disconnected from BLE Device");
@@ -1006,7 +1097,6 @@ public class MainActivity extends ActionBarActivity implements
             } 
             
             else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {         //Service has found new data available on BLE device
-                Log.i(TAG, "CharacteristicChangeDetected");
             	String dataValue = intent.getStringExtra(BluetoothLeService.EXTRA_DATA); //Get the value of the characteristic
                 Message msg = handler.obtainMessage(Constants.MESSAGE_READ);
                 Bundle bundle = new Bundle();
@@ -1017,7 +1107,7 @@ public class MainActivity extends ActionBarActivity implements
             
             //For information only. This application sends small packets infrequently and does not need to know what the previous write completed
             else if (BluetoothLeService.ACTION_DATA_WRITTEN.equals(action)) {			//Service has found new data available on BLE device
-            	Log.i(TAG, "Data Written");
+//            	Log.i(TAG, "Data Written");
             }
         }
     };
@@ -1069,6 +1159,51 @@ public class MainActivity extends ActionBarActivity implements
     }
     
     public void refresh_most_recent_flight(View view) {
+    	try {
+    		TimeUnit.MILLISECONDS.sleep(1000);
+    	}
+    	catch (InterruptedException e) {
+    		Log.e(TAG, "sleep interrupted");
+    	}
+    	Message writeMsg = handler.obtainMessage(Constants.MESSAGE_WRITE);
+    	Bundle writeBnd = new Bundle();
+		if(paired_device != null ) {
+			writeBnd.putString("data", "fld");
+			writeMsg.setData(writeBnd);
+			handler.sendMessage(writeMsg);
+			
+			handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
+		}
+    }
+    public void set_imperial_units_refresh(View view) {
+    	try {
+    		TimeUnit.MILLISECONDS.sleep(500);
+    	}
+    	catch (InterruptedException e) {
+    		Log.e(TAG, "sleep interrupted");
+    	}
+
+    	Units = IMPERIAL_UNITS;
+    	Message writeMsg = handler.obtainMessage(Constants.MESSAGE_WRITE);
+    	Bundle writeBnd = new Bundle();
+		if(paired_device != null ) {
+			writeBnd.putString("data", "fld");
+			writeMsg.setData(writeBnd);
+			handler.sendMessage(writeMsg);
+			
+			handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
+		}
+    }
+    
+    public void set_metric_units_refresh(View view) {
+    	try {
+    		TimeUnit.MILLISECONDS.sleep(500);
+    	}
+    	catch (InterruptedException e) {
+    		Log.e(TAG, "sleep interrupted");
+    	}    	
+    	
+    	Units = METRIC_UNITS;
     	Message writeMsg = handler.obtainMessage(Constants.MESSAGE_WRITE);
     	Bundle writeBnd = new Bundle();
 		if(paired_device != null ) {

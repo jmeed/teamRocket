@@ -29,8 +29,8 @@
     <string name="fourth_past_flight">4 Flights\nAgo</string>
     <string name="max_alt">Maximum Altitude: </string>
     <string name="max_gs">Maximum Acceleration: </string>
-    <string name="max_speed">Maximum Speed: </string>
-    <string name="avg_gs">Average Acceleration:</string>
+    <string name="max_speed">Max Vertical Speed: </string>
+    <string name="cur_spd">Current Vertical Speed:</string>
     <string name="descent_rate">Descent Rate: </string>
     <string name="duration">Duration: </string>
     <string name="seconds_unit">seconds</string>
@@ -43,11 +43,24 @@
 	<string name="Accept">Accept</string>
 	<string name="Close">Close</string>
     <string name="discoverable_desc">Or if you prefer to pair the devices from the other device, click the button below to make this device discoverable</string>
-    <string name="make_discoverable">Make Discoverable</string>
     <string name="disconnect">Disconnect Device</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
     <string name="mldp_not_supported">mldp not supported</string>
     <string name="acceleration_units">G\'s</string>
     <string name="units_placeholder">Units</string>
+    <string name="current_altitude">Current Altitude:</string>
+    <string name="gps_not_detected">GPS Not Detected</string>
+    <string name="baro_not_detected">Barometer Not Detected</string>
+    <string name="imu_not_detected">IMU Not Detected</string>
+    <string name="highg_not_detected">High G Accelerometer Not Detected</string>
+    <string name="firing_board_not_detected">Firing Board Not Detected</string>
+    <string name="firing_board_detected">Firing Board Detected</string>
+    <string name="gps_detected">GPS Detected</string>
+    <string name="imu_detected">IMU Detected</string>
+    <string name="highg_detected">High G Accelerometer Detected</string>
+    <string name="baro_detected">Barometer Detected</string>
+    <string name="device_connected">Device is Connected</string>
+    <string name="device_not_connected">Device Not Connected</string>
+    
 </resources>

@@ -47,8 +47,8 @@
         android:id="@+id/text_descent_rate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/text_avg_acceleration"
-        android:layout_below="@+id/text_avg_acceleration"
+        android:layout_alignRight="@+id/text_max_acceleration"
+        android:layout_below="@+id/text_max_acceleration"
         android:layout_marginTop="16dp"
         android:text="@string/descent_rate" />
 
@@ -69,76 +69,6 @@
         android:layout_below="@+id/text_duration"
         android:layout_marginTop="16dp"
         android:text="@string/max_speed" />
-    
-    <TextView
-        android:id="@+id/data_avg_acceleration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/text_avg_acceleration"
-        android:layout_marginLeft="27dp"
-        android:layout_toRightOf="@+id/text_avg_acceleration" />
-    
-    <TextView
-        android:id="@+id/data_max_speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/text_max_speed"
-        android:layout_marginLeft="27dp"
-        android:layout_toRightOf="@+id/text_max_speed" />
-    
-    <TextView
-        android:id="@+id/data_descent_rate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/text_descent_rate"
-        android:layout_marginLeft="27dp"
-        android:layout_toRightOf="@+id/text_descent_rate" />
-    
-    <TextView
-        android:id="@+id/data_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/text_duration"
-        android:layout_marginLeft="27dp"
-        android:layout_toRightOf="@+id/text_duration" />
-
-    <TextView
-        android:id="@+id/avg_acceleration_units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/data_avg_acceleration"
-        android:layout_alignBottom="@+id/data_avg_acceleration"
-        android:layout_alignLeft="@+id/max_acceleration_units"
-        android:text="@string/units_placeholder"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/descent_rate_units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/text_duration"
-        android:layout_alignLeft="@+id/avg_acceleration_units"
-        android:text="@string/units_placeholder"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/duration_units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/text_max_speed"
-        android:layout_alignLeft="@+id/descent_rate_units"
-        android:text="@string/units_placeholder"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/speed_units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/data_max_speed"
-        android:layout_alignBottom="@+id/data_max_speed"
-        android:layout_alignLeft="@+id/duration_units"
-        android:text="@string/units_placeholder"
-        android:textSize="12sp" />
 
     <Button
         android:id="@+id/first_past_flight"
@@ -156,8 +86,87 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/first_past_flight"
         android:layout_below="@+id/most_recent_flight"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:text="@string/max_alt" />
+
+    <TextView
+        android:id="@+id/text_max_acceleration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/text_current_altitude"
+        android:layout_marginTop="16dp"
+        android:text="@string/max_gs" />
+    
+    <TextView
+        android:id="@+id/text_current_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/second_past_flight"
+        android:layout_below="@+id/text_max_altitude"
+        android:layout_marginTop="16dp"
+        android:text="@string/current_altitude" />
+
+    <TextView
+        android:id="@+id/text_cur_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/second_past_flight"
+        android:layout_below="@+id/text_max_speed"
+        android:layout_marginTop="16dp"
+        android:text="@string/cur_spd" />
+    
+        <Button
+        android:id="@+id/button_metric_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/text_cur_speed"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="12dp"
+        android:onClick="set_metric_units_refresh"
+        android:text="@string/select_metric_units" />
+
+    <Button
+        android:id="@+id/button_imperial_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_metric_units"
+        android:layout_alignBottom="@+id/button_metric_units"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_marginRight="14dp"
+        android:onClick="set_imperial_units_refresh"
+        android:text="@string/select_imperial_units" />
+
+    <TextView
+        android:id="@+id/current_altitude_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_current_altitude"
+        android:layout_alignBottom="@+id/data_current_altitude"
+        android:layout_alignLeft="@+id/max_altitude_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/speed_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_max_speed"
+        android:layout_alignBottom="@+id/data_max_speed"
+        android:layout_alignLeft="@+id/duration_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/cur_speed_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/data_cur_speed"
+        android:layout_alignLeft="@+id/speed_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/max_altitude_units"
@@ -170,39 +179,60 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/data_max_acceleration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/text_max_acceleration"
-        android:layout_alignLeft="@+id/data_avg_acceleration" />
-
-    <TextView
         android:id="@+id/data_max_altitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/text_max_altitude"
-        android:layout_alignBottom="@+id/text_max_altitude"
+        android:layout_above="@+id/text_current_altitude"
+        android:layout_alignRight="@+id/second_past_flight"
+         />
+
+    <TextView
+        android:id="@+id/data_current_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_max_acceleration"
+        android:layout_alignLeft="@+id/data_max_altitude"
+         />
+
+    <TextView
+        android:id="@+id/data_max_acceleration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_descent_rate"
+        android:layout_alignLeft="@+id/data_current_altitude"
+         />
+
+    <TextView
+        android:id="@+id/data_descent_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_duration"
         android:layout_alignLeft="@+id/data_max_acceleration"
-        android:layout_marginTop="24dp" />
+         />
 
     <TextView
-        android:id="@+id/text_max_acceleration"
+        android:id="@+id/data_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/text_max_altitude"
-        android:layout_marginTop="16dp"
-        android:text="@string/max_gs" />
+        android:layout_above="@+id/text_max_speed"
+        android:layout_alignLeft="@+id/data_descent_rate"
+         />
 
     <TextView
-        android:id="@+id/text_avg_acceleration"
+        android:id="@+id/data_max_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/second_past_flight"
-        android:layout_below="@+id/text_max_acceleration"
-        android:layout_marginTop="16dp"
-        android:text="@string/avg_gs" />
+        android:layout_above="@+id/text_cur_speed"
+        android:layout_alignLeft="@+id/data_duration"
+         />
+
+    <TextView
+        android:id="@+id/data_cur_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_metric_units"
+        android:layout_alignLeft="@+id/data_max_speed"
+         />
 
     <TextView
         android:id="@+id/max_acceleration_units"
@@ -210,7 +240,26 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/data_max_acceleration"
         android:layout_alignBottom="@+id/data_max_acceleration"
-        android:layout_alignLeft="@+id/max_altitude_units"
+        android:layout_alignLeft="@+id/current_altitude_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/descent_rate_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_descent_rate"
+        android:layout_alignBottom="@+id/data_descent_rate"
+        android:layout_alignLeft="@+id/max_acceleration_units"
+        android:text="@string/units_placeholder"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/duration_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/data_duration"
+        android:layout_alignLeft="@+id/descent_rate_units"
         android:text="@string/units_placeholder"
         android:textSize="12sp" />
 
