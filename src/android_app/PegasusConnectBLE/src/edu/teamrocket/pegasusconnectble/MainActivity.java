@@ -959,6 +959,9 @@ public class MainActivity extends ActionBarActivity implements
 			Message tmp = currentHandler.obtainMessage(Constants.MESSAGE_STATUS_DATA);
 			Bundle bnd = new Bundle();
 			//gps firing baro imu highg
+			if( paired_device_name != null ) {
+				bnd.putChar(Constants.CONNECTED, 'y');
+			}
 			if(parts[1].equals("1")) {
 				bnd.putChar(Constants.GPS_CONNECTED, 'y');
 			}
