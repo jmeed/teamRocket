@@ -52,7 +52,23 @@ public interface Constants {
     public static final String DESCENT = "descent_rate";
     public static final String DURATION = "duration";
     public static final String MAXSPD = "max_speed";
+    public static final String CURALT = "current_altitude";
+    public static final String CURSPD = "current_speed";
     
     public static final int NOTIFY_CHANGE = 10;
+    
+    public static final int HOME = 100;
+    public static final int STATUS = 101;
+    public static final int FLIGHT = 102;
+    public static final int PARAM = 103;
+    public static final int PAIR = 104;
+    
+    public static final String CONNECTED = "connected";
+    public static final String GPS_CONNECTED = "gps_connected";
+    public static final String IMU_CONNECTED = "imu_connected";
+    public static final String FIRING_BOARD_CONNECTED = "firing_board_connected";
+    public static final String HIGHG_CONNECTED = "highg_connected";
+    public static final String BARO_CONNECTED = "baro_connected";
+
 
 }

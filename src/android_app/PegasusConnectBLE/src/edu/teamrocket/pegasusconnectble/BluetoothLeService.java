@@ -44,13 +44,8 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -135,7 +130,7 @@ public class BluetoothLeService extends Service {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) { //A request to Read has completed
             if (status == BluetoothGatt.GATT_SUCCESS) {                                 //See if the read was successful
-                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);                 //Go broadcast an intent with the characteristic data
+                //broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);                 //Go broadcast an intent with the characteristic data
             }
         }
 
