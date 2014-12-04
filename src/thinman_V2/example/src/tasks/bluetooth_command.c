@@ -146,7 +146,7 @@ static void bluetooth_handle_command(const char* command_line) {
 			max_spd = cur_spd;
 		}
 
-		fprintf(stderr, "=F %f %f %f %f %f %f %f\n", max_alt, max_acc, descent_rate, time_arr[0], max_spd, cur_spd, alt_arr[0], res);
+		fprintf(stderr, "=F %f %f %f %f %f %f %f \n", max_alt, max_acc, descent_rate, time_arr[0], max_spd, cur_spd, alt_arr[0], res);
 	} else if (strcmp(command, "stat") == 0) {
 		fprintf(stderr, "=S Status Message\n", res);
 	} else if (strcmp(command, "par") == 0) {
