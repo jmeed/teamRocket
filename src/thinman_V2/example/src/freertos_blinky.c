@@ -260,11 +260,29 @@ static void vBaro(void* pvParameters) {
 		temp = LPS_read_data(LPS_TEMPERATURE);
 		alt = LPS_read_data(LPS_ALTITUDE);
 		if (result == FR_OK) {
-			if(alt > max_alt) {
-				max_alt = alt;
+
+			// Update last 5 altitude measurements
+			alt_arr[4] = alt_arr[3];
+			alt_arr[3] = alt_arr[2];
+			alt_arr[2] = alt_arr[1];
+			alt_arr[1] = alt_arr[0];
+			alt_arr[0] = alt;
+
+			// Average last 5 measurements as **simple** filter
+			float avg_alt = (alt_arr[0] + alt_arr[1] + alt_arr[2] + alt_arr[3] + alt_arr[4]) / 5;
+
+			// Store max altitude if found
+			if(avg_alt > max_alt) {
+				max_alt = avg_alt;
 			}
-			cur_alt = alt;
-			duration = xTaskGetTickCount() / 1000.0;
+
+			//update last 5 times for calculating speed
+			time_arr[4] = time_arr[3];
+			time_arr[3] = time_arr[2];
+			time_arr[2] = time_arr[1];
+			time_arr[1] = time_arr[0];
+			time_arr[0] = xTaskGetTickCount() / 1000.0;
+
 			sprintf(baro_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), temp, alt);
 			if ((out = f_puts(baro_str_buf, &f_baro_log)) != strlen(baro_str_buf)) {
 				LOG_ERROR("Baro log failed %d", out);
@@ -344,11 +362,10 @@ static void vIMU(void* pvParameters) {
 		imu_measurements.mz = LSM_read_mag_gs(LSM_MAG_Z);
 
 		if (result == FR_OK) {
+			//Find max acceleration in positive x direction.  "this side up" on board is +x
 			if(imu_measurements.ax > max_acc) {
 				max_acc = imu_measurements.ax;
 			}
-			//Find average acceleration
-
 			sprintf(imu_str_buf, "%d\t%f\t%f\t%f\t%f\t", xTaskGetTickCount(), imu_measurements.ax, imu_measurements.ay, imu_measurements.az, imu_measurements.gx);
 			f_puts(imu_str_buf, &f_imu_log);
 			sprintf(imu_str_buf, "%f\t%f\t%f\t%f\t%f\n", imu_measurements.gy, imu_measurements.gz, imu_measurements.mx, imu_measurements.my, imu_measurements.mz);
@@ -413,10 +430,10 @@ static void vHighG(void* pvParameters) {
 		}
 
 		if (result == FR_OK) {
+			//Find max acceleration in positive x direction.  "this side up" on board is +x
 			if( ax > max_acc ) {
 				max_acc = ax;
 			}
-			//find average acceleration
 			sprintf(highg_str_buf, "%d\t%f\t%f\t%f\n", xTaskGetTickCount(), ax, ay, az);
 			f_puts(highg_str_buf, &f_highg_log);
 			if ((counter % 50) == 0) {
@@ -641,9 +658,19 @@ int main(void)
 	max_spd = 0;
 	max_acc = 0;
 	max_alt = 0;
-	avg_acc = 0;
-	duration = 0;
 	descent_rate = 0;
+	
+	alt_arr[0] = 0;
+	alt_arr[1] = 0;
+	alt_arr[2] = 0;
+	alt_arr[3] = 0;
+	alt_arr[4] = 0;
+
+	time_arr[0] = 0;
+	time_arr[1] = 0;
+	time_arr[2] = 0;
+	time_arr[3] = 0;
+	time_arr[4] = 0;
 
 	prvSetupHardware();
 
