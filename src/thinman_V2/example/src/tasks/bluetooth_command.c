@@ -148,7 +148,7 @@ static void bluetooth_handle_command(const char* command_line) {
 
 		fprintf(stderr, "=F %f %f %f %f %f %f %f \n", max_alt, max_acc, descent_rate, time_arr[0], max_spd, cur_spd, alt_arr[0], res);
 	} else if (strcmp(command, "stat") == 0) {
-		fprintf(stderr, "=S Status Message\n", res);
+		fprintf(stderr, "=S %d %d %d %d %d \n", gps_activated, volt_active, baro_running, imu_running, highg_running, res);
 	} else if (strcmp(command, "par") == 0) {
 		fprintf(stderr, "=P Parameter Message\n", res);
 	}  else {
