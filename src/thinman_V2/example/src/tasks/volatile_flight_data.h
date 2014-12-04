@@ -5,12 +5,12 @@
  * Global variables for flight record
  ****************************************************************************/
 
+float max_spd;
 float max_alt;
 float max_acc;
-float avg_acc;
-double duration;
 float descent_rate;
-float max_spd;
-float cur_alt;
+
+float alt_arr[5];
+float time_arr[5];
 
 #endif /* VOLATILE_FLIGHT_DATA_H */

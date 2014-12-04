@@ -136,7 +136,17 @@ static void bluetooth_handle_command(const char* command_line) {
 		fail:
 		f_close(&t_file);
 	}  else if (strcmp(command, "fld") == 0) {
-		fprintf(stderr, "=F %f %f %f %f %f %f %f\n", max_alt, max_acc, avg_acc, descent_rate, duration, max_spd, cur_alt, res);
+		float cur_spd = 0;
+		double elapsed_time = time_arr[0] - time_arr[5];
+		double vertical_change = abs(alt_arr[0] - alt_arr[5]);
+		if( elapsed_time != 0 ) {
+			cur_spd = vertical_change / elapsed_time;
+		}
+		if( cur_spd > max_spd ) {
+			max_spd = cur_spd;
+		}
+
+		fprintf(stderr, "=F %f %f %f %f %f %f %f\n", max_alt, max_acc, descent_rate, time_arr[0], max_spd, cur_spd, alt_arr[0], res);
 	} else if (strcmp(command, "stat") == 0) {
 		fprintf(stderr, "=S Status Message\n", res);
 	} else if (strcmp(command, "par") == 0) {
