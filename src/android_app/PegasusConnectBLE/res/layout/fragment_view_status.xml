@@ -4,43 +4,67 @@
     android:layout_height="match_parent" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/baro_detected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/firing_board_detected"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="@string/baro_not_detected" />
+
+    <TextView
+        android:id="@+id/firing_board_detected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/highg_detected"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+        android:text="@string/firing_board_not_detected" />
+
+    <TextView
+        android:id="@+id/highg_detected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imu_detected"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:text="@string/highg_not_detected" />
+
+    <TextView
+        android:id="@+id/imu_detected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gps_detected"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:text="@string/imu_not_detected" />
+
+    <TextView
+        android:id="@+id/connected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/status_message"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:textSize="20sp"
+        android:text="@string/device_not_connected" />
+
+    <TextView
+        android:id="@+id/gps_detected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imu_detected"
+        android:layout_below="@+id/connected"
+        android:layout_marginTop="40dp"
+        android:text="@string/gps_not_detected" />
+
+    <TextView
+        android:id="@+id/status_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="21dp"
         android:text="@string/status_string" />
-
-    <CheckedTextView
-        android:id="@+id/checkedTextView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:checkMark="@drawable/not_ready"
-        android:text="@string/wireless_board_detected" />
-
-    <CheckedTextView
-        android:id="@+id/checkedTextView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/checkedTextView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:checkMark="@drawable/not_ready"
-        android:text="@string/secondary_board_detected" />
-
-    <CheckedTextView
-        android:id="@+id/CheckedTextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/checkedTextView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
-        android:checkMark="@drawable/ready"
-        android:checked="false"
-        android:text="@string/secondary_board_detected" />
 
 </RelativeLayout>
