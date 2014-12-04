@@ -893,7 +893,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		String[] parts = input.split(" ");
 
-		if (parts[0].equals("=F") ) {
+		if (parts[0].equals("=F") & parts.length == 8 ) {
 			if (Units == METRIC_UNITS) {
 				Message tmpmsg = currentHandler
 						.obtainMessage(Constants.MESSAGE_FLIGHT_DATA);
@@ -940,7 +940,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		} else if (parts[0] == "=P") {
 			// TODO fill out
-		} else if (parts[0] == "=S") {
+		} else if (parts[0] == "=S" & parts.length == 6) {
 			Message tmp = currentHandler.obtainMessage(Constants.MESSAGE_STATUS_DATA);
 			Bundle bnd = new Bundle();
 			if(parts[1] == "1") {
