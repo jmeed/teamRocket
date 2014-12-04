@@ -28,6 +28,16 @@ void exit_error(int error_code) {
 	exit(error_code);
 }
 
+void exit_error_msg(int error_code, const char* message) {
+	taskDISABLE_INTERRUPTS();
+    morsePlay("SOS");
+	for(;;) {
+		morseInt(error_code);
+		morsePlay(message);
+		morsePause();
+	}
+}
+
 void logging_init(void) {
 	logging_mutex = xSemaphoreCreateMutex();
 }

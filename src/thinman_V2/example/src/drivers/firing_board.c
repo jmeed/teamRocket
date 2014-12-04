@@ -16,6 +16,7 @@
 
 static I2C_ID_T firing_board_i2c_device;
 static xSemaphoreHandle mutex;
+bool firing_board_transmit_error;
 
 void firing_board_init(void) {
 	mutex = xSemaphoreCreateMutex();
@@ -24,6 +25,7 @@ void firing_board_init(void) {
 bool firing_board_setup(I2C_ID_T i2c_device) {
 	uint8_t device_id;
 	firing_board_i2c_device = i2c_device;
+	firing_board_transmit_error = false;
 
 	if (firing_board_transceive_command(0x00, NULL, 0, &device_id, sizeof(device_id)) != 0) {
 		return false;
@@ -70,6 +72,7 @@ uint8_t firing_board_transceive_command(uint8_t command, const void* arguments, 
 
 	if (read_size == 0) {
 		xSemaphoreGive(mutex);
+		firing_board_transmit_error = true;
 		return 0xfe;
 	}
 

@@ -16,6 +16,8 @@ typedef enum {
 	VOLTAGE_BUS,
 } firing_board_volt_channel_t;
 
+extern bool firing_board_transmit_error;
+
 void firing_board_init(void);
 bool firing_board_setup(I2C_ID_T i2c_device);
 float firing_board_read_volt(firing_board_volt_channel_t vchan);

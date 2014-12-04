@@ -206,7 +206,6 @@ static void vLEDTask1(void *pvParameters) {
 			sec_color += 0x00000a;
 		}
 		neopixel_set_color(1, NEOPIXEL_COLOR_FROM_RGB(sec_color));
-		gps_activated = false;
 
 		vTaskDelay(1000);
 		counter += 1;
@@ -430,18 +429,11 @@ static void vHighG(void* pvParameters) {
 }
 
 static void vGPS(void* pv) {
-	i2c_uart_init();
-//	i2c_uart_send_string(I2C_UART_CHANA, "Hello World\r\n");
-
-	i2c_uart_set_gpio_direction(1 << 3);
-	i2c_uart_write_gpio(1 << 3);
-
 	static FIL f_volts;
 	static char highg_str_buf[0x40];
 	LOG_INFO("Initializing GPS board");
 
 	int result;
-	int counter = 0;
 	strcpy(highg_str_buf, "GPS.TAB");
 	{
 		int rename_number = 1;
@@ -464,43 +456,51 @@ static void vGPS(void* pv) {
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	bool line_broken = true;
 
+    LOG_INFO("Initializing Telem wing");
 	for(;;) {
-		int c;
-		while(1) {
-			c = i2c_uart_readc(I2C_UART_CHANB);
-			if (c < 0) {
-				break;
-			}
+		if (i2c_uart_init()) {
 
-			f_putc(c, &f_volts);
-//			i2c_uart_send_byte(I2C_UART_CHANA, c);
-			if (c == '\n') {
-				f_sync(&f_volts);
-				line_broken = true;
-			} else {
-				line_broken = false;
+			i2c_uart_set_gpio_direction(1 << 3);
+			i2c_uart_write_gpio(1 << 3);
+			LOG_INFO("Telemetry wing initialized");
+			for(;;) {
+				int c;
+				if (i2c_uart_transmit_error) {
+					LOG_ERROR("Telemetry wing dropped out");
+					gps_activated = false;
+					break;
+				}
+				while(1) {
+					c = i2c_uart_readc(I2C_UART_CHANB);
+					if (c < 0) {
+						break;
+					}
+
+					f_putc(c, &f_volts);
+//					i2c_uart_send_byte(I2C_UART_CHANA, c);
+					if (c == '\n') {
+						f_sync(&f_volts);
+						line_broken = true;
+					} else {
+						line_broken = false;
+					}
+					gps_activated = true;
+				}
+				if (line_broken) {
+					static char imu_out_buf[40];
+					sprintf(imu_out_buf, "S,IMUACC,%.2f,%.2f,%.2f\n", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
+					i2c_uart_send_string(I2C_UART_CHANA, imu_out_buf);
+				}
+				vTaskDelayUntil(&xLastWakeTime, 100);
 			}
-			gps_activated = true;
 		}
-		if (line_broken) {
-			static char imu_out_buf[40];
-			sprintf(imu_out_buf, "S,IMUACC,%.2f,%.2f,%.2f\n", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
-			i2c_uart_send_string(I2C_UART_CHANA, imu_out_buf);
-		}
-		vTaskDelayUntil(&xLastWakeTime, 100);
+		vTaskDelay(500); // Wait for device to connect
 	}
 }
 
 static void vVolts(void* pv) {
 	static FIL f_volts;
 	static char highg_str_buf[0x40];
-	LOG_INFO("Initializing Firing board");
-	if (firing_board_setup(OFFBOARD_I2C)) {
-		LOG_INFO("Firing board initialized");
-	} else {
-		LOG_ERROR("Firing board erred");
-		// vTaskSuspend(NULL);
-	}
 
 	int result;
 	int counter = 0;
@@ -522,23 +522,38 @@ static void vVolts(void* pv) {
 		LOG_ERROR("Failed to open volts log file");
 		vTaskSuspend(NULL);
 	}
-	for (;;) {
-		float vext, vbus;
-		vext = firing_board_read_volt(VOLTAGE_EXTERNAL_BAT);
-		vbus = firing_board_read_volt(VOLTAGE_BUS);
 
-		if (result == FR_OK) {
-			sprintf(highg_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), vext, vbus);
-			f_puts(highg_str_buf, &f_volts);
-			if ((counter % 5) == 0) {
-				f_sync(&f_volts);
+
+	for (;;) {
+		if (firing_board_setup(OFFBOARD_I2C)) {
+			LOG_INFO("Firing board initialized");
+
+			for (;;) {
+				float vext, vbus;
+				vext = firing_board_read_volt(VOLTAGE_EXTERNAL_BAT);
+				vbus = firing_board_read_volt(VOLTAGE_BUS);
+
+				if (firing_board_transmit_error) {
+					LOG_ERROR("Firing board dropped out");
+					volt_active = false;
+					break;
+				}
+
+				if (result == FR_OK) {
+					sprintf(highg_str_buf, "%d\t%f\t%f\n", xTaskGetTickCount(), vext, vbus);
+					f_puts(highg_str_buf, &f_volts);
+					if ((counter % 5) == 0) {
+						f_sync(&f_volts);
+					}
+				}
+
+				volt_active = true;
+
+				vTaskDelay(500);
+				counter += 1;
 			}
 		}
-
-		volt_active = (vbus < 20.0f);
-
-		vTaskDelay(500);
-		counter += 1;
+		vTaskDelay(500); // Wait for firing board connect
 	}
 }
 

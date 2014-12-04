@@ -49,13 +49,17 @@
 //
 #define EFR          0x02  // Enhanced Function Register
 //
+bool i2c_uart_transmit_error;
 //
 //***********************************************
 static uint8_t i2c_uart_read_reg(uint8_t RegAddr, i2c_uart_channel_t CHAN)   // Internal register address plus channel #(0 or 1)
 { // returns byte read from the UART register
 	uint8_t data, buffer;
 	data = (RegAddr << 3) | (CHAN << 1);
-	Chip_I2C_MasterCmdRead(I2C_UART_I2C_ID, UART_ADDR >> 1, data, &buffer, 1);
+	if (Chip_I2C_MasterCmdRead(I2C_UART_I2C_ID, UART_ADDR >> 1, data, &buffer, 1) == 0) {
+		i2c_uart_transmit_error = true;
+		return 0;
+	}
 	return buffer;
 }
  //
@@ -66,7 +70,9 @@ static void i2c_uart_write_reg(uint8_t RegAddr, i2c_uart_channel_t CHAN, uint8_t
 	uint8_t buffer[2];
 	buffer[0] = (RegAddr << 3) | (CHAN << 1);
 	buffer[1] = Data;
-    Chip_I2C_MasterSend(I2C_UART_I2C_ID, UART_ADDR >> 1, buffer, 2);
+    if (Chip_I2C_MasterSend(I2C_UART_I2C_ID, UART_ADDR >> 1, buffer, 2) == 0) {
+    	i2c_uart_transmit_error = true;
+    }
 }
 //
 //*********************************************
@@ -87,12 +93,13 @@ uint8_t i2c_uart_get_tx_free(i2c_uart_channel_t CHAN) {
 }
 //
 //*******************************************************
-void i2c_uart_init(void)
+bool i2c_uart_init(void)
 {
   // This init routine initializes ChannelS A and B
   //
   // Channel A Setups
   //Prescaler in MCR defaults on MCU reset to the value of 1
+  i2c_uart_transmit_error = false;
   i2c_uart_write_reg(LCR, I2C_UART_CHANA, 0x80); // 0x80 to program baud rate divisor
   i2c_uart_write_reg(DLL, I2C_UART_CHANA, 0x4e); // 0x4e = 9600baud // 0x18=9600K, 0x06 =38,42K with X1=3.6864MHz
   i2c_uart_write_reg(DLH, I2C_UART_CHANA, 0x00); //
@@ -114,6 +121,8 @@ void i2c_uart_init(void)
   //
   i2c_uart_write_reg(LCR, I2C_UART_CHANB, 0x03); // 8 data bits, 1 stop bit, no parity
   i2c_uart_write_reg(FCR, I2C_UART_CHANB, 0x07); // reset TXFIFO, reset RXFIFO, enable FIFO mode
+
+  return !i2c_uart_transmit_error;
 }
 //
 //*********************************************

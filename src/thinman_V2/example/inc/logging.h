@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 #include <stdint.h>
 #include <FreeRTOS.h>
 #include "task.h"
@@ -25,6 +26,13 @@ extern uint32_t logging_counter;
 #define LOG_INFO(msg, ...) { LOG_NORMAL("INFO ", msg, ##__VA_ARGS__); }
 #define LOG_DEBUG(msg, ...) { LOG_NORMAL("DEBUG", msg, ##__VA_ARGS__); }
 void exit_error(int error_code);
+void exit_error_msg(int error_code, const char* message);
+
+#define EXIT_ERROR_MSG(error_code, msg, ...) { \
+	char buf[100]; \
+	sprintf(buf, msg, ##__VA_ARGS__); \
+	exit_error_msg(error_code, buf); \
+}
 
 void logging_init(void);
 

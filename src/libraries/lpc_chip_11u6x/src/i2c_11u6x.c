@@ -427,7 +427,6 @@ int Chip_I2C_MasterTransfer(I2C_ID_T id, I2C_XFER_T *xfer)
 		startMasterXfer(iic->ip);
 	}
 	iic->mEvent(id, I2C_EVENT_WAIT);
-	iic->mXfer = 0;
 
 	/* Wait for stop condition to appear on bus */
 	while (!isI2CBusFree(iic->ip)) {}
@@ -437,6 +436,7 @@ int Chip_I2C_MasterTransfer(I2C_ID_T id, I2C_XFER_T *xfer)
 		startSlaverXfer(iic->ip);
 	}
 
+	iic->mXfer = 0;
 	iic->mEvent(id, I2C_EVENT_UNLOCK);
 	return (int) xfer->status;
 }
@@ -487,6 +487,9 @@ int Chip_I2C_IsMasterActive(I2C_ID_T id)
 /* State change handler for master transfer */
 void Chip_I2C_MasterStateHandler(I2C_ID_T id)
 {
+	if (i2c[id].mXfer == 0) {
+		return; /// BUG!!!!!!!!!!!!!!!!!!!!!!!!!!
+	}
 	if (!handleMasterXferState(i2c[id].ip, i2c[id].mXfer)) {
 		i2c[id].mEvent(id, I2C_EVENT_DONE);
 	}
