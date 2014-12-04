@@ -501,10 +501,10 @@ static void vGPS(void* pv) {
 		}
 		if (line_broken) {
 			static char imu_out_buf[40];
-			sprintf(imu_out_buf, "S,IMUACC,%.2f,%.2f,%.2f", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
+			sprintf(imu_out_buf, "S,IMUACC,%.2f,%.2f,%.2f\n", imu_measurements.ax, imu_measurements.ay, imu_measurements.az);
 			i2c_uart_send_string(I2C_UART_CHANA, imu_out_buf);
 		}
-		vTaskDelayUntil(&xLastWakeTime, 30);
+		vTaskDelayUntil(&xLastWakeTime, 100);
 	}
 }
 

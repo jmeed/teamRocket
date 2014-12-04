@@ -21,7 +21,7 @@ set(x_port, 'ByteOrder', 'littleEndian');
 set(x_port, 'Timeout', 0);
 
 % Setup callback
-x_port.BytesAvailableFcnCount = 4*3 + 1*9; % 3 floats, 1 char
+x_port.BytesAvailableFcnCount = 4*3 + 1*9;
 x_port.BytesAvailableFcnMode = 'byte';
 x_port.BytesAvailableFcn = @xbee_station_tracker;
 
@@ -39,6 +39,7 @@ title('Modular Flight Recorder Orientation Tracker')
 xlabel('x')
 ylabel('y')
 zlabel('z')
+
 
 ln = line([0 0], [0 0], [0 0]);
 pt = plot3(0, 0, 0, '.b');
