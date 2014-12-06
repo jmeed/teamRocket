@@ -162,11 +162,11 @@ static void prvSetupHardware(void)
 
 /* LED1 toggle thread */
 
-static bool volt_active;
-static bool gps_activated = false;
-static bool baro_running = false;
-static bool imu_running = false;
-static bool highg_running = false;
+bool volt_active;
+bool gps_activated = false;
+bool baro_running = false;
+bool imu_running = false;
+bool highg_running = false;
 const uint32_t neopixel_number_translation[] = {
 	0x1f0000, // R
 	0x001f00, // G

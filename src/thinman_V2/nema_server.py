@@ -12,7 +12,7 @@ logging.basicConfig()
 log = logging.getLogger(__name__)
 logging.getLogger().setLevel(logging.INFO)
 
-# ser = serial.Serial('COM7', 9600)
+ser = serial.Serial('COM8', 9600)
 last_time = 0
 
 active_ws_connections = set()
@@ -51,8 +51,8 @@ def broadcast_message(msg):
 
 def forward_serial():
     while True:
-        line = "$GPGGA,123519,4217.%03d,N,08342.%03d,W,1,08,0.9,545.4,M,46.9,M,,*47\n" % (random.randrange(0,999), random.randrange(0,999))
-        time.sleep(1.0)
+        #line = "$GPGGA,123519,4217.%03d,N,08342.%03d,W,1,08,0.9,545.4,M,46.9,M,,*47\n" % (random.randrange(0,999), random.randrange(0,999))
+        line = ser.readline()
         if not line:
             break
 
