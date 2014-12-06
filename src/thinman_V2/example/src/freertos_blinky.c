@@ -479,7 +479,7 @@ static void vGPS(void* pv) {
 	for(;;) {
 		if (i2c_uart_init()) {
 
-			i2c_uart_set_gpio_direction(1 << 3);
+			i2c_uart_set_gpio_direction(0xff); // Set all GPIO to output to reduce noise susceptibility
 			i2c_uart_write_gpio(1 << 3);
 			LOG_INFO("Telemetry wing initialized");
 			size_t line_position = 0;
@@ -686,7 +686,7 @@ static void vBootSystem(void* pvParameters) {
 //	xTaskCreate(vTaskDepthRecorder, "DepthRec", 156, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
 	xTaskCreate(vFlushLogs, "vFlushLogs",
-				128, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
+				150, NULL, (tskIDLE_PRIORITY + 2), &monitor_tasks[monitor_task_write_ptr++]);
 
 	xTaskCreate(vLEDTask1, "vTaskLed1",
 				128, NULL, (tskIDLE_PRIORITY + 1UL),

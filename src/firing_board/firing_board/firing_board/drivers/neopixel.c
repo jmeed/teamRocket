@@ -157,7 +157,7 @@ static void __attribute__((aligned(16))) neopixel_write(const rgb_color * colors
 
 		#endif
 
-		if (1)
+		if (0)
 		{
 			// Experimentally on an AVR we found that one NOP is required after the SEI to actually let the
 			// interrupts fire.
