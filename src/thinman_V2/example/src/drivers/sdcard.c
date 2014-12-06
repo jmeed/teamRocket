@@ -91,7 +91,9 @@ int SDCardSendCommand(uint8_t command, uint32_t param, uint8_t crc, void* buffer
 	uint8_t* data = (uint8_t*) buffer;
 	command += 0x40;
 	SDCardSetSS();
-	while (spi_transceive_byte(SDCARD_SPI_DEVICE, 0xff) != 0xff);
+	for (i = 0; i < SDCARD_IDLE_PRE_WAIT_ATTEMPTS; i++) {
+		if (spi_transceive_byte(SDCARD_SPI_DEVICE, 0xff) == 0xff) break;
+	}
 
 	result = SDCARD_ERROR_TRANSMIT_INTERRUPTED;
 
