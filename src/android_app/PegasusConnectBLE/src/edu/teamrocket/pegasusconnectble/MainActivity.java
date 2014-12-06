@@ -299,10 +299,24 @@ public class MainActivity extends ActionBarActivity implements
 				writeBnd.putString("data", "stat");
 				writeMsg.setData(writeBnd);
 				handler.sendMessage(writeMsg);
-				writeBnd = new Bundle();
+				
+				handler.postDelayed( new Runnable() {
+					public void run() {
+						Message writeMsg = handler.obtainMessage(Constants.MESSAGE_WRITE);
+						Bundle writeBnd = new Bundle();
+						if(paired_device != null ) {
+							writeBnd.putString("data", "stat");
+							writeMsg.setData(writeBnd);
+							handler.sendMessage(writeMsg);
+							
+							handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
+						}
+					}
+				}, 500);
 				
 				handler.sendEmptyMessage(Constants.START_MESSAGE_READ);
 			}
+			
 			current_fragment = Constants.STATUS;
 			break;
 			
@@ -816,7 +830,7 @@ public class MainActivity extends ActionBarActivity implements
 				compile_messages(readMessage);
 				if (complete_message) {
 					processMessage(input_additive_buffer);
-					Log.i(TAG, input_additive_buffer);
+					Log.i(TAG, "Complete: " + input_additive_buffer);
 					complete_message = false;
 					input_additive_buffer = "";
 					input_additive_buffer = secondary_additive_buffer;
@@ -824,7 +838,7 @@ public class MainActivity extends ActionBarActivity implements
 					String trash = input_additive_buffer;
 					int count = trash.length() - trash.replace(" ", "").length();
 
-					if(input_additive_buffer.contains("\n") | ( count == 8 & input_additive_buffer.contains("=F"))) {
+					if(input_additive_buffer.contains("\n") || ( count == 8 & input_additive_buffer.contains("=F"))) {
 				    	try {
 				    		TimeUnit.MILLISECONDS.sleep(500);
 				    	}
@@ -834,7 +848,7 @@ public class MainActivity extends ActionBarActivity implements
 						processMessage(input_additive_buffer);
 						input_additive_buffer = "";
 					}
-					else if( input_additive_buffer.contains("\n") | (count == 6 & input_additive_buffer.contains("=S"))) {
+					else if( input_additive_buffer.contains("\n") || (count == 6 & input_additive_buffer.contains("=S"))) {
 				    	try {
 				    		TimeUnit.MILLISECONDS.sleep(500);
 				    	}
@@ -893,7 +907,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		String[] parts = input.split(" ");
 
-		if (parts[0].equals("=F") & parts.length == 8 ) {
+		if (parts[0].equals("=F") && parts.length == 8 ) {
 			if (Units == METRIC_UNITS) {
 				Message tmpmsg = currentHandler
 						.obtainMessage(Constants.MESSAGE_FLIGHT_DATA);
@@ -938,40 +952,45 @@ public class MainActivity extends ActionBarActivity implements
 
 				currentHandler.sendMessage(tmpmsg);
 			}
-		} else if (parts[0] == "=P") {
+		} else if (parts[0].equals("=P")) {
 			// TODO fill out
-		} else if (parts[0] == "=S" & parts.length == 6) {
+		} else if (parts[0].equals("=S") && parts.length == 6) {
+			Log.i(TAG,  "Handling Status");
 			Message tmp = currentHandler.obtainMessage(Constants.MESSAGE_STATUS_DATA);
 			Bundle bnd = new Bundle();
-			if(parts[1] == "1") {
+			//gps firing baro imu highg
+			if( paired_device_name != null ) {
+				bnd.putChar(Constants.CONNECTED, 'y');
+			}
+			if(parts[1].equals("1")) {
 				bnd.putChar(Constants.GPS_CONNECTED, 'y');
 			}
 			else {
 				bnd.putChar(Constants.GPS_CONNECTED, 'n');
 			}
-			if(parts[2] == "1") {
-				bnd.putChar(Constants.IMU_CONNECTED, 'y');
-			}
-			else {
-				bnd.putChar(Constants.IMU_CONNECTED, 'n');
-			}			
-			if(parts[3] == "1") {
-				bnd.putChar(Constants.HIGHG_CONNECTED, 'y');
-			}
-			else {
-				bnd.putChar(Constants.HIGHG_CONNECTED, 'n');
-			}			
-			if(parts[4] == "1") {
+			if(parts[2].equals("1")) {
 				bnd.putChar(Constants.FIRING_BOARD_CONNECTED, 'y');
 			}
 			else {
 				bnd.putChar(Constants.FIRING_BOARD_CONNECTED, 'n');
 			}			
-			if(parts[5] == "1") {
+			if(parts[3].equals("1")) {
 				bnd.putChar(Constants.BARO_CONNECTED, 'y');
 			}
 			else {
 				bnd.putChar(Constants.BARO_CONNECTED, 'n');
+			}			
+			if(parts[4].equals("1")) {
+				bnd.putChar(Constants.IMU_CONNECTED, 'y');
+			}
+			else {
+				bnd.putChar(Constants.IMU_CONNECTED, 'n');
+			}			
+			if(parts[5].equals("1")) {
+				bnd.putChar(Constants.HIGHG_CONNECTED, 'y');
+			}
+			else {
+				bnd.putChar(Constants.HIGHG_CONNECTED, 'n');
 			}
 			tmp.setData(bnd);
 			currentHandler.sendMessage(tmp);
@@ -1107,7 +1126,7 @@ public class MainActivity extends ActionBarActivity implements
             
             //For information only. This application sends small packets infrequently and does not need to know what the previous write completed
             else if (BluetoothLeService.ACTION_DATA_WRITTEN.equals(action)) {			//Service has found new data available on BLE device
-//            	Log.i(TAG, "Data Written");
+            	Log.i(TAG, "Data Written");
             }
         }
     };
