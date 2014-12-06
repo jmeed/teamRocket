@@ -472,7 +472,8 @@ static void vGPS(void* pv) {
 
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	bool line_broken = true;
-	uint8_t counter = 0;
+	uint32_t counter = 0;
+	uint32_t line_counter = 0;
 
     LOG_INFO("Initializing Telem wing");
 	for(;;) {
@@ -514,7 +515,10 @@ static void vGPS(void* pv) {
 					}
 
 					if (c == '\n') {
-						f_sync(&f_volts);
+						if ((line_counter % 20) == 0) {
+							f_sync(&f_volts);
+						}
+						line_counter ++;
 						if (is_gpgga) {
 							line_buffer[line_position] = 0;
 							i2c_uart_send_string(I2C_UART_CHANA, line_buffer);
