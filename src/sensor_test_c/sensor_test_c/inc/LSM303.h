@@ -80,6 +80,7 @@
 I2C_ID_T LSM303_i2c_id;
 uint8_t LSM303_slave_address;
 
+// Initializes the device with the I2C device ID
 int LSM303_init(I2C_ID_T id_in);
 
 // Dimensions are LSM303_ACCEL_X, LSM303_ACCEL_Y, LSM303_ACCEL_Z,
@@ -115,7 +116,7 @@ float LSM303_read_temperature_C();
 uint8_t LSM303_read_reg(uint8_t reg_addr);
 void LSM303_write_reg(uint8_t reg_addr, uint8_t data);
 
-// Unused
-//bool detect_device();
+// Unused, detects if the device is present on the I2C bus
+bool detect_device();
 
 #endif /* LSM303_H */

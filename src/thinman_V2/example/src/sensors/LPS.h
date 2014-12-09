@@ -42,6 +42,7 @@
 I2C_ID_T LPS_i2c_id;
 uint8_t LPS_slave_address;
 
+// Initialize the device with the I2C device ID
 int LPS_init(I2C_ID_T id_in);
 
 // Dimensions are LPS_ALTITUDE and LPS_TEMPERATURE for this sensor
@@ -62,7 +63,7 @@ float LPS_pressure_to_altitude_m(float pressure_mbar, float altimeter_setting_mb
 uint8_t LPS_read_reg(uint8_t reg_addr);
 void LPS_write_reg(uint8_t reg_addr, uint8_t data);
 
-// Unused
-//bool detect_device();
+// Detects if the device is present on the I2C bus
+bool detect_device();
 
 #endif /* LPS_H */

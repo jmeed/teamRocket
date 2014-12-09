@@ -86,8 +86,11 @@ extern size_t S25FL_erase_sector_count;
 #define S25FL_SS_PORT	1
 #define S25FL_SS_PIN	23
 
+// Number of bytes for each block write operation
 #define S25FL_SECTOR_SIZE 4096
+// The number of sectors available
 #define S25FL_SECTOR_COUNT (16000000 / S25FL_SECTOR_SIZE)
+// Number of bytes for each intrinsic block (erase block)
 #define S25FL_BLOCK_SIZE 4096
 
 // === Configuration types
@@ -182,12 +185,17 @@ void S25FL_erase_sector(uint32_t address);
 // Erases (sets all bits to 1) the entire flash memory array
 void S25FL_erase_bulk();
 
+// Read a 4K sector from the SPI flash into buffer, given the LBA (sector number, 0-based)
 void S25FL_read_sector(uint8_t* buffer, uint32_t sector);
+// Read a series of 4K sectors from the SPI flash into buffer, given the first LBA, and the number of sectors.
 void S25FL_read_sectors(uint8_t* buffer, uint32_t sector, size_t count);
 
+// Write a 4K sector to the SPI flash, erase before write, given the LBA.
 void S25FL_write_sector(const uint8_t* data, uint32_t sector);
+// Write a series of 4K sectors to the SPI flash, given the first LBA and the number of sectors.
 void S25FL_write_sectors(const uint8_t* data, uint32_t sector, size_t count);
 
+// Returns whether the SPI flash module had been properly initialized
 bool S25FL_initialized(void);
 // Suspend any current erase operations
 // While suspended, commands RDSR1 and RDSR2 are allowed

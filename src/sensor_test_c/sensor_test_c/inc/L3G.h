@@ -48,6 +48,7 @@
 I2C_ID_T L3G_i2c_id;
 uint8_t L3G_slave_address;
 
+// Initialize the device with the I2C device ID
 int L3G_init(I2C_ID_T id_in);
 
 // Dimensions are L3G_SPIN_RATE_X, L3G_SPIN_RATE_Y, L3G_SPIN_RATE_Z, and L3G_TEMPERATURE for this sensor
@@ -66,7 +67,7 @@ float L3G_read_temperature_C();
 uint8_t L3G_read_reg(uint8_t reg_addr);
 void L3G_write_reg(uint8_t reg_addr, uint8_t data);
 
-// Unused
-//bool L3G_detect_device();
+// Unused, detects if device is present on I2C bus
+bool L3G_detect_device();
 
 #endif /* L3G_H */
